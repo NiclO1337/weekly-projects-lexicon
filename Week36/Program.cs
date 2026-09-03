@@ -1,11 +1,14 @@
-﻿Console.WriteLine("Welcome to the product list manager!\n");
+﻿Console.WriteLine("" +
+    "------------------------------------" +
+    "\n   PRODUCT LIST MANAGER - LEVEL 1\n" +
+    "------------------------------------");
 
-Console.WriteLine("Enter products to save them, type \"exit\" to finish.");
+Console.WriteLine("\nEnter products to save them, type \"exit\" to finish.");
 
 List<string> products = [];
 
 while (true)
-{   
+{
     Console.Write("Product: ");
     string? input = Console.ReadLine();
 
@@ -13,7 +16,7 @@ while (true)
     {
         break;
     }
-    products.Add(input.Trim());
+    if (input.Trim().Length > 0) { products.Add(input.Trim()); }
 }
 
 Console.WriteLine("\nProducts entered:\n");
