@@ -20,7 +20,7 @@ if (input == "a")
 {
     for (int i = 0; i < levels.Length; i++)
     {
-        Console.WriteLine("" +
+        Console.WriteLine("\n" +
             "------------------------------------" +
             $"\n   PRODUCT LIST MANAGER - LEVEL {i + 1}\n" +
             "------------------------------------");
