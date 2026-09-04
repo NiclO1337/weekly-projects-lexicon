@@ -4,7 +4,8 @@ Action[] levels =
 [
     Level1.Run,
     Level2.Run,
-    Level3.Run
+    Level3.Run,
+    Level4.Run,
 ];
 
 Console.WriteLine("" +
