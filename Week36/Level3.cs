@@ -64,10 +64,11 @@ namespace Week36
             {
                 errorMessage += "Error: Product name requires 1 and only 1 dash ( - ).\n";
             }
-                
+
+            // Validate left side (letters) and right side (numbers)    
             bool isLetters = splitInput![0].All(char.IsLetter) && !string.IsNullOrEmpty(splitInput[0]);
-            bool isNumbers = int.TryParse(splitInput[^1], out int numbers);
-            
+            bool isNumbers = int.TryParse(splitInput[^1], out int numbers); // [^1] gets the last element
+
             if (!isLetters)
             {
                 errorMessage += "Error: Left side of the dash ( - ) must only contain letters.\n";
