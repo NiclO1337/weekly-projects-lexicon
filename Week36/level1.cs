@@ -21,7 +21,7 @@ namespace Week36
                 {
                     break;
                 }
-                if (input.Trim().Length > 0) { products.Add(input.Trim()); }
+                if (input?.Trim().Length > 0) { products.Add(input.Trim()); }
             }
 
             Console.WriteLine("\nProducts entered:\n");
