@@ -55,10 +55,15 @@ namespace Week36
             string errorMessage = "";
             string[]? splitInput = input?.Split("-");
 
-            if (splitInput?.Length != 2)
+            if (splitInput?.Length == 1)
+            {
+                errorMessage += "Error: Product name requires a dash ( - ).";
+                return (false, errorMessage);
+            } 
+            else if (splitInput?.Length != 2)
             {
                 errorMessage += "Error: Product name requires 1 and only 1 dash ( - ).\n";
-            } 
+            }
                 
             bool isLetters = splitInput![0].All(char.IsLetter) && !string.IsNullOrEmpty(splitInput[0]);
             bool isNumbers = int.TryParse(splitInput[1], out int numbers);
