@@ -14,18 +14,18 @@
 
         private static void MainMenu()
         {
-            productList.Sort();
-            Console.ResetColor();
-            Console.WriteLine();
-            string[] menuItems = ["Add product", "View products", "Search products", "Delete product", "Exit application"];
-
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                Console.WriteLine(i + 1 + ". " + menuItems[i]);
-            }
-
             while (true)
             {
+                productList.Sort();
+                Console.ResetColor();
+                Console.WriteLine();
+                string[] menuItems = ["Add product", "View products", "Search products", "Delete product", "Exit application"];
+
+                for (int i = 0; i < menuItems.Length; i++)
+                {
+                    Console.WriteLine(i + 1 + ". " + menuItems[i]);
+                }
+
                 Console.ResetColor();
                 Console.Write("\nSelect option: ");
                 string? input = Console.ReadLine();
@@ -40,17 +40,15 @@
 
                 switch (trimmedInput)
                 {
-                    case "1": AddProduct(); MainMenu(); break;
-                    case "2": ViewProducts(); MainMenu(); break;
-                    case "3": SearchProducts(); MainMenu(); break;
-                    case "4": DeleteProduct(); MainMenu(); break;
-                    case "5": break;                        
-                    default: 
-                        Console.WriteLine("No such option, please try again."); 
-                        MainMenu(); 
+                    case "1": AddProduct(); break;
+                    case "2": ViewProducts(); break;
+                    case "3": SearchProducts(); break;
+                    case "4": DeleteProduct(); break;
+                    case "5": return;
+                    default:
+                        Console.WriteLine("No such option, please try again.");
                         break;
                 }
-                break;
             }
         }
 
