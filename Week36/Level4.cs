@@ -15,6 +15,7 @@
         private static void MainMenu()
         {
             productList.Sort();
+            Console.ResetColor();
             Console.WriteLine();
             string[] menuItems = ["Add product", "View products", "Search products", "Delete product", "Exit application"];
 
@@ -25,12 +26,14 @@
 
             while (true)
             {
+                Console.ResetColor();
                 Console.Write("\nSelect option: ");
                 string? input = Console.ReadLine();
                 string? trimmedInput = input?.Trim();
 
                 if (string.IsNullOrWhiteSpace(trimmedInput))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error: Can not be empty. Please select an option.");
                     continue;
                 }
@@ -41,8 +44,11 @@
                     case "2": ViewProducts(); MainMenu(); break;
                     case "3": SearchProducts(); MainMenu(); break;
                     case "4": DeleteProduct(); MainMenu(); break;
-                    case "5": break;
-                    default: Console.WriteLine("No such option, please try again."); MainMenu(); break;
+                    case "5": break;                        
+                    default: 
+                        Console.WriteLine("No such option, please try again."); 
+                        MainMenu(); 
+                        break;
                 }
                 break;
             }
@@ -56,6 +62,7 @@
 
             while (true)
             {
+                Console.ResetColor();
                 Console.Write("\nProduct: ");
                 string? input = Console.ReadLine();
                 string? trimmedInput = input?.Trim();
@@ -71,6 +78,7 @@
                 }
                 else if (productList.Any(product => product.Equals(trimmedInput, StringComparison.OrdinalIgnoreCase)))
                 {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Warning: Product already exists!");
                     continue;
                 }
@@ -81,10 +89,12 @@
                 if (isValid)
                 {
                     productList.Add(trimmedInput!);
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Successfully added product.");
                 }
                 else if (!string.IsNullOrEmpty(errorMessage))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(errorMessage);
                 }
             }
@@ -148,13 +158,15 @@
         {
             while (true)
             {
+                Console.ResetColor();
                 Console.Write("\nEnter a product name to search for: ");
                 string? searchTerm = Console.ReadLine();
                 string trimmedSearchTerm = searchTerm!.Trim();
 
                 if (string.IsNullOrEmpty(trimmedSearchTerm))
-                {
-                    Console.WriteLine("Error: Can not search for blank input");
+                {   
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Can not search for blank input.");
                     continue;
                 }
 
@@ -173,8 +185,6 @@
                 }
                 break;
             }
-            
-            
             Console.Write("\nPress ENTER to continue...");
             Console.ReadLine();
         }
@@ -196,13 +206,16 @@
 
                 while (true)
                 {
-                    Console.Write("\nWarning! This is a destructive action that can not be undone once performed, type \"exit\" to go back to main menu." +
-                    "\nWhich product do you wish to delete: ");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nWarning! This is a destructive action that can not be undone once performed, type \"exit\" to go back to main menu.\n");
+                    Console.ResetColor();
+                    Console.Write("Which product do you wish to delete: ");
                     string? input = Console.ReadLine();
                     string trimmedInput = input!.Trim();
 
                     if (string.IsNullOrEmpty(trimmedInput))
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Error: Can accept a blank input");
                         continue;
                     }
@@ -215,15 +228,18 @@
                     {
                         string productToDelete = productList[choice - 1];  // Convert to 0-based index
                         productList.RemoveAt(choice - 1);
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Successfully deleted: " + productToDelete);
                         break;
                     }
                     else
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nError: Please enter a valid number between 1 and " + productList.Count);
                     }
                 }
             }
+            Console.ResetColor();
             Console.Write("\nPress ENTER to continue...");
             Console.ReadLine();
         }
