@@ -38,8 +38,8 @@ namespace Week36
 
                 switch (trimmedInput)
                 {
-                    case "1": AddProduct(); break;
-                    case "2": ViewProducts(); break;
+                    case "1": AddProduct(); MainMenu(); break;
+                    case "2": ViewProducts(); MainMenu(); break;
                     case "3": break;
                 }
                 break;
@@ -48,7 +48,7 @@ namespace Week36
 
         private static void AddProduct()
         {
-            Console.WriteLine("\nEnter products to save them, type \"exit\" to finish.\n" +
+            Console.WriteLine("\nEnter products to save them, type \"exit\" to go back to main menu.\n" +
                 "\nValid product format is LETTERS-NUMBERS, one dash is requred between the letters and number.\n" +
                 "There can be between 1 and 5 letters and numbers must be in range 200 to 500.");
 
@@ -80,14 +80,12 @@ namespace Week36
                 {
                     Console.WriteLine(errorMessage);
                 }
-                MainMenu();
             }
         }
         private static void ViewProducts()
         {
             Console.WriteLine("\nProducts entered (sorted A-Z):\n");
             Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
-            MainMenu();
         }
         private static (bool, string?) ValidateProductInput(string input)
         {
