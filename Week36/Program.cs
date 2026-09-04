@@ -2,12 +2,13 @@
 
 Action[] levels =
 [
-    Level1.Run
+    Level1.Run,
+    Level2.Run
 ];
 
 Console.WriteLine("" +
     "------------------------------------" +
-    "\n   Mini project week 36\n" +
+    "\n        Mini project week 36\n" +
     "------------------------------------");
 
 Console.WriteLine($"There are {levels.Length} levels avalible to run here.");
@@ -26,7 +27,7 @@ if (input == "a")
         levels[i]();
         if (i < levels.Length - 1)
         {
-            Console.WriteLine("\nPress ENTER for next level.");
+            Console.WriteLine("\nPress any key to go to the next level...");
             Console.ReadKey();
         }
         else
