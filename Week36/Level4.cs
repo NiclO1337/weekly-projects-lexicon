@@ -1,30 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Channels;
 using System.Xml.Linq;
 
 namespace Week36
 {
     internal class Level4
     {
+        private static List<string> productList = [];
         public static void Run()
-        {
-            List<string> productList = [];
-            MainMenu();
-            productList = AddProduct(productList);
-
-            
-
-            
-
-            Console.WriteLine("\nProducts entered (sorted A-Z):\n");
-            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
+        {            
+            MainMenu();            
         }
 
         private static void MainMenu()
         {
+            Console.WriteLine();
             string[] menuItems = ["Add product", "View products", "Exit application"];
-
 
             for (int i = 0; i < menuItems.Length; i++)
             {
@@ -34,21 +27,30 @@ namespace Week36
             while (true)
             {
                 Console.Write("Select option: ");
-                string data = Console.ReadLine();
-            }
-            
+                string? input = Console.ReadLine();
+                string? trimmedInput = input?.Trim();
 
-            //    switch (data) {
-            //        case 
+                if (string.IsNullOrWhiteSpace(trimmedInput))
+                {
+                    Console.WriteLine("Error: Can not be empty. Please select an option.");
+                    continue;
+                }
+
+                switch (trimmedInput)
+                {
+                    case "1": AddProduct(); break;
+                    case "2": ViewProducts(); break;
+                    case "3": break;
+                }
+                break;
+            }
         }
 
-        private static List<string> AddProduct(List<string> products)
+        private static void AddProduct()
         {
             Console.WriteLine("\nEnter products to save them, type \"exit\" to finish.\n" +
                 "\nValid product format is LETTERS-NUMBERS, one dash is requred between the letters and number.\n" +
                 "There can be between 1 and 5 letters and numbers must be in range 200 to 500.");
-
-            
 
             while (true)
             {
@@ -63,7 +65,7 @@ namespace Week36
                 }
                 else if (trimmedInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
-                    return products;
+                    break;
                 }
 
                 (bool isValid, string? errorMessage) = ValidateProductInput(trimmedInput);
@@ -71,14 +73,21 @@ namespace Week36
 
                 if (isValid)
                 {
-                    products.Add(trimmedInput!);
+                    productList.Add(trimmedInput!);
                     Console.WriteLine("Successfully added product.");
                 }
                 else if (!string.IsNullOrEmpty(errorMessage))
                 {
                     Console.WriteLine(errorMessage);
-                }                
+                }
+                MainMenu();
             }
+        }
+        private static void ViewProducts()
+        {
+            Console.WriteLine("\nProducts entered (sorted A-Z):\n");
+            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
+            MainMenu();
         }
         private static (bool, string?) ValidateProductInput(string input)
         {
