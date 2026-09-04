@@ -139,22 +139,35 @@
 
         private static void SearchProducts()
         {
-            Console.Write("\nEnter a product name to search for: ");
-            string? searchTerm = Console.ReadLine();
+            while (true)
+            {
+                Console.Write("\nEnter a product name to search for: ");
+                string? searchTerm = Console.ReadLine();
+                string trimmedSearchTerm = searchTerm!.Trim();
 
-            var results = productList.Where(product => product.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (results.Count > 0)
-            {
-                Console.WriteLine("Found " + results.Count + " products:");
-                foreach (var product in results)
+                if (string.IsNullOrEmpty(searchTerm.Trim()))
                 {
-                    Console.WriteLine("- " + product);
+                    Console.WriteLine("Error: Can not search for blank input");
+                    continue;
                 }
+
+                var results = productList.Where(product => product.Contains(trimmedSearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (results.Count > 0)
+                {
+                    Console.WriteLine("Found " + results.Count + " products:");
+                    foreach (var product in results)
+                    {
+                        Console.WriteLine("- " + product);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No results was found for: " + searchTerm);
+                }
+                break;
             }
-            else
-            {
-                Console.WriteLine("No results was found for: " + searchTerm);
-            }
+            
+            
             Console.Write("\nPress ENTER to continue...");
             Console.ReadLine();
         }
