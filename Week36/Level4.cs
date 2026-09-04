@@ -2,18 +2,21 @@
 {
     internal class Level4
     {
-        private static List<string> productList = [ "XAN-456", "CFD-444", "PSG-333", "AB-234", "SFPU-269" ];
+        private static List<string> productList = ["XAN-456", "CFD-444", "PSG-333", "AB-234", "SFPU-269"];
+
         public static void Run()
         {
             MainMenu();
-            Console.WriteLine("\nThank you for using the Product List Manager. \nHave a nice day!");
+
+            Console.WriteLine("\nThank you for using the Product List Manager.\n\n" +
+                "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
         }
 
         private static void MainMenu()
         {
             productList.Sort();
             Console.WriteLine();
-            string[] menuItems = ["Add product", "View products", "Exit application"];
+            string[] menuItems = ["Add product", "View products", "Search products", "Exit application"];
 
             for (int i = 0; i < menuItems.Length; i++)
             {
@@ -36,7 +39,8 @@
                 {
                     case "1": AddProduct(); MainMenu(); break;
                     case "2": ViewProducts(); MainMenu(); break;
-                    case "3": break;
+                    case "3": SearchProducts(); MainMenu(); break;
+                    case "4": break;
                     default: Console.WriteLine("No such option, please try again."); MainMenu(); break;
                 }
                 break;
@@ -64,6 +68,11 @@
                 {
                     break;
                 }
+                else if (productList.Any(product => product.Equals(trimmedInput, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Console.WriteLine("Product already exists!");
+                    continue;
+                }
 
                 (bool isValid, string? errorMessage) = ValidateProductInput(trimmedInput);
 
@@ -79,11 +88,7 @@
                 }
             }
         }
-        private static void ViewProducts()
-        {
-            Console.WriteLine("\nProducts entered (sorted A-Z):\n");
-            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
-        }
+
         private static (bool, string?) ValidateProductInput(string input)
         {
             string errorMessage = "";
@@ -122,6 +127,36 @@
 
             bool isValid = string.IsNullOrEmpty(errorMessage);
             return (isValid, isValid ? null : errorMessage.TrimEnd());
+        }
+        private static void ViewProducts()
+        {
+            Console.WriteLine("\nProducts entered (sorted A-Z):\n");
+            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
+
+            Console.Write("\nPress ENTER to continue...");
+            Console.ReadLine();
+        }
+
+        private static void SearchProducts()
+        {
+            Console.Write("\nEnter a product name to search for: ");
+            string? searchTerm = Console.ReadLine();
+
+            var results = productList.Where(product => product.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (results.Count > 0)
+            {
+                Console.WriteLine("Found " + results.Count + " products:");
+                foreach (var product in results)
+                {
+                    Console.WriteLine("- " + product);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No results was found for: " + searchTerm);
+            }
+            Console.Write("\nPress ENTER to continue...");
+            Console.ReadLine();
         }
     }
 }
