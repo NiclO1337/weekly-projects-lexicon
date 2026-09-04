@@ -2,7 +2,7 @@
 {
     internal class Level4
     {
-        private static List<string> productList = ["XAN-456", "CFD-444", "PSG-333", "AB-234", "SFPU-269"];
+        private static List<string> productList = [ "XAN-456", "CFD-444", "PSG-333", "AB-234", "SFPU-269" ];
 
         public static void Run()
         {
@@ -16,7 +16,7 @@
         {
             productList.Sort();
             Console.WriteLine();
-            string[] menuItems = ["Add product", "View products", "Search products", "Exit application"];
+            string[] menuItems = ["Add product", "View products", "Search products", "Delete product", "Exit application"];
 
             for (int i = 0; i < menuItems.Length; i++)
             {
@@ -40,7 +40,8 @@
                     case "1": AddProduct(); MainMenu(); break;
                     case "2": ViewProducts(); MainMenu(); break;
                     case "3": SearchProducts(); MainMenu(); break;
-                    case "4": break;
+                    case "4": DeleteProduct(); MainMenu(); break;
+                    case "5": break;
                     default: Console.WriteLine("No such option, please try again."); MainMenu(); break;
                 }
                 break;
@@ -70,7 +71,7 @@
                 }
                 else if (productList.Any(product => product.Equals(trimmedInput, StringComparison.OrdinalIgnoreCase)))
                 {
-                    Console.WriteLine("Product already exists!");
+                    Console.WriteLine("Warning: Product already exists!");
                     continue;
                 }
 
@@ -130,9 +131,15 @@
         }
         private static void ViewProducts()
         {
-            Console.WriteLine("\nProducts entered (sorted A-Z):\n");
-            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
-
+            if (productList.Count == 0) 
+            { 
+                Console.WriteLine("\nThere are 0 products in the database.");
+            }
+            else
+            {
+                Console.WriteLine("\nProducts (sorted A-Z):\n");
+                Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
+            }
             Console.Write("\nPress ENTER to continue...");
             Console.ReadLine();
         }
@@ -145,7 +152,7 @@
                 string? searchTerm = Console.ReadLine();
                 string trimmedSearchTerm = searchTerm!.Trim();
 
-                if (string.IsNullOrEmpty(searchTerm.Trim()))
+                if (string.IsNullOrEmpty(trimmedSearchTerm))
                 {
                     Console.WriteLine("Error: Can not search for blank input");
                     continue;
@@ -168,6 +175,55 @@
             }
             
             
+            Console.Write("\nPress ENTER to continue...");
+            Console.ReadLine();
+        }
+
+        private static void DeleteProduct()
+        {
+            if (productList.Count == 0) 
+            {
+                Console.WriteLine("\nThere are 0 products in the system.");
+            }
+            else
+            {
+                Console.WriteLine("\nThere are " + productList.Count + " products in the system.\n");
+
+                for (int i = 0; i < productList.Count; i++)
+                {
+                    Console.WriteLine(i + 1 + ". " + productList[i]);
+                }
+
+                while (true)
+                {
+                    Console.Write("\nWarning! This is a destructive action that can not be undone once performed, type \"exit\" to go back to main menu." +
+                    "\nWhich product do you wish to delete: ");
+                    string? input = Console.ReadLine();
+                    string trimmedInput = input!.Trim();
+
+                    if (string.IsNullOrEmpty(trimmedInput))
+                    {
+                        Console.WriteLine("Error: Can accept a blank input");
+                        continue;
+                    }
+                    else if (trimmedInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+
+                    if (int.TryParse(trimmedInput, out int choice) && choice >= 1 && choice <= productList.Count)
+                    {
+                        string productToDelete = productList[choice - 1];  // Convert to 0-based index
+                        productList.RemoveAt(choice - 1);
+                        Console.WriteLine("Successfully deleted: " + productToDelete);
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nError: Please enter a valid number between 1 and " + productList.Count);
+                    }
+                }
+            }
             Console.Write("\nPress ENTER to continue...");
             Console.ReadLine();
         }
