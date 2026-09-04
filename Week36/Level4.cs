@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Channels;
-using System.Xml.Linq;
-
-namespace Week36
+﻿namespace Week36
 {
     internal class Level4
     {
-        private static List<string> productList = [];
+        private static List<string> productList = [ "XAN-456", "CFD-444", "PSG-333", "AB-234", "SFPU-269" ];
         public static void Run()
-        {            
-            MainMenu();            
+        {
+            MainMenu();
+            Console.WriteLine("\nThank you for using the Product List Manager. \nHave a nice day!");
         }
 
         private static void MainMenu()
         {
+            productList.Sort();
             Console.WriteLine();
             string[] menuItems = ["Add product", "View products", "Exit application"];
 
@@ -23,10 +19,10 @@ namespace Week36
             {
                 Console.WriteLine(i + 1 + ". " + menuItems[i]);
             }
-            
+
             while (true)
             {
-                Console.Write("Select option: ");
+                Console.Write("\nSelect option: ");
                 string? input = Console.ReadLine();
                 string? trimmedInput = input?.Trim();
 
@@ -41,6 +37,7 @@ namespace Week36
                     case "1": AddProduct(); MainMenu(); break;
                     case "2": ViewProducts(); MainMenu(); break;
                     case "3": break;
+                    default: Console.WriteLine("No such option, please try again."); MainMenu(); break;
                 }
                 break;
             }
