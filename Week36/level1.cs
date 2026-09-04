@@ -25,7 +25,7 @@ namespace Week36
             }
 
             Console.WriteLine("\nProducts entered:\n");
-            Console.WriteLine(String.Join("\n", products));
+            Console.Write("- "); Console.WriteLine(String.Join("\n- ", products));
         }
     }
 }
