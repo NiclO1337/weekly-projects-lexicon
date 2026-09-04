@@ -40,7 +40,7 @@ namespace Week36
                 };
 
                 
-                if (trimmedInput.ToLower() == "exit")
+                if (trimmedInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
                     return products;
                 } else
