@@ -66,7 +66,7 @@ namespace Week36
             }
                 
             bool isLetters = splitInput![0].All(char.IsLetter) && !string.IsNullOrEmpty(splitInput[0]);
-            bool isNumbers = int.TryParse(splitInput[1], out int numbers);
+            bool isNumbers = int.TryParse(splitInput[^1], out int numbers);
             
             if (!isLetters)
             {
