@@ -3,7 +3,8 @@
 Action[] levels =
 [
     Level1.Run,
-    Level2.Run
+    Level2.Run,
+    Level3.Run
 ];
 
 Console.WriteLine("" +
