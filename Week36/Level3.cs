@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Week36
 {
@@ -10,27 +11,42 @@ namespace Week36
         {
             Console.WriteLine("\nEnter products to save them, type \"exit\" to finish.");
 
-            List<string> products = [];
+            List<string> productList = [];
 
-            
+            ValidateProductInput(productList);
 
             Console.WriteLine("\nProducts entered:\n");
-            Console.Write("- "); Console.WriteLine(String.Join("\n- ", products));
+            Console.Write("- "); Console.WriteLine(String.Join("\n- ", productList));
         }
-        private static string ValidateInput(string prompt, Func<string, bool> isValid)
+        private static List<string> ValidateProductInput(List<string> products)
         {
             while (true)
             {
-                Console.Write(prompt);
+                Console.Write("Product: ");
                 string? input = Console.ReadLine();
                 string? trimmedInput = input?.Trim();
 
-                if (isValid(trimmedInput))
+                if (string.IsNullOrWhiteSpace(trimmedInput))
                 {
-                    return trimmedInput;
+                    Console.WriteLine("Product name can not be empty.");
+                    continue;
                 }
 
-                Console.WriteLine("Invalid input. Please try again.");
+                string[] splitInput = trimmedInput.Split("-");
+                Console.WriteLine(splitInput.Length);
+                foreach (string part in splitInput)
+                {
+                    Console.WriteLine(part);
+                };
+
+                
+                if (trimmedInput.ToLower() == "exit")
+                {
+                    return products;
+                } else
+                {
+                    products.Add(trimmedInput);
+                }
             }
         }
     }
