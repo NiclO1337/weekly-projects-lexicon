@@ -4,8 +4,9 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-            Utils.DisplayErrorMessage("Hello");
+            CategoryManager categoryManager = new();
+            categoryManager.AddCategory("Fruit");
+            SelectOrCreateCategory(categoryManager);
         }
         static void DisplayMainMenu()
         {
@@ -41,7 +42,7 @@
                 if (categories.Count == 0)
                 {
                     Utils.DisplayWarningMessage("No categories exist yet. Let's add one.");
-                    return HandleAddCategory(categoryManager);
+                    return AddCategoryLoop(categoryManager);
                 }
 
                 Console.WriteLine("\n0. + Add new category");
@@ -50,14 +51,41 @@
                     Console.WriteLine($"{i + 1}. {categories[i].Name}");
                 }
 
-                int choice = Utils.ValidateInput("Select category: ", Utils.ValidateIntegerRange(0, categories.Count));
+                int choice = Utils.ValidateInput($"Select category: (1 - {categories.Count}", Utils.ValidateIntegerRange(0, categories.Count));
 
                 if (choice == 0)
                 {
-                    return HandleAddCategory(categoryManager);
+                    return AddCategoryLoop(categoryManager);
                 }
 
                 return categories[choice - 1];
+            }
+        }
+
+        static Category? HandleAddCategory(CategoryManager categoryManager)
+        {
+            string name = Utils.ValidateInput("Enter category name: ");
+            Category? category = categoryManager.AddCategory(name);
+
+            if (category is null)
+            {
+                Utils.DisplayErrorMessage("A category with that name already exists.");
+                return null;
+            }
+
+            Utils.DisplaySuccessMessage($"Category '{category.Name}' added successfully.");
+            return category;
+        }
+
+        static Category AddCategoryLoop(CategoryManager categoryManager)
+        {
+            while (true)
+            {
+                var category = HandleAddCategory(categoryManager);
+                if (category is not null)
+                {
+                    return category;
+                }
             }
         }
     }

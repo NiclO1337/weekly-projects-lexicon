@@ -6,12 +6,17 @@ namespace Week37
 {
     internal class CategoryManager
     {
-        private List<Category> categories = new List<Category>();
+        private List<Category> categories = [];
         private int nextId = 1;
 
-        public Category AddCategory(string name)
+        public Category? AddCategory(string name)
         {
-            Category category = new Category(nextId, name);
+            if (NameExists(name))
+            {
+                return null;
+            }
+
+            Category category = new(nextId, name);
             categories.Add(category);
             nextId++;
             return category;
@@ -20,7 +25,7 @@ namespace Week37
         public bool EditCategory(int id, string newName)
         {
             Category? category = GetById(id);
-            if (category is null)
+            if (category is null || NameExists(newName))
             {
                 return false;
             }
