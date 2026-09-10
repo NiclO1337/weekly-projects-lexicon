@@ -86,5 +86,10 @@
             int choice = ValidateInput(prompt, ValidateIntegerRange(1, items.Count));
             return items[choice - 1];
         }
+
+        public static string Pluralize(int count, string singular, string plural)
+        {
+            return count == 1 ? singular : plural;
+        }
     }
 }
