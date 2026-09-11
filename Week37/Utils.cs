@@ -53,6 +53,16 @@
             };
         }
 
+        public static Func<string, (bool isValid, decimal result)> ValidatePositiveDecimal()
+        {
+            return input =>
+            {
+                if (decimal.TryParse(input, out decimal value) && value >= 0)
+                    return (true, value);
+                return (false, 0);
+            };
+        }
+
         public static void DisplayErrorMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -83,13 +93,21 @@
                 Console.WriteLine($"{i + 1}. {display(items[i])}");
             }
 
-            int choice = ValidateInput(prompt, ValidateIntegerRange(1, items.Count));
+            int choice = ValidateInput(prompt, 
+                ValidateIntegerRange(1, items.Count),
+                $"Invalid input, please enter a number between 1 and {items.Count}.");
+
             return items[choice - 1];
         }
 
         public static string Pluralize(int count, string singular, string plural)
         {
             return count == 1 ? singular : plural;
+        }
+
+        public static string FormatPrice(decimal price)
+        {
+            return price == Math.Floor(price) ? $"{price:F0} kr" : $"{price:F2} kr";
         }
     }
 }
