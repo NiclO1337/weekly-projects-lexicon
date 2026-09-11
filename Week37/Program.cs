@@ -4,13 +4,18 @@
     {
         static void Main(string[] args)
         {
-            //CategoryManager categoryManager = new();
-            //categoryManager.AddCategory("Fruit");
-            //SelectOrCreateCategory(categoryManager);
-            decimal price = 19.00m;
-            Console.WriteLine(Math.Floor(price) == price);
+            CategoryManager categoryManager = new();
+            ProductManager productManager = new(categoryManager);
+            DataStore dataStore = new();
+
+            Console.WriteLine("\r\n                                               _   __,----'~~~~~~~~~`-----.__\r\n                                        .  .    `//====-              ____,-'~`\r\n                        -.            \\_|// .   /||\\\\  `~~~~`---.___./\r\n                  ______-==.       _-~o  `\\/    |||  \\\\           _,'`\r\n            __,--'   ,=='||\\=_    ;_,_,/ _-'|-   |`\\   \\\\        ,'\r\n         _-'      ,='    | \\\\`.    '',/~7  /-   /  ||   `\\.     /\r\n       .'       ,'       |  \\\\  \\_  \"  /  /-   /   ||      \\   /\r\n      / _____  /         |     \\\\.`-_/  /|- _/   ,||       \\ /\r\n     ,-'     `-|--'~~`--_ \\     `==-/  `| \\'--===-'       _/`\r\n               '         `-|      /|    )-'\\~'      _,--\"'\r\n                           '-~^\\_/ |    |   `\\_   ,^             /\\\r\n                                /  \\     \\__   \\/~               `\\__\r\n                            _,-' _/'\\ ,-'~____-'`-/                 ``===\\\r\n                           ((->/'    \\|||' `.     `\\.  ,                _||\r\n             ./                       \\_     `\\      `~---|__i__i__\\--~'_/\r\n            <_n_                     __-^-_    `)  \\-.______________,-~'\r\n             `B'\\)                  ///,-'~`__--^-  |-------~~~~^'\r\n             /^>                           ///,--~`-\\\r\n            `  `                                       -Tua Xiong");
+
+            RunMainMenu(productManager, categoryManager, dataStore);
+
+            Console.WriteLine("\nThank you for using the Product Management System.\n\n" +
+                "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
         }
-        static void DisplayMainMenu()
+        static int DisplayMainMenu()
         {
             Console.WriteLine("\n==============================");
             Console.WriteLine("   PRODUCT MANAGEMENT SYSTEM");
@@ -34,6 +39,36 @@
             {
                 Console.WriteLine($"{i + 1}. {menuItems[i]}");
             }
+            return menuItems.Length;
+        }
+
+        static void RunMainMenu(ProductManager productManager, CategoryManager categoryManager, DataStore dataStore)
+        {
+            string dataFilePath = "data.json";
+
+            while (true)
+            {
+                int optionCount = DisplayMainMenu();
+                int choice = Utils.ValidateInput($"Select option (1 - {optionCount}): ",
+                    Utils.ValidateIntegerRange(1, optionCount));
+
+                switch (choice)
+                {
+                    case 1: HandleAddProduct(productManager, categoryManager); break;
+                    case 2: productManager.ShowProducts(); break;
+                    case 3: HandleSearchProduct(productManager, categoryManager); break;
+                    case 4: HandleEditProduct(productManager, categoryManager); break;
+                    case 5: HandleDeleteProduct(productManager); break;
+                    case 6: productManager.ShowStatictics(); break;
+                    case 7:
+                        dataStore.Save(dataFilePath, categoryManager, productManager);
+                        Utils.DisplaySuccessMessage("Data saved successfully.");
+                        break;
+                    case 8: HandleLoadData(dataStore, dataFilePath, categoryManager, productManager); break;
+                    case 9: RunCategoryMenu(categoryManager, productManager); break;
+                    case 10: return;
+                }
+            }
         }
         static Category SelectOrCreateCategory(CategoryManager categoryManager)
         {
@@ -54,8 +89,8 @@
                 }
 
                 int choice = Utils.ValidateInput(
-                    $"Select category (1 - {categories.Count}):", 
-                    Utils.ValidateIntegerRange(0, categories.Count), 
+                    $"Select category (1 - {categories.Count}):",
+                    Utils.ValidateIntegerRange(0, categories.Count),
                     $"Invalid input, please enter a number between 1 and {categories.Count}.");
 
                 if (choice == 0)
@@ -94,7 +129,7 @@
             }
         }
 
-        static void RunCategoryManager(CategoryManager categoryManager, ProductManager productManager)
+        static void RunCategoryMenu(CategoryManager categoryManager, ProductManager productManager)
         {
             while (true)
             {
@@ -109,7 +144,7 @@
                 {
                     for (int i = 0; i < categories.Count; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {categories[i].Name}");
+                        Console.WriteLine($"- {categories[i].Name}");
                     }
                 }
                 string[] menuItems =
@@ -127,7 +162,7 @@
                 }
 
                 int choice = Utils.ValidateInput(
-                    $"Select option (1 - {menuItems.Length}): ", 
+                    $"Select option (1 - {menuItems.Length}): ",
                     Utils.ValidateIntegerRange(1, menuItems.Length),
                     $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
 
@@ -155,7 +190,7 @@
             Category category = Utils.SelectFromList(categories, (c) => c.Name,
                 $"Select a category to edit (1 - {categories.Count}):");
             string newName = Utils.ValidateInput("Enter a new name: ");
-            
+
             bool success = categoryManager.EditCategory(category.Id, newName);
 
             if (success)
@@ -180,7 +215,7 @@
             }
 
             Category category = Utils.SelectFromList(categories, (c) => c.Name,
-                $"Select a category to edit (1 - {categories.Count}):");
+                $"Select a category to edit (1 - {categories.Count}): ");
             var affectedProducts = productManager.SearchByCategory(category.Id);
 
             if (affectedProducts.Count > 0)
@@ -214,7 +249,7 @@
             {
                 Utils.DisplayErrorMessage("Something went wrong, could not delete category.");
             }
-            
+
         }
 
         static void HandleAddProduct(ProductManager productManager, CategoryManager categoryManager)
@@ -229,7 +264,7 @@
 
             Product product = productManager.AddProduct(name, price, category.Id);
 
-            Utils.DisplaySuccessMessage($"Product \"{product.Name}\n added to \"{category.Name}\".");
+            Utils.DisplaySuccessMessage($"Product \"{product.Name}\" added to \"{category.Name}\".");
         }
 
         static void HandleEditProduct(ProductManager productManager, CategoryManager categoryManager)
@@ -244,8 +279,8 @@
             }
 
             Product product = Utils.SelectFromList(
-                products, 
-                p => $"{p.Name} - {Utils.FormatPrice(p.Price)}", 
+                products,
+                p => $"{p.Name} - {Utils.FormatPrice(p.Price)}",
                 "Select product to edit: ");
 
             while (true)
@@ -270,140 +305,163 @@
                     case 2: HandleChangePrice(productManager, product); break;
                     case 3: HandleChangeCategory(productManager, product, categoryManager); break;
                     case 4: return;
-                }    
+                }
 
             }
+        }
 
-            static void HandleChangeName(ProductManager productManager, Product product)
+        static void HandleChangeName(ProductManager productManager, Product product)
+        {
+            string newName = Utils.ValidateInput("Enter a new name: ");
+            bool success = productManager.UpdateName(product.Id, newName);
+
+            if (success)
             {
-                string newName = Utils.ValidateInput("Enter a new name: ");
-                bool success = productManager.UpdateName(product.Id, newName);
+                Utils.DisplaySuccessMessage("Name updated successfully.");
+            }
+            else
+            {
+                Utils.DisplayErrorMessage("Something went wrong, name was not updated.");
+            }
+        }
 
-                if (success)
-                {
-                    Utils.DisplaySuccessMessage("Name updated successfully.");
-                }
-                else
-                {
-                    Utils.DisplayErrorMessage("Something went wrong, name was not updated.");
-                }
+        static void HandleChangePrice(ProductManager productManager, Product product)
+        {
+            decimal newPrice = Utils.ValidateInput(
+                "Enter a new price: ",
+                Utils.ValidatePositiveDecimal(),
+                "Input must be a decimal (or whole) number.");
+
+            bool success = productManager.UpdatePrice(product.Id, newPrice);
+
+            if (success)
+            {
+                Utils.DisplaySuccessMessage("Price updated successfully.");
+            }
+            else
+            {
+                Utils.DisplayErrorMessage("Something went wrong, price was not updated.");
+            }
+        }
+
+        static void HandleChangeCategory(
+            ProductManager productManager, Product product, CategoryManager categoryManager)
+        {
+            Category newCategory = SelectOrCreateCategory(categoryManager);
+            bool success = productManager.UpdateCategoryId(product.Id, newCategory.Id);
+
+            if (success)
+            {
+                Utils.DisplaySuccessMessage("Category updated successfully.");
+            }
+            else
+            {
+                Utils.DisplayErrorMessage("Something went wrong, category was not updated.");
+            }
+        }
+
+        static void HandleDeleteProduct(ProductManager productManager)
+        {
+            var products = productManager.GetAll();
+
+            if (products.Count == 0)
+            {
+                Utils.DisplayWarningMessage("No products to delete.");
             }
 
-            static void HandleChangePrice(ProductManager productManager, Product product)
+            Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}");
+
+            bool confirmed = Utils.Confirm(
+                $"Are you sure you want to delete \"{product.Name}\". This cannot be undone.");
+
+            if (!confirmed)
             {
-                decimal newPrice = Utils.ValidateInput(
-                    "Enter a new price: ",
-                    Utils.ValidatePositiveDecimal(),
-                    "Input must be a decimal (or whole) number.");
-
-                bool success = productManager.UpdatePrice(product.Id, newPrice);
-
-                if (success)
-                {
-                    Utils.DisplaySuccessMessage("Price updated successfully.");
-                }
-                else
-                {
-                    Utils.DisplayErrorMessage("Something went wrong, price was not updated.");
-                }
+                Utils.DisplayWarningMessage("Deletion cancelled.");
+                return;
             }
 
-            static void HandleChangeCategory(
-                ProductManager productManager, Product product, CategoryManager categoryManager)
-            {
-                Category newCategory = SelectOrCreateCategory(categoryManager);
-                bool success = productManager.UpdateCategoryId(product.Id, newCategory.Id);
+            bool success = productManager.RemoveProduct(product.Id);
 
-                if (success)
-                {
-                    Utils.DisplaySuccessMessage("Category updated successfully.");
-                }
-                else
-                {
-                    Utils.DisplayErrorMessage("Something went wrong, category was not updated.");
-                }
+            if (success)
+            {
+                Utils.DisplaySuccessMessage($"Product \"{product.Name}\" deleted successfully.");
+            }
+            else
+            {
+                Utils.DisplayErrorMessage("Something went wrong, could not delete product.");
+            }
+        }
+
+        static void HandleSearchProduct(ProductManager productManager, CategoryManager categoryManager)
+        {
+            string[] menuItems = ["Search by name", "Search by category"];
+
+            for (int i = 0; i < menuItems.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {menuItems[i]}");
             }
 
-            static void HandleDeleteProduct(ProductManager productManager)
+            int choice = Utils.ValidateInput(
+                $"Select option (1 - {menuItems.Length}): ",
+                Utils.ValidateIntegerRange(1, menuItems.Length),
+                $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
+
+            List<Product> results;
+
+            if (choice == 1)
             {
-                var products = productManager.GetAll();
+                string term = Utils.ValidateInput("Enter product name to search for: ");
+                results = productManager.SearchByName(term);
+            }
+            else
+            {
+                var categories = categoryManager.GetAll();
 
-                if (products.Count == 0)
+                if (categories.Count == 0)
                 {
-                    Utils.DisplayWarningMessage("No products to delete.");
-                }
-
-                Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}");
-
-                bool confirmed = Utils.Confirm(
-                    $"Are you sure you want to delete \"{product.Name}\". This cannot be undone.");
-
-                if (!confirmed)
-                {
-                    Utils.DisplayWarningMessage("Deletion cancelled.");
+                    Utils.DisplayWarningMessage("No categories exists yet.");
                     return;
                 }
 
-                bool success = productManager.RemoveProduct(product.Id);
-
-                if (success)
-                {
-                    Utils.DisplaySuccessMessage($"Product \"{product.Name}\" deleted successfully.");
-                }
-                else
-                {
-                    Utils.DisplayErrorMessage("Something went wrong, could not delete product.");
-                }
+                Category category = Utils.SelectFromList(categories, c => c.Name, "Select category: ");
+                results = productManager.SearchByCategory(category.Id);
             }
 
-            static void HandleSearchProduct(ProductManager productManager, CategoryManager categoryManager)
+            if (results.Count == 0)
             {
-                string[] menuItems = ["Search by name", "Search by category"];
+                Utils.DisplayWarningMessage("No products found.");
+                return;
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nFound {results.Count} " +
+                $"{Utils.Pluralize(results.Count, "product", "products")}");
+            foreach (var product in results)
+            {
+                Console.WriteLine($"- {product.Name} - {Utils.FormatPrice(product.Price)}");
+            }
+            Console.ResetColor();
+        }
 
-                for (int i = 0; i < menuItems.Length; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
-                }
+        static void HandleLoadData(
+            DataStore dataStore, string path, CategoryManager categoryManager, ProductManager productManager)
+        {
+            bool confirmed = Utils.Confirm("Loading will overwrite any unsaved changes. Continue?");
 
-                int choice = Utils.ValidateInput(
-                    $"Select option (1 - {menuItems.Length}): ",
-                    Utils.ValidateIntegerRange(1, menuItems.Length),
-                    $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
+            if (!confirmed)
+            {
+                Utils.DisplayWarningMessage("Load cancelled.");
+                return;
+            }
 
-                List<Product> results;
+            bool loaded = dataStore.Load(path, categoryManager, productManager);
 
-                if (choice == 1)
-                {
-                    string term = Utils.ValidateInput("Enter product name to search for: ");
-                    results = productManager.SearchByName(term);
-                }
-                else
-                {
-                    var categories = categoryManager.GetAll();
-
-                    if (categories.Count == 0)
-                    {
-                        Utils.DisplayWarningMessage("No categories exists yet.");
-                        return;
-                    }
-
-                    Category category = Utils.SelectFromList(categories, c => c.Name, "Select category: ");
-                    results = productManager.SearchByCategory(category.Id);
-                }
-
-                if (results.Count == 0)
-                {
-                    Utils.DisplayWarningMessage("No products found.");
-                    return;
-                }
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\nFound {results.Count} " +
-                    $"{Utils.Pluralize(results.Count, "product", "products")}");
-                foreach (var product in results)
-                {
-                    Console.WriteLine($"- {product.Name} - {Utils.FormatPrice(product.Price)}");
-                }
-                Console.ResetColor();
+            if (loaded)
+            {
+                Utils.DisplaySuccessMessage("Data successfully loaded.");
+            }
+            else
+            {
+                Utils.DisplayWarningMessage("No saved data found.");
             }
         }
     }

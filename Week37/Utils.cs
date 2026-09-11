@@ -68,6 +68,8 @@
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
             Console.ResetColor();
+            Console.Write("\nPress any key to continue...\n");
+            Console.ReadKey();
         }
 
         public static void DisplaySuccessMessage(string message)
@@ -75,6 +77,8 @@
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(message);
             Console.ResetColor();
+            Console.Write("\nPress any key to continue...\n");
+            Console.ReadKey();
         }
 
         public static void DisplayWarningMessage(string message)
@@ -82,6 +86,8 @@
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(message);
             Console.ResetColor();
+            Console.Write("\nPress any key to continue...\n");
+            Console.ReadKey();
         }
         public static T SelectFromList<T>(
             List<T> items,
