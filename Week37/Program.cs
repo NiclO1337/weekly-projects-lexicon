@@ -195,8 +195,26 @@
                 return;
             }
 
-            categoryManager.DeleteCategory(category.Id);
-            Utils.DisplaySuccessMessage($"Category \"{category.Name}\" deleted successfully.");
+            bool confirmed = Utils.Confirm(
+                    $"Are you sure you want to delete \"{category.Name}\". This cannot be undone.");
+
+            if (!confirmed)
+            {
+                Utils.DisplayWarningMessage("Deletion cancelled.");
+                return;
+            }
+
+            bool success = categoryManager.DeleteCategory(category.Id);
+
+            if (success)
+            {
+                Utils.DisplaySuccessMessage($"Category \"{category.Name}\" deleted successfully.");
+            }
+            else
+            {
+                Utils.DisplayErrorMessage("Something went wrong, could not delete category.");
+            }
+            
         }
 
         static void HandleAddProduct(ProductManager productManager, CategoryManager categoryManager)
@@ -316,6 +334,15 @@
                 }
 
                 Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}");
+
+                bool confirmed = Utils.Confirm(
+                    $"Are you sure you want to delete \"{product.Name}\". This cannot be undone.");
+
+                if (!confirmed)
+                {
+                    Utils.DisplayWarningMessage("Deletion cancelled.");
+                    return;
+                }
 
                 bool success = productManager.RemoveProduct(product.Id);
 

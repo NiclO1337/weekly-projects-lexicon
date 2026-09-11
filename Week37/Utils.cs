@@ -109,5 +109,15 @@
         {
             return price == Math.Floor(price) ? $"{price:F0} kr" : $"{price:F2} kr";
         }
+
+        public static bool Confirm(string message)
+        {
+            Utils.DisplayWarningMessage(message);
+            Console.WriteLine("1. Yes");
+            Console.WriteLine("2. No");
+
+            int choice = ValidateInput("Select option: ", ValidateIntegerRange(1, 2), "Invalid input, select 1 or 2.");
+            return choice == 1;
+        }
     }
 }
