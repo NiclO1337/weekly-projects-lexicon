@@ -6,7 +6,7 @@ namespace Week37
 {
     internal class AppData
     {
-        public List<Category> Categories { get; set; } = new();
-        public List<Product> Products { get; set; } = new();
+        public List<Category> Categories { get; set; } = [];
+        public List<Product> Products { get; set; } = [];
     }
 }

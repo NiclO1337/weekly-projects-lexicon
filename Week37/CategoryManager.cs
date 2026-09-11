@@ -63,5 +63,12 @@ namespace Week37
             categories = loadedCategories;
             nextId = categories.Count > 0 ? categories.Max(c => c.Id) + 1 : 1;
         }
+
+        public void ClearAll()
+        {
+            categories.Clear();
+            nextId = 1;
+        }
+
     }
 }

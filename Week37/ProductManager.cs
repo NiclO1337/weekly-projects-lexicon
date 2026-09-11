@@ -116,6 +116,12 @@ namespace Week37
             nextId = products.Count > 0 ? products.Max(p  => p.Id) + 1 : 1;
         }
 
+        public void ClearAll()
+        {
+            products.Clear();
+            nextId = 1;
+        }
+
         public decimal CalculateTotal()
         {
             return products.Sum(p => p.Price);
