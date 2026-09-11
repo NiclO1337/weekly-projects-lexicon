@@ -6,11 +6,10 @@
         {
             CategoryManager categoryManager = new();
             ProductManager productManager = new(categoryManager);
-            DataStore dataStore = new();
 
             Console.WriteLine("\r\n                                               _   __,----'~~~~~~~~~`-----.__\r\n                                        .  .    `//====-              ____,-'~`\r\n                        -.            \\_|// .   /||\\\\  `~~~~`---.___./\r\n                  ______-==.       _-~o  `\\/    |||  \\\\           _,'`\r\n            __,--'   ,=='||\\=_    ;_,_,/ _-'|-   |`\\   \\\\        ,'\r\n         _-'      ,='    | \\\\`.    '',/~7  /-   /  ||   `\\.     /\r\n       .'       ,'       |  \\\\  \\_  \"  /  /-   /   ||      \\   /\r\n      / _____  /         |     \\\\.`-_/  /|- _/   ,||       \\ /\r\n     ,-'     `-|--'~~`--_ \\     `==-/  `| \\'--===-'       _/`\r\n               '         `-|      /|    )-'\\~'      _,--\"'\r\n                           '-~^\\_/ |    |   `\\_   ,^             /\\\r\n                                /  \\     \\__   \\/~               `\\__\r\n                            _,-' _/'\\ ,-'~____-'`-/                 ``===\\\r\n                           ((->/'    \\|||' `.     `\\.  ,                _||\r\n             ./                       \\_     `\\      `~---|__i__i__\\--~'_/\r\n            <_n_                     __-^-_    `)  \\-.______________,-~'\r\n             `B'\\)                  ///,-'~`__--^-  |-------~~~~^'\r\n             /^>                           ///,--~`-\\\r\n            `  `                                       -Tua Xiong");
 
-            RunMainMenu(productManager, categoryManager, dataStore);
+            RunMainMenu(productManager, categoryManager);
 
             Console.WriteLine("\nThank you for using the Product Management System.\n\n" +
                 "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
@@ -43,7 +42,7 @@
             return menuItems.Length;
         }
 
-        static void RunMainMenu(ProductManager productManager, CategoryManager categoryManager, DataStore dataStore)
+        static void RunMainMenu(ProductManager productManager, CategoryManager categoryManager)
         {
             string dataFilePath = "data.json";
 
@@ -62,10 +61,10 @@
                     case 5: HandleDeleteProduct(productManager); break;
                     case 6: productManager.ShowStatictics(); break;
                     case 7:
-                        dataStore.Save(dataFilePath, categoryManager, productManager);
+                        DataStore.Save(dataFilePath, categoryManager, productManager);
                         Utils.DisplaySuccessMessage("Data saved successfully.");
                         break;
-                    case 8: HandleLoadData(dataStore, dataFilePath, categoryManager, productManager); break;
+                    case 8: HandleLoadData(dataFilePath, categoryManager, productManager); break;
                     //case 9: HandleResetData()
                     case 10: RunCategoryMenu(categoryManager, productManager); break;
                     case 11: return;
@@ -444,8 +443,7 @@
             Console.ResetColor();
         }
 
-        static void HandleLoadData(
-            DataStore dataStore, string path, CategoryManager categoryManager, ProductManager productManager)
+        static void HandleLoadData(string path, CategoryManager categoryManager, ProductManager productManager)
         {
             bool confirmed = Utils.Confirm("Loading will replace everything currently in memory with the contents of data file.\nAny unsaved changes will be lost. Continue?");
 
@@ -455,7 +453,7 @@
                 return;
             }
 
-            bool loaded = dataStore.Load(path, categoryManager, productManager);
+            bool loaded = DataStore.Load(path, categoryManager, productManager);
 
             if (loaded)
             {

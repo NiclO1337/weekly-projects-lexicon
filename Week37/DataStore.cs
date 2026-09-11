@@ -6,7 +6,7 @@ namespace Week37
 {
     internal class DataStore
     {
-        public void Save(string path, CategoryManager categoryManager, ProductManager productManager)
+        public static void Save(string path, CategoryManager categoryManager, ProductManager productManager)
         {
             AppData data = new()
             {
@@ -18,7 +18,7 @@ namespace Week37
             File.WriteAllText(path, json);
         }
 
-        public bool Load(string path, CategoryManager categoryManager, ProductManager productManager)
+        public static bool Load(string path, CategoryManager categoryManager, ProductManager productManager)
         {
             if (!File.Exists(path))
             {
