@@ -4,20 +4,15 @@ using System.Text;
 
 namespace Week37
 {
-    internal class ProductManager
+    internal class ProductManager(CategoryManager categoryManager)
     {
         private List<Product> products = [];
         private int nextId = 1;
-        private CategoryManager categoryManager;
-
-        public ProductManager(CategoryManager categoryManager)
-        {
-            this.categoryManager = categoryManager;
-        }
+        private readonly CategoryManager categoryManager = categoryManager;
 
         public Product AddProduct(string name, decimal price, int categoryId)
         {
-            Product product = new Product(nextId, name, price, categoryId);
+            Product product = new(nextId, name, price, categoryId);
             products.Add(product);
             nextId++;
             return product;

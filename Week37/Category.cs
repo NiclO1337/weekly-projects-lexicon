@@ -4,15 +4,9 @@ using System.Text;
 
 namespace Week37
 {
-    internal class Category
+    internal class Category(int id, string name)
     {     
-        public int Id {  get; set; }
-        public string Name { get; set; }
-
-        public Category(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }        
+        public int Id {  get; set; } = id;
+        public string Name { get; set; } = name;               
     }
 }

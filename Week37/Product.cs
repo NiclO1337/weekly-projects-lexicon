@@ -4,19 +4,11 @@ using System.Text;
 
 namespace Week37
 {
-    internal class Product
+    internal class Product(int id, string name, decimal price, int categoryId)
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int CategoryId { get; set; }
-
-        public Product(int id, string name, decimal price, int categoryId)
-        {
-            Id = id;
-            Name = name;
-            Price = price;
-            CategoryId = categoryId;
-        }
+        public int Id { get; set; } = id;
+        public string Name { get; set; } = name;
+        public decimal Price { get; set; } = price;
+        public int CategoryId { get; set; } = categoryId;
     }
 }
