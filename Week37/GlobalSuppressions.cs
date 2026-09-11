@@ -5,5 +5,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0305:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~M:Week37.ProductManager.SearchByCategory(System.Int32)~System.Collections.Generic.List{Week37.Product}")]
-[assembly: SuppressMessage("Style", "IDE0305:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~M:Week37.ProductManager.SearchByName(System.String)~System.Collections.Generic.List{Week37.Product}")]
+[assembly: SuppressMessage("Style", "IDE0305:Simplify collection initialization", Justification = "Hurts readability", Scope = "member", Target = "~M:Week37.ProductManager.SearchByCategory(System.Int32)~System.Collections.Generic.List{Week37.Product}")]
+[assembly: SuppressMessage("Style", "IDE0305:Simplify collection initialization", Justification = "Hurts readability", Scope = "member", Target = "~M:Week37.ProductManager.SearchByName(System.String)~System.Collections.Generic.List{Week37.Product}")]
