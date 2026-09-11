@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Week37
 {
     internal class DataStore
     {
+        private static readonly JsonSerializerOptions options = new() { WriteIndented = true };
+
         public static void Save(string path, CategoryManager categoryManager, ProductManager productManager)
         {
             AppData data = new()
@@ -14,7 +17,7 @@ namespace Week37
                 Products = productManager.GetAll(),
             };
 
-            string json = System.Text.Json.JsonSerializer.Serialize(data, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            string json = JsonSerializer.Serialize(data, options);
             File.WriteAllText(path, json);
         }
 
@@ -31,7 +34,7 @@ namespace Week37
                 return false; 
             }
 
-            AppData? data = System.Text.Json.JsonSerializer.Deserialize<AppData>(json);
+            AppData? data = JsonSerializer.Deserialize<AppData>(json, options);
             if (data is null)
             {
                 return false;
