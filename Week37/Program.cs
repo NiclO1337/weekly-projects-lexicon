@@ -4,9 +4,11 @@
     {
         static void Main(string[] args)
         {
-            CategoryManager categoryManager = new();
-            categoryManager.AddCategory("Fruit");
-            SelectOrCreateCategory(categoryManager);
+            //CategoryManager categoryManager = new();
+            //categoryManager.AddCategory("Fruit");
+            //SelectOrCreateCategory(categoryManager);
+            decimal price = 19.00m;
+            Console.WriteLine(Math.Floor(price) == price);
         }
         static void DisplayMainMenu()
         {
@@ -126,7 +128,8 @@
 
                 int choice = Utils.ValidateInput(
                     $"Select option (1 - {menuItems.Length}): ", 
-                    Utils.ValidateIntegerRange(1, menuItems.Length));
+                    Utils.ValidateIntegerRange(1, menuItems.Length),
+                    $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
 
                 switch (choice)
                 {
@@ -194,6 +197,137 @@
 
             categoryManager.DeleteCategory(category.Id);
             Utils.DisplaySuccessMessage($"Category \"{category.Name}\" deleted successfully.");
+        }
+
+        static void HandleAddProduct(ProductManager productManager, CategoryManager categoryManager)
+        {
+            string name = Utils.ValidateInput("Enter product name: ");
+            decimal price = Utils.ValidateInput(
+                "Enter product price: ",
+                Utils.ValidatePositiveDecimal(),
+                "Input must be a decimal (or whole) number.");
+
+            Category category = SelectOrCreateCategory(categoryManager);
+
+            Product product = productManager.AddProduct(name, price, category.Id);
+
+            Utils.DisplaySuccessMessage($"Product \"{product.Name}\n added to \"{category.Name}\".");
+        }
+
+        static void HandleEditProduct(ProductManager productManager, CategoryManager categoryManager)
+        {
+            var products = productManager.GetAll();
+
+            Console.WriteLine("\n===== PRODUCTS =====\n");
+            if (products.Count == 0)
+            {
+                Utils.DisplayWarningMessage("No products to edit.");
+                return;
+            }
+
+            Product product = Utils.SelectFromList(
+                products, 
+                p => $"{p.Name} - {Utils.FormatPrice(p.Price)}", 
+                "Select product to edit: ");
+
+            while (true)
+            {
+                Console.WriteLine($"\nEditing: {product.Name}");
+                string[] menuItems = ["Change name", "Change price", "Change category", "Done"];
+
+                for (int i = 0; i < menuItems.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
+                }
+
+                int choice = Utils.ValidateInput(
+                    $"Select option (1 - {menuItems.Length}):",
+                    Utils.ValidateIntegerRange(1, menuItems.Length),
+                    $"Invalid input, please enter a number between 1 and {menuItems.Length}."
+                    );
+
+                switch (choice)
+                {
+                    case 1: HandleChangeName(productManager, product); break;
+                    case 2: HandleChangePrice(productManager, product); break;
+                    case 3: HandleChangeCategory(productManager, product, categoryManager); break;
+                    case 4: return;
+                }    
+
+            }
+
+            static void HandleChangeName(ProductManager productManager, Product product)
+            {
+                string newName = Utils.ValidateInput("Enter a new name: ");
+                bool success = productManager.UpdateName(product.Id, newName);
+
+                if (success)
+                {
+                    Utils.DisplaySuccessMessage("Name updated successfully.");
+                }
+                else
+                {
+                    Utils.DisplayErrorMessage("Something went wrong, name was not updated.");
+                }
+            }
+
+            static void HandleChangePrice(ProductManager productManager, Product product)
+            {
+                decimal newPrice = Utils.ValidateInput(
+                    "Enter a new price: ",
+                    Utils.ValidatePositiveDecimal(),
+                    "Input must be a decimal (or whole) number.");
+
+                bool success = productManager.UpdatePrice(product.Id, newPrice);
+
+                if (success)
+                {
+                    Utils.DisplaySuccessMessage("Price updated successfully.");
+                }
+                else
+                {
+                    Utils.DisplayErrorMessage("Something went wrong, price was not updated.");
+                }
+            }
+
+            static void HandleChangeCategory(
+                ProductManager productManager, Product product, CategoryManager categoryManager)
+            {
+                Category newCategory = SelectOrCreateCategory(categoryManager);
+                bool success = productManager.UpdateCategoryId(product.Id, newCategory.Id);
+
+                if (success)
+                {
+                    Utils.DisplaySuccessMessage("Category updated successfully.");
+                }
+                else
+                {
+                    Utils.DisplayErrorMessage("Something went wrong, category was not updated.");
+                }
+            }
+
+            static void HandleDeleteProduct(ProductManager productManager)
+            {
+                var products = productManager.GetAll();
+
+                if (products.Count == 0)
+                {
+                    Utils.DisplayWarningMessage("No products to delete.");
+                }
+
+                Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}");
+
+                bool success = productManager.RemoveProduct(product.Id);
+
+                if (success)
+                {
+                    Utils.DisplaySuccessMessage($"Product \"{product.Name}\" deleted successfully.");
+                }
+                else
+                {
+                    Utils.DisplayErrorMessage("Something went wrong, could not delete product.");
+                }
+            }
         }
     }
 }
