@@ -75,7 +75,7 @@ namespace Week37
         {
             if (products.Count == 0)
             {
-                Console.WriteLine("No products added yet.");
+                Utils.DisplayWarningMessage("No products added yet.");
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace Week37
         {
             if (products.Count == 0)
             {
-                Console.WriteLine("No products yet - add products to show statistics.");
+                Utils.DisplayWarningMessage("No products yet - add products to show statistics.");
                 return;
             }
 

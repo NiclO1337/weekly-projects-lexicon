@@ -355,6 +355,56 @@
                     Utils.DisplayErrorMessage("Something went wrong, could not delete product.");
                 }
             }
+
+            static void HandleSearchProduct(ProductManager productManager, CategoryManager categoryManager)
+            {
+                string[] menuItems = ["Search by name", "Search by category"];
+
+                for (int i = 0; i < menuItems.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
+                }
+
+                int choice = Utils.ValidateInput(
+                    $"Select option (1 - {menuItems.Length}): ",
+                    Utils.ValidateIntegerRange(1, menuItems.Length),
+                    $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
+
+                List<Product> results;
+
+                if (choice == 1)
+                {
+                    string term = Utils.ValidateInput("Enter product name to search for: ");
+                    results = productManager.SearchByName(term);
+                }
+                else
+                {
+                    var categories = categoryManager.GetAll();
+
+                    if (categories.Count == 0)
+                    {
+                        Utils.DisplayWarningMessage("No categories exists yet.");
+                        return;
+                    }
+
+                    Category category = Utils.SelectFromList(categories, c => c.Name, "Select category: ");
+                    results = productManager.SearchByCategory(category.Id);
+                }
+
+                if (results.Count == 0)
+                {
+                    Utils.DisplayWarningMessage("No products found.");
+                    return;
+                }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\nFound {results.Count} " +
+                    $"{Utils.Pluralize(results.Count, "product", "products")}");
+                foreach (var product in results)
+                {
+                    Console.WriteLine($"- {product.Name} - {Utils.FormatPrice(product.Price)}");
+                }
+                Console.ResetColor();
+            }
         }
     }
 }
