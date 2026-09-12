@@ -20,7 +20,10 @@
 
             Console.WriteLine("\nThe hoard is secure and the ledger is closed... for now.\n" +
                 "Farewell, treasure keeper!\n\n" +
-                "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
+                "                        \\`-\\`-._\r\n                         \\` )`. `-.__      ,\r\n      '' , . _       _,-._;'_,-`__,-'    ,/\r\n     : `. ` , _' :- '--'._ ' `------._,-;'\r\n      `- ,`- '            `--..__,,---'   hh");
+
+
+
         }
         static int DisplayMainMenu()
         {
@@ -98,7 +101,7 @@
                 }
 
                 int choice = Utils.ValidateInput(
-                    $"Select category (1 - {categories.Count}):",
+                    $"Select category (1 - {categories.Count}): ",
                     Utils.ValidateIntegerRange(0, categories.Count),
                     $"Invalid input, please enter a number between 1 and {categories.Count}.");
 
