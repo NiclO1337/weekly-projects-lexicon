@@ -1,7 +1,10 @@
-﻿namespace Week37
+﻿using System.Globalization;
+
+namespace Week37
 {
     internal class Utils
     {
+        public const int MaxNameLength = 32;
         public static string ValidateInput(string prompt)
         {
             while (true)
@@ -9,11 +12,19 @@
                 Console.Write("\n" + prompt);
                 string? input = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(input))
+                if (string.IsNullOrWhiteSpace(input))
                 {
-                    return input;
+                    DisplayErrorMessage("Input can not be empty.");
+                    continue;
                 }
-                DisplayErrorMessage("Input can not be empty.");
+
+                if (input.Length > MaxNameLength)
+                {
+                    DisplayErrorMessage($"Input can be maximum {MaxNameLength} characters.");
+                    continue;
+                }
+
+                return input;
             }
         }
 
@@ -68,8 +79,6 @@
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
             Console.ResetColor();
-            Console.Write("\nPress any key to continue...\n");
-            Console.ReadKey();
         }
 
         public static void DisplaySuccessMessage(string message)
@@ -77,8 +86,6 @@
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(message);
             Console.ResetColor();
-            Console.Write("\nPress any key to continue...\n");
-            Console.ReadKey();
         }
 
         public static void DisplayWarningMessage(string message)
@@ -86,8 +93,6 @@
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(message);
             Console.ResetColor();
-            Console.Write("\nPress any key to continue...\n");
-            Console.ReadKey();
         }
         public static T SelectFromList<T>(
             List<T> items,
@@ -122,7 +127,7 @@
             Console.WriteLine("1. Yes");
             Console.WriteLine("2. No");
 
-            int choice = ValidateInput("Select option: ", ValidateIntegerRange(1, 2), "Invalid input, select 1 or 2.");
+            int choice = ValidateInput("Select option (1 - 2): ", ValidateIntegerRange(1, 2), "Invalid input, select 1 or 2.");
             return choice == 1;
         }
 
