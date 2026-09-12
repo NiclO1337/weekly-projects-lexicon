@@ -18,9 +18,9 @@
 
             Utils.Heading("Closing application...");
 
-            Console.WriteLine("\nThe hoard is secure and the ledger is closed... for now.\n" +
+            Console.WriteLine("The hoard is secure and the ledger is closed... for now.\n\n" +
                 "Farewell, treasure keeper!\n\n" +
-                "                        \\`-\\`-._\r\n                         \\` )`. `-.__      ,\r\n      '' , . _       _,-._;'_,-`__,-'    ,/\r\n     : `. ` , _' :- '--'._ ' `------._,-;'\r\n      `- ,`- '            `--..__,,---'   hh");
+                "                        \\`-\\`-._\r\n                         \\` )`. `-.__      ,\r\n      '' , . _       _,-._;'_,-`__,-'    ,/\r\n     : `. ` , _' :- '--'._ ' `------._,-;'\r\n      `- ,`- '            `--..__,,---'   hh\n\n");
 
 
 
@@ -234,8 +234,8 @@
 
             if (affectedProducts.Count > 0)
             {
-                Utils.DisplayErrorMessage($"Cannot delete '{category.Name}': {affectedProducts.Count} " +
-                    $"{Utils.Pluralize(affectedProducts.Count, "product", "products")} use it");
+                Utils.DisplayErrorMessage($"Cannot delete \"{category.Name}\" {affectedProducts.Count} " +
+                    $"{Utils.Pluralize(affectedProducts.Count, "product", "products")} use it:");
 
                 foreach (var product in affectedProducts)
                 {
@@ -272,9 +272,9 @@
 
             string name = Utils.ValidateInput("Enter product name: ");
             decimal price = Utils.ValidateInput(
-                "Enter product price: ",
+                "Enter product price (e.g. 19,90): ",
                 Utils.ValidatePositiveDecimal(),
-                "Input must be a decimal (or whole) number.");
+                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
 
             Category category = SelectOrCreateCategory(categoryManager);
 
@@ -310,7 +310,7 @@
                 }
 
                 int choice = Utils.ValidateInput(
-                    $"Select option (1 - {menuItems.Length}):",
+                    $"Select option (1 - {menuItems.Length}): ",
                     Utils.ValidateIntegerRange(1, menuItems.Length),
                     $"Invalid input, please enter a number between 1 and {menuItems.Length}."
                     );
@@ -348,9 +348,9 @@
             Utils.Heading("Change price");
 
             decimal newPrice = Utils.ValidateInput(
-                "Enter a new price: ",
+                "Enter new price (e.g. 19,90): ",
                 Utils.ValidatePositiveDecimal(),
-                "Input must be a decimal (or whole) number.");
+                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
 
             bool success = productManager.UpdatePrice(product.Id, newPrice);
 
