@@ -283,7 +283,7 @@
 
             string name = Utils.ValidateInput("Enter product name: ");
             decimal price = Utils.ValidateInput(
-                "Enter product price (e.g. 19,90): ",
+                "Enter product price (positive number e.g. 19,90): ",
                 Utils.ValidatePositiveDecimal(),
                 "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
 
@@ -362,7 +362,7 @@
             Utils.Heading("Change price");
 
             decimal newPrice = Utils.ValidateInput(
-                "Enter new price (e.g. 19,90): ",
+                "Enter new price (positive number e.g. 19,90): ",
                 Utils.ValidatePositiveDecimal(),
                 "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
 

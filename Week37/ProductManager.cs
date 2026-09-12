@@ -69,16 +69,56 @@ namespace Week37
         public void ShowProducts()
         {
             Utils.Heading("Show products");
-            
+
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products added yet.");
                 return;
             }
 
+            List<Product> sorted = products.OrderBy(p => p.Price).ToList();
+
+            while (true)
+            {
+                DisplayProductTable(sorted);
+
+                Console.WriteLine();
+                string[] menuItems =
+                [
+                    "Sort: Price Low to High",
+                    "Sort: Price High to Low",
+                    "Sort: By Category",
+                    "Back to main menu",
+                ];
+
+                for (int i = 0; i < menuItems.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
+                }
+
+                int choice = Utils.ValidateInput(
+                    $"Select option (1 - {menuItems.Length}): ",
+                    Utils.ValidateIntegerRange(1, menuItems.Length),
+                    $"Invalid input, please enter a number between 1 and {menuItems.Length}.");
+
+                switch (choice)
+                {
+                    case 1: sorted = products.OrderBy(p => p.Price).ToList(); break;
+                    case 2: sorted = products.OrderByDescending(p => p.Price).ToList(); break;
+                    case 3:
+                        sorted = products.
+                            OrderBy(p => categoryManager.GetById(p.CategoryId)?.Name ?? "Unknown").ToList();
+                        break;
+                    case 4: OutputTracker.HasWritten = false; return;
+                }
+            }
+        }
+
+        private void DisplayProductTable(List<Product> list)
+        {
             int extraPadding = 1;
             int idWidth = Math.Max("ID".Length, products.Max(p => p.Id.ToString().Length)) + extraPadding;
-            int nameWidth = Math.Max("Name".Length, 
+            int nameWidth = Math.Max("Name".Length,
                 Math.Min(products.Max(p => p.Name.Length), Utils.MaxNameLength)) + extraPadding;
             int priceWidth = Math.Max("Price".Length,
                 products.Max(p => Utils.FormatPrice(p.Price).Length)) + extraPadding;
@@ -90,7 +130,7 @@ namespace Week37
             Console.WriteLine(header);
             Console.WriteLine(new string('-', header.Length));
 
-            foreach (Product product in products)
+            foreach (Product product in list)
             {
                 Category? category = categoryManager.GetById(product.CategoryId);
                 string categoryName = category?.Name ?? "Unknown";
