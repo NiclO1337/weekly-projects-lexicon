@@ -9,16 +9,25 @@
 
             Console.WriteLine("\r\n                                               _   __,----'~~~~~~~~~`-----.__\r\n                                        .  .    `//====-              ____,-'~`\r\n                        -.            \\_|// .   /||\\\\  `~~~~`---.___./\r\n                  ______-==.       _-~o  `\\/    |||  \\\\           _,'`\r\n            __,--'   ,=='||\\=_    ;_,_,/ _-'|-   |`\\   \\\\        ,'\r\n         _-'      ,='    | \\\\`.    '',/~7  /-   /  ||   `\\.     /\r\n       .'       ,'       |  \\\\  \\_  \"  /  /-   /   ||      \\   /\r\n      / _____  /         |     \\\\.`-_/  /|- _/   ,||       \\ /\r\n     ,-'     `-|--'~~`--_ \\     `==-/  `| \\'--===-'       _/`\r\n               '         `-|      /|    )-'\\~'      _,--\"'\r\n                           '-~^\\_/ |    |   `\\_   ,^             /\\\r\n                                /  \\     \\__   \\/~               `\\__\r\n                            _,-' _/'\\ ,-'~____-'`-/                 ``===\\\r\n                           ((->/'    \\|||' `.     `\\.  ,                _||\r\n             ./                       \\_     `\\      `~---|__i__i__\\--~'_/\r\n            <_n_                     __-^-_    `)  \\-.______________,-~'\r\n             `B'\\)                  ///,-'~`__--^-  |-------~~~~^'\r\n             /^>                           ///,--~`-\\\r\n            `  `                                       -Tua Xiong");
 
+            Console.WriteLine("\nWelcome to Dragon's hoard - guard your products well.\n");
+            Console.WriteLine("A treasure-keeper's ledger for tracking your wares:");
+            Console.WriteLine("add new stock to the hoard, search the vault, edit or");
+            Console.WriteLine("retire old items, and check your riches at a glance.\n");
+
             RunMainMenu(productManager, categoryManager);
 
-            Console.WriteLine("\nThank you for using the Product Management System.\n\n" +
+            Console.WriteLine("\nThe hoard is secure and the ledger is closed... for now.\n" +
+                "Farewell, treasure keeper!\n\n" +
                 "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
         }
         static int DisplayMainMenu()
         {
-            Console.WriteLine("\n==============================");
-            Console.WriteLine("   PRODUCT MANAGEMENT SYSTEM");
-            Console.WriteLine("==============================\n");
+            Console.Write("\nPress any key to continue to main menu...");
+            Console.ReadKey();
+
+            Console.WriteLine("\n\n================================================");
+            Console.WriteLine("   DRAGON'S HOARD - PRODUCT MANAGEMENT SYSTEM");
+            Console.WriteLine("================================================\n");
 
             string[] menuItems =
             [
@@ -60,12 +69,9 @@
                     case 4: HandleEditProduct(productManager, categoryManager); break;
                     case 5: HandleDeleteProduct(productManager); break;
                     case 6: productManager.ShowStatictics(); break;
-                    case 7:
-                        DataStore.Save(dataFilePath, categoryManager, productManager);
-                        Utils.DisplaySuccessMessage("Data saved successfully.");
-                        break;
+                    case 7: HandleSaveData(dataFilePath, categoryManager, productManager); break;
                     case 8: HandleLoadData(dataFilePath, categoryManager, productManager); break;
-                    //case 9: HandleResetData()
+                    case 9: HandleResetData(productManager, categoryManager); break;
                     case 10: RunCategoryMenu(categoryManager, productManager); break;
                     case 11: return;
                 }
@@ -105,6 +111,7 @@
 
         static Category? HandleAddCategory(CategoryManager categoryManager)
         {
+            Utils.Heading("Add Category");
             string name = Utils.ValidateInput("Enter category name: ");
             Category? category = categoryManager.AddCategory(name);
 
@@ -136,7 +143,7 @@
             {
                 var categories = categoryManager.GetAll();
 
-                Console.WriteLine("\n===== CATEGORIES =====\n");
+                Utils.Heading("Categories");
                 if (categories.Count == 0)
                 {
                     Utils.DisplayWarningMessage("No categories exist yet.");
@@ -181,7 +188,7 @@
         {
             var categories = categoryManager.GetAll();
 
-            Console.WriteLine("\n===== CATEGORIES =====\n");
+            Utils.Heading("Categories");
             if (categories.Count == 0)
             {
                 Utils.DisplayWarningMessage("No categories to edit.");
@@ -208,7 +215,7 @@
         {
             var categories = categoryManager.GetAll();
 
-            Console.WriteLine("\n===== CATEGORIES =====\n");
+            Utils.Heading("Categories");
             if (categories.Count == 0)
             {
                 Utils.DisplayWarningMessage("No categories to delete.");
@@ -255,6 +262,8 @@
 
         static void HandleAddProduct(ProductManager productManager, CategoryManager categoryManager)
         {
+            Utils.Heading("Add product");
+
             string name = Utils.ValidateInput("Enter product name: ");
             decimal price = Utils.ValidateInput(
                 "Enter product price: ",
@@ -272,7 +281,7 @@
         {
             var products = productManager.GetAll();
 
-            Console.WriteLine("\n===== PRODUCTS =====\n");
+            Utils.Heading("Edit product");
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products to edit.");
@@ -282,7 +291,7 @@
             Product product = Utils.SelectFromList(
                 products,
                 p => $"{p.Name} - {Utils.FormatPrice(p.Price)}",
-                "Select product to edit: ");
+                $"Select product to edit (1 - {products.Count}): ");
 
             while (true)
             {
@@ -313,6 +322,8 @@
 
         static void HandleChangeName(ProductManager productManager, Product product)
         {
+            Utils.Heading("Change name");
+
             string newName = Utils.ValidateInput("Enter a new name: ");
             bool success = productManager.UpdateName(product.Id, newName);
 
@@ -328,6 +339,8 @@
 
         static void HandleChangePrice(ProductManager productManager, Product product)
         {
+            Utils.Heading("Change price");
+
             decimal newPrice = Utils.ValidateInput(
                 "Enter a new price: ",
                 Utils.ValidatePositiveDecimal(),
@@ -348,6 +361,8 @@
         static void HandleChangeCategory(
             ProductManager productManager, Product product, CategoryManager categoryManager)
         {
+            Utils.Heading("Change category");
+
             Category newCategory = SelectOrCreateCategory(categoryManager);
             bool success = productManager.UpdateCategoryId(product.Id, newCategory.Id);
 
@@ -363,6 +378,8 @@
 
         static void HandleDeleteProduct(ProductManager productManager)
         {
+            Utils.Heading("Delete product");
+
             var products = productManager.GetAll();
 
             if (products.Count == 0)
@@ -395,6 +412,8 @@
 
         static void HandleSearchProduct(ProductManager productManager, CategoryManager categoryManager)
         {
+            Utils.Heading("Search product");
+
             string[] menuItems = ["Search by name", "Search by category"];
 
             for (int i = 0; i < menuItems.Length; i++)
@@ -424,7 +443,8 @@
                     return;
                 }
 
-                Category category = Utils.SelectFromList(categories, c => c.Name, "Select category: ");
+                Category category = Utils.SelectFromList(
+                    categories, c => c.Name, $"Select category (1 - {categories.Count}): ");
                 results = productManager.SearchByCategory(category.Id);
             }
 
@@ -438,13 +458,31 @@
                 $"{Utils.Pluralize(results.Count, "product", "products")}");
             foreach (var product in results)
             {
-                Console.WriteLine($"- {product.Name} - {Utils.FormatPrice(product.Price)}");
+                Console.WriteLine($"{product.Name} - {Utils.FormatPrice(product.Price)}");
             }
             Console.ResetColor();
         }
 
+        static void HandleSaveData(string path, CategoryManager categoryManager, ProductManager productManager)
+        {
+            Utils.Heading("Save data");
+
+            bool confirmed = Utils.Confirm("This will overwrite any previously saved data. Continue?");
+
+            if (!confirmed)
+            {
+                Utils.DisplayWarningMessage("Save cancelled.");
+                return;
+            }
+
+            DataStore.Save(path, categoryManager, productManager);
+            Utils.DisplaySuccessMessage("Data saved successfully.");
+        }
+
         static void HandleLoadData(string path, CategoryManager categoryManager, ProductManager productManager)
         {
+            Utils.Heading("Load data");
+
             bool confirmed = Utils.Confirm("Loading will replace everything currently in memory with the contents of data file.\nAny unsaved changes will be lost. Continue?");
 
             if (!confirmed)
@@ -467,6 +505,8 @@
 
         static void HandleResetData(ProductManager productManager, CategoryManager categoryManager)
         {
+            Utils.Heading("Reset data");
+
             string[] menuItems = ["Reset products only", "Reset products and categories", "Cancel"];
 
             for (int i = 0; i < menuItems.Length; i++)
@@ -485,7 +525,7 @@
             }
 
             string target = choice == 1 ? "all products" : "all products and categories";
-            string message = 
+            string message =
                 $"This will clear {target} from memory. This will NOT affect data.json - if you have saved " +
                 "data, you can reload it afterward with \"Load Data\" from the main menu. Continue?";
 

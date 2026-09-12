@@ -125,5 +125,11 @@
             int choice = ValidateInput("Select option: ", ValidateIntegerRange(1, 2), "Invalid input, select 1 or 2.");
             return choice == 1;
         }
+
+        public static void Heading(string message)
+        {
+            string title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.ToLower());
+            Console.WriteLine($"\n===== {title} =====\n");
+        }
     }
 }
