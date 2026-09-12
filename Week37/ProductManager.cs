@@ -68,18 +68,38 @@ namespace Week37
 
         public void ShowProducts()
         {
+            Utils.Heading("Show products");
+            
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products added yet.");
                 return;
             }
 
+            int extraPadding = 1;
+            int idWidth = Math.Max("ID".Length, products.Max(p => p.Id.ToString().Length)) + extraPadding;
+            int nameWidth = Math.Max("Name".Length, 
+                Math.Min(products.Max(p => p.Name.Length), Utils.MaxNameLength)) + extraPadding;
+            int priceWidth = Math.Max("Price".Length,
+                products.Max(p => Utils.FormatPrice(p.Price).Length)) + extraPadding;
+            int categoryWidth = Math.Max("Category".Length,
+                products.Max(p => (categoryManager.GetById(p.CategoryId)?.Name ?? "Unknown").Length));
+
+            string header = $"{"ID".PadRight(idWidth)} | {"Name".PadRight(nameWidth)} | " +
+                $"{"Price".PadRight(priceWidth)} | {"Category".PadRight(categoryWidth)}";
+            Console.WriteLine(header);
+            Console.WriteLine(new string('-', header.Length));
+
             foreach (Product product in products)
             {
                 Category? category = categoryManager.GetById(product.CategoryId);
                 string categoryName = category?.Name ?? "Unknown";
+                string id = product.Id.ToString().PadRight(idWidth);
+                string name = product.Name.PadRight(nameWidth);
+                string price = Utils.FormatPrice(product.Price).PadRight(priceWidth);
+                string categoryText = categoryName.PadRight(categoryWidth);
                 Console.WriteLine(
-                    $"{product.Id} {product.Name} | {Utils.FormatPrice(product.Price)} | {categoryName} ");
+                    $"{id} | {name} | {price} | {categoryName} ");
             }
         }
 
@@ -124,6 +144,8 @@ namespace Week37
 
         public void ShowStatictics()
         {
+            Utils.Heading("Show statistics");
+            
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products yet - add products to show statistics.");
