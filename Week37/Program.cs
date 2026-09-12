@@ -4,6 +4,8 @@
     {
         static void Main()
         {
+            OutputTracker.Install();
+
             CategoryManager categoryManager = new();
             ProductManager productManager = new(categoryManager);
 
@@ -18,17 +20,20 @@
 
             Utils.Heading("Closing application...");
 
-            Console.WriteLine("The hoard is secure and the ledger is closed... for now.\n\n" +
-                "Farewell, treasure keeper!\n\n" +
+            Console.WriteLine("The hoard is secure and the ledger is closed... for now.\n" +
+                "Farewell, treasure keeper!\n\n\n" +
                 "                        \\`-\\`-._\r\n                         \\` )`. `-.__      ,\r\n      '' , . _       _,-._;'_,-`__,-'    ,/\r\n     : `. ` , _' :- '--'._ ' `------._,-;'\r\n      `- ,`- '            `--..__,,---'   hh\n\n");
 
 
 
         }
-        static int DisplayMainMenu()
+        static int DisplayMainMenu(bool pauseFirst)
         {
-            Console.Write("\nPress any key to continue to main menu...");
-            Console.ReadKey();
+            if (pauseFirst)
+            {    
+                Console.Write("\nPress any key to continue to main menu...");
+                Console.ReadKey();
+            }
 
             Console.WriteLine("\n\n================================================");
             Console.WriteLine("   DRAGON'S HOARD - PRODUCT MANAGEMENT SYSTEM");
@@ -59,12 +64,18 @@
         static void RunMainMenu(ProductManager productManager, CategoryManager categoryManager)
         {
             string dataFilePath = "data.json";
+            OutputTracker.HasWritten = true; // pause once, right after the intro text
 
             while (true)
             {
-                int optionCount = DisplayMainMenu();
+                bool hasNewOutput = OutputTracker.HasWritten;
+                int optionCount = DisplayMainMenu(hasNewOutput);
+
                 int choice = Utils.ValidateInput($"Select option (1 - {optionCount}): ",
                     Utils.ValidateIntegerRange(1, optionCount));
+
+                // clear the menu+prompt noise; only the handler´s output counts now
+                OutputTracker.HasWritten = false; 
 
                 switch (choice)
                 {
@@ -184,7 +195,7 @@
                     case 1: AddCategoryLoop(categoryManager); break;
                     case 2: HandleEditCategory(categoryManager); break;
                     case 3: HandleDeleteCategory(categoryManager, productManager); break;
-                    case 4: return;
+                    case 4: OutputTracker.HasWritten = false; return;
                 }
             }
         }
@@ -320,7 +331,10 @@
                     case 1: HandleChangeName(productManager, product); break;
                     case 2: HandleChangePrice(productManager, product); break;
                     case 3: HandleChangeCategory(productManager, product, categoryManager); break;
-                    case 4: return;
+                    case 4: 
+                        OutputTracker.HasWritten = false; 
+                        Utils.DisplaySuccessMessage("Saving any potential changes..."); 
+                        return;
                 }
 
             }
