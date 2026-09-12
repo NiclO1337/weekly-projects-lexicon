@@ -36,15 +36,15 @@
 
             string[] menuItems =
             [
-                "Add Product",
-                "Show Products",
-                "Search Product",
-                "Edit Product",
-                "Delete Product",
-                "Statistics",
-                "Save Data",
-                "Load Data",
-                "Reset Data",
+                " Add Product",
+                " Show Products",
+                " Search Product",
+                " Edit Product",
+                " Delete Product",
+                " Statistics",
+                " Save Data",
+                " Load Data",
+                " Reset Data",
                 "Manage Categories",
                 "Exit",
             ];
