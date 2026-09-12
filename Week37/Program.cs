@@ -16,6 +16,8 @@
 
             RunMainMenu(productManager, categoryManager);
 
+            Utils.Heading("Closing application...");
+
             Console.WriteLine("\nThe hoard is secure and the ledger is closed... for now.\n" +
                 "Farewell, treasure keeper!\n\n" +
                 "      _.-'''''-._\r\n    .'  _     _  '.\r\n   /   (_)   (_)   \\\r\n  |  ,           ,  |   Have a nice day!\r\n  |  \\`.       .`/  |\r\n   \\  '.`'\"\"'\"`.'  /\r\n    '.  `'---'`  .'\r\njgs   '-._____.-'\r\n");
@@ -73,7 +75,7 @@
                     case 8: HandleLoadData(dataFilePath, categoryManager, productManager); break;
                     case 9: HandleResetData(productManager, categoryManager); break;
                     case 10: RunCategoryMenu(categoryManager, productManager); break;
-                    case 11: return;
+                    case 11: HandleExit(dataFilePath, categoryManager, productManager); return;
                 }
             }
         }
@@ -196,7 +198,8 @@
             }
 
             Category category = Utils.SelectFromList(categories, (c) => c.Name,
-                $"Select a category to edit (1 - {categories.Count}):");
+                $"Select a category to edit (1 - {categories.Count}): ");
+
             string newName = Utils.ValidateInput("Enter a new name: ");
 
             bool success = categoryManager.EditCategory(category.Id, newName);
@@ -545,6 +548,23 @@
             }
 
             Utils.DisplaySuccessMessage("Reset completed successfully. Your saved file (if any) is untouched.");
+        }
+
+        static void HandleExit(string path, CategoryManager categoryManager, ProductManager productManager)
+        {
+            Utils.Heading("Exit");
+
+            bool save = Utils.Confirm("Would you like to save before exiting?");
+
+            if (save)
+            {
+                DataStore.Save(path, categoryManager, productManager);
+                Utils.DisplaySuccessMessage("Data saved successfully.");
+            }
+            else
+            {
+                Utils.DisplayWarningMessage("Exiting without saving.");
+            }
         }
     }
 }
