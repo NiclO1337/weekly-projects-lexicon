@@ -4,7 +4,17 @@ namespace Week37
 {
     internal class Utils
     {
+        // Explicit Swedish style format: comma decimal, space thousand separator.
+        // Not tied to CultureInto.CurrentCulture, so behaviour is identical on every machine.
+        private static readonly NumberFormatInfo SwedishNumberFormat = new()
+        {
+            NumberDecimalSeparator = ",",
+            NumberGroupSeparator = " ",
+            NumberDecimalDigits = 2,
+        };
+
         public const int MaxNameLength = 32;
+
         public static string ValidateInput(string prompt)
         {
             while (true)
@@ -66,10 +76,19 @@ namespace Week37
 
         public static Func<string, (bool isValid, decimal result)> ValidatePositiveDecimal()
         {
+            const decimal MaxPrice = 150_000_000m;
+
             return input =>
             {
-                if (decimal.TryParse(input, out decimal value) && value >= 0)
+                if (decimal.TryParse(
+                    input,
+                    NumberStyles.Number, // Allows optional thousand separators + decimal point/comma
+                    SwedishNumberFormat,
+                    out decimal value)
+                && value >= 0 && value <= MaxPrice)
+                {
                     return (true, value);
+                }
                 return (false, 0);
             };
         }
@@ -118,7 +137,21 @@ namespace Week37
 
         public static string FormatPrice(decimal price)
         {
-            return price == Math.Floor(price) ? $"{price:F0} kr" : $"{price:F2} kr";
+            bool showDecimals = price < 100 && price != Math.Floor(price);
+            bool useGrouping = price >= 10_000;
+
+            // Truncate (round down) to target precision before formatting,
+            // so ToString() has nothing left to round.
+            decimal truncated = showDecimals
+                ? Math.Floor(price * 100) / 100
+                : Math.Floor(price);
+
+            // "F" never groups regardless of NumberFormatInfo; "N" always groups.
+            // Switching format letter (not just digit count) is what lets us turn
+            // grouping on/off independently of decimals.
+            string formatSpec = (useGrouping ? "N" : "F") + (showDecimals ? "2" : "0");
+            string formatted = truncated.ToString(formatSpec, SwedishNumberFormat);
+            return $"{formatted} kr";
         }
 
         public static bool Confirm(string message)
