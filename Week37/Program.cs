@@ -459,9 +459,9 @@
                 Utils.DisplayWarningMessage("No products found.");
                 return;
             }
-            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nFound {results.Count} " +
                 $"{Utils.Pluralize(results.Count, "product", "products")}");
+            Console.ForegroundColor = ConsoleColor.Green;
             foreach (var product in results)
             {
                 Console.WriteLine($"{product.Name} - {Utils.FormatPrice(product.Price)}");

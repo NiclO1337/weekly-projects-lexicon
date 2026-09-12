@@ -101,6 +101,9 @@ namespace Week37
                 Console.WriteLine(
                     $"{id} | {name} | {price} | {categoryName} ");
             }
+
+            Console.WriteLine(new string('-', header.Length));
+            Console.WriteLine($"Total Price: {Utils.FormatPrice(CalculateTotal())}");
         }
 
         public Product? GetById(int id)
@@ -156,7 +159,7 @@ namespace Week37
             Product cheapest = products.OrderBy(p => p.Price).First();
             decimal averagePrice = products.Average(p => p.Price);
 
-            Console.WriteLine("\n===== STATISTICS =====\n");
+            Utils.Heading("Statistics");
             Console.WriteLine($"Most Expensive Product:\n" +
                 $"{mostExpensive.Name} - {Utils.FormatPrice(mostExpensive.Price)}\n");
             Console.WriteLine($"Cheapest Product:\n" +
