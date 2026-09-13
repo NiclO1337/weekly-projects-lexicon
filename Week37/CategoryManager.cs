@@ -25,7 +25,7 @@ namespace Week37
         public bool EditCategory(int id, string newName)
         {
             Category? category = GetById(id);
-            if (category is null || NameExists(newName))
+            if (category is null || NameExists(newName, excludeId: id))
             {
                 return false;
             }
@@ -49,9 +49,11 @@ namespace Week37
             return categories.FirstOrDefault(c => c.Id == id);
         }
 
-        public bool NameExists(string name)
+        public bool NameExists(string name, int? excludeId = null)
         {
-            return categories.Any(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return categories.Any(c => 
+            c.Name.Equals(name, StringComparison.OrdinalIgnoreCase) &&
+            c.Id != excludeId);
         }
 
         public List<Category> GetAll()
