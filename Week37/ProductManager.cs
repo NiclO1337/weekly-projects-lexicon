@@ -134,7 +134,6 @@ namespace Week37
                 string id = product.Id.ToString().PadRight(idWidth);
                 string name = product.Name.PadRight(nameWidth);
                 string price = Utils.FormatPrice(product.Price).PadRight(priceWidth);
-                string categoryText = categoryName.PadRight(categoryWidth);
                 Console.WriteLine(
                     $"{id} | {name} | {price} | {categoryName} ");
             }
