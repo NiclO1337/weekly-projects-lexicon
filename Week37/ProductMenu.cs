@@ -145,6 +145,7 @@ namespace Week37
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products to delete.");
+                return;
             }
 
             Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}",
