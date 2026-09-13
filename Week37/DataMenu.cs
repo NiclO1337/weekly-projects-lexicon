@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Week37
 {
-    internal class DataMenu
+    internal static class DataMenu
     {
         internal static void HandleSaveData(string path, CategoryManager categoryManager, ProductManager productManager)
         {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Week37
 {
-    internal class MainMenu
+    internal static class MainMenu
     {
         private static int DisplayMainMenu(bool pauseFirst)
         {
