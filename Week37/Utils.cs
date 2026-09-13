@@ -130,16 +130,26 @@ namespace Week37
             Console.ResetColor();
         }
 
+        public static void DisplayNumberedList<T>(IReadOnlyList<T> items, Func<T, string> display)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {display(items[i])}");
+            }
+        }
+
+        public static void DisplayNumberedList(IReadOnlyList<string> items)
+        {
+            DisplayNumberedList(items, item => item);
+        }
+
         public static T SelectFromList<T>(
             List<T> items,
             Func<T, string> display,
             string prompt = "Select an option: ",
             bool allowCancel = false)
         {
-            for (int i = 0; i < items.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {display(items[i])}");
-            }
+            Utils.DisplayNumberedList(items, display);
 
             int choice = ValidateInput(prompt, 
                 ValidateIntegerRange(1, items.Count),

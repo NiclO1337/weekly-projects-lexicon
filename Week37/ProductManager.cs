@@ -91,10 +91,7 @@ namespace Week37
                     "Back to main menu",
                 ];
 
-                for (int i = 0; i < menuItems.Length; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
-                }
+                Utils.DisplayNumberedList(menuItems);
 
                 int choice = Utils.ValidateInput(
                     $"Select option (1 - {menuItems.Length}): ",

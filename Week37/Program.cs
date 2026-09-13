@@ -54,10 +54,8 @@
                 "Exit",
             ];
 
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {menuItems[i]}");
-            }
+            Utils.DisplayNumberedList(menuItems);
+
             return menuItems.Length;
         }
 
@@ -112,10 +110,8 @@
                 }
 
                 Console.WriteLine("\n0. Add new category");
-                for (int i = 0; i < categories.Count; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {categories[i].Name}");
-                }
+                
+                Utils.DisplayNumberedList(categories, c => c.Name);
 
                 int choice = Utils.ValidateInput(
                     $"Select category (1 - {categories.Count}, or \"q\" to quit): ",
@@ -190,10 +186,7 @@
                     ];
 
                 Console.WriteLine();
-                for (int i = 0; i < menuItems.Length; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
-                }
+                Utils.DisplayNumberedList(menuItems);
 
                 int choice = Utils.ValidateInput(
                     $"Select option (1 - {menuItems.Length}): ",
@@ -336,12 +329,9 @@
             while (true)
             {
                 Console.WriteLine($"\nEditing: {product.Name}");
-                string[] menuItems = ["Change name", "Change price", "Change category", "Done"];
+                string[] menuItems = ["Change name", "Change price", "Change category", "Save product"];
 
-                for (int i = 0; i < menuItems.Length; i++)
-                {
-                    Console.WriteLine($"{i + 1}. {menuItems[i]}");
-                }
+                Utils.DisplayNumberedList(menuItems);
 
                 int choice = Utils.ValidateInput(
                     $"Select option (1 - {menuItems.Length}): ",
@@ -469,10 +459,7 @@
 
             string[] menuItems = ["Search by name", "Search by category"];
 
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {menuItems[i]}");
-            }
+            Utils.DisplayNumberedList(menuItems);
 
             int choice = Utils.ValidateInput(
                 $"Select option (1 - {menuItems.Length}): ",
@@ -563,10 +550,7 @@
 
             string[] menuItems = ["Reset products only", "Reset products and categories", "Cancel"];
 
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {menuItems[i]}");
-            }
+            Utils.DisplayNumberedList(menuItems);
 
             int choice = Utils.ValidateInput(
                     $"Select option (1 - {menuItems.Length}): ",
