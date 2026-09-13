@@ -84,11 +84,12 @@
                         ); break;
                     case 2: productManager.ShowProducts(); break;
                     case 3: HandleSearchProduct(productManager, categoryManager); break;
-                    case 4:
-                        Utils.TryRun(
+                    case 4: Utils.TryRun(
                     () => HandleEditProduct(productManager, categoryManager)
                     ); break;
-                    case 5: HandleDeleteProduct(productManager); break;
+                    case 5: Utils.TryRun(
+                    () => HandleDeleteProduct(productManager)
+                    ); break;
                     case 6: productManager.ShowStatictics(); break;
                     case 7: HandleSaveData(dataFilePath, categoryManager, productManager); break;
                     case 8: HandleLoadData(dataFilePath, categoryManager, productManager); break;
@@ -207,7 +208,9 @@
                     case 2: Utils.TryRun(
                         () => HandleEditCategory(categoryManager)
                         ); break;
-                    case 3: HandleDeleteCategory(categoryManager, productManager); break;
+                    case 3: Utils.TryRun(
+                    () => HandleDeleteCategory(categoryManager, productManager)
+                    ); break;
                     case 4: OutputTracker.HasWritten = false; return;
                 }
             }
