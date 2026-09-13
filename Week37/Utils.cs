@@ -2,7 +2,7 @@
 
 namespace Week37
 {
-    internal class Utils
+    internal static class Utils
     {
         // Explicit Swedish style format: comma decimal, space thousand separator.
         // Not tied to CultureInto.CurrentCulture, so behaviour is identical on every machine.
@@ -13,9 +13,9 @@ namespace Week37
             NumberDecimalDigits = 2,
         };
 
-        public const int MaxNameLength = 32;
+        internal const int MaxNameLength = 32;
 
-        public static string ValidateInput(string prompt, bool allowCancel = false)
+        internal static string ValidateInput(string prompt, bool allowCancel = false)
         {
             while (true)
             {
@@ -43,7 +43,7 @@ namespace Week37
             }
         }
 
-        public static T ValidateInput<T>(
+        internal static T ValidateInput<T>(
             string prompt,
             Func<string, (bool isValid, T result)> validator,
             string errorMessage = "Invalid input, try again.",
@@ -80,7 +80,7 @@ namespace Week37
             return input is not null && input.Trim().Equals("q", StringComparison.OrdinalIgnoreCase);
         }
 
-        public static Func<string, (bool isValid, int result)> ValidateIntegerRange(int min, int max)
+        internal static Func<string, (bool isValid, int result)> ValidateIntegerRange(int min, int max)
         {
             return input =>
             {
@@ -90,7 +90,7 @@ namespace Week37
             };
         }
 
-        public static Func<string, (bool isValid, decimal result)> ValidatePositiveDecimal()
+        internal static Func<string, (bool isValid, decimal result)> ValidatePositiveDecimal()
         {
             const decimal MaxPrice = 150_000_000m;
 
@@ -109,28 +109,28 @@ namespace Week37
             };
         }
 
-        public static void DisplayErrorMessage(string message)
+        internal static void DisplayErrorMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
             Console.ResetColor();
         }
 
-        public static void DisplaySuccessMessage(string message)
+        internal static void DisplaySuccessMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(message);
             Console.ResetColor();
         }
 
-        public static void DisplayWarningMessage(string message)
+        internal static void DisplayWarningMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(message);
             Console.ResetColor();
         }
 
-        public static void DisplayNumberedList<T>(IReadOnlyList<T> items, Func<T, string> display)
+        internal static void DisplayNumberedList<T>(IReadOnlyList<T> items, Func<T, string> display)
         {
             for (int i = 0; i < items.Count; i++)
             {
@@ -138,12 +138,12 @@ namespace Week37
             }
         }
 
-        public static void DisplayNumberedList(IReadOnlyList<string> items)
+        internal static void DisplayNumberedList(IReadOnlyList<string> items)
         {
             DisplayNumberedList(items, item => item);
         }
 
-        public static T SelectFromList<T>(
+        internal static T SelectFromList<T>(
             List<T> items,
             Func<T, string> display,
             string prompt = "Select an option: ",
@@ -159,12 +159,12 @@ namespace Week37
             return items[choice - 1];
         }
 
-        public static string Pluralize(int count, string singular, string plural)
+        internal static string Pluralize(int count, string singular, string plural)
         {
             return count == 1 ? singular : plural;
         }
 
-        public static string FormatPrice(decimal price)
+        internal static string FormatPrice(decimal price)
         {
             bool showDecimals = price < 100 && price != Math.Floor(price);
             bool useGrouping = price >= 10_000;
@@ -183,7 +183,7 @@ namespace Week37
             return $"{formatted} kr";
         }
 
-        public static bool Confirm(string message)
+        internal static bool Confirm(string message)
         {
             Utils.DisplayWarningMessage(message);
             Console.WriteLine("1. Yes");
@@ -193,13 +193,13 @@ namespace Week37
             return choice == 1;
         }
 
-        public static void Heading(string message)
+        internal static void Heading(string message)
         {
             string title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.ToLower());
             Console.WriteLine($"\n===== {title} =====\n");
         }
 
-        public static void TryRun(Action action)
+        internal static void TryRun(Action action)
         {
             try
             {

@@ -88,7 +88,7 @@ namespace Week37
                     "Sort: Price Low to High",
                     "Sort: Price High to Low",
                     "Sort: By Category",
-                    "Back to main menu",
+                    "Back to Main Menu",
                 ];
 
                 Utils.DisplayNumberedList(menuItems);
