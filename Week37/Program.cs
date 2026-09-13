@@ -18,7 +18,7 @@
 
             RunMainMenu(productManager, categoryManager);
 
-            Utils.Heading("Closing application...");
+            Utils.Heading("Closing application");
 
             Console.WriteLine("The hoard is secure and the ledger is closed... for now.\n" +
                 "Farewell, treasure keeper!\n\n\n" +
@@ -79,10 +79,15 @@
 
                 switch (choice)
                 {
-                    case 1: HandleAddProduct(productManager, categoryManager); break;
+                    case 1: Utils.TryRun(
+                        () => HandleAddProduct(productManager, categoryManager)
+                        ); break;
                     case 2: productManager.ShowProducts(); break;
                     case 3: HandleSearchProduct(productManager, categoryManager); break;
-                    case 4: HandleEditProduct(productManager, categoryManager); break;
+                    case 4:
+                        Utils.TryRun(
+                    () => HandleEditProduct(productManager, categoryManager)
+                    ); break;
                     case 5: HandleDeleteProduct(productManager); break;
                     case 6: productManager.ShowStatictics(); break;
                     case 7: HandleSaveData(dataFilePath, categoryManager, productManager); break;
@@ -112,9 +117,10 @@
                 }
 
                 int choice = Utils.ValidateInput(
-                    $"Select category (1 - {categories.Count}): ",
+                    $"Select category (1 - {categories.Count}, or \"q\" to quit): ",
                     Utils.ValidateIntegerRange(0, categories.Count),
-                    $"Invalid input, please enter a number between 1 and {categories.Count}.");
+                    $"Invalid input, please enter a number between 1 and {categories.Count}.",
+                    allowCancel: true);
 
                 if (choice == 0)
                 {
@@ -128,7 +134,10 @@
         static Category? HandleAddCategory(CategoryManager categoryManager)
         {
             Utils.Heading("Add Category");
-            string name = Utils.ValidateInput("Enter category name: ");
+
+            string name = Utils.ValidateInput("Enter category name (or \"q\" to quit): ", 
+                allowCancel: true);
+
             Category? category = categoryManager.AddCategory(name);
 
             if (category is null)
@@ -192,8 +201,12 @@
 
                 switch (choice)
                 {
-                    case 1: AddCategoryLoop(categoryManager); break;
-                    case 2: HandleEditCategory(categoryManager); break;
+                    case 1: Utils.TryRun(
+                        () => AddCategoryLoop(categoryManager)
+                        ); break;
+                    case 2: Utils.TryRun(
+                        () => HandleEditCategory(categoryManager)
+                        ); break;
                     case 3: HandleDeleteCategory(categoryManager, productManager); break;
                     case 4: OutputTracker.HasWritten = false; return;
                 }
@@ -212,9 +225,11 @@
             }
 
             Category category = Utils.SelectFromList(categories, (c) => c.Name,
-                $"Select a category to edit (1 - {categories.Count}): ");
+                $"Select a category to edit (1 - {categories.Count} or \"q\" to quit): ",
+                allowCancel: true);
 
-            string newName = Utils.ValidateInput("Enter a new name: ");
+            string newName = Utils.ValidateInput("Enter a new name (or \"q\" to quit): ",
+                allowCancel: true);
 
             bool success = categoryManager.EditCategory(category.Id, newName);
 
@@ -240,7 +255,9 @@
             }
 
             Category category = Utils.SelectFromList(categories, (c) => c.Name,
-                $"Select a category to edit (1 - {categories.Count}): ");
+                $"Select a category to delete (1 - {categories.Count} or \"q\" to quit): ",
+                allowCancel: true);
+
             var affectedProducts = productManager.SearchByCategory(category.Id);
 
             if (affectedProducts.Count > 0)
@@ -250,7 +267,7 @@
 
                 foreach (var product in affectedProducts)
                 {
-                    Console.WriteLine($"{product.Name}");
+                    Console.WriteLine($"- {product.Name}");
                 }
                 return;
             }
@@ -281,11 +298,12 @@
         {
             Utils.Heading("Add product");
 
-            string name = Utils.ValidateInput("Enter product name: ");
+            string name = Utils.ValidateInput("Enter product name (or \"q\" to quit): ", allowCancel: true);
             decimal price = Utils.ValidateInput(
-                "Enter product price (positive number e.g. 19,90): ",
+                "Enter product price (positive number e.g. 19,90 or \"q\" to quit): ",
                 Utils.ValidatePositiveDecimal(),
-                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
+                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.",
+                allowCancel: true);
 
             Category category = SelectOrCreateCategory(categoryManager);
 
@@ -299,6 +317,7 @@
             var products = productManager.GetAll();
 
             Utils.Heading("Edit product");
+
             if (products.Count == 0)
             {
                 Utils.DisplayWarningMessage("No products to edit.");
@@ -308,7 +327,8 @@
             Product product = Utils.SelectFromList(
                 products,
                 p => $"{p.Name} - {Utils.FormatPrice(p.Price)}",
-                $"Select product to edit (1 - {products.Count}): ");
+                $"Select product to edit (1 - {products.Count} or \"q\" to quit): ",
+                allowCancel: true);
 
             while (true)
             {
@@ -328,9 +348,15 @@
 
                 switch (choice)
                 {
-                    case 1: HandleChangeName(productManager, product); break;
-                    case 2: HandleChangePrice(productManager, product); break;
-                    case 3: HandleChangeCategory(productManager, product, categoryManager); break;
+                    case 1: Utils.TryRun(
+                        () => HandleChangeName(productManager, product)
+                        ); break;
+                    case 2: Utils.TryRun(
+                        () => HandleChangePrice(productManager, product)
+                        ); break;
+                    case 3: Utils.TryRun(
+                        () => HandleChangeCategory(productManager, product, categoryManager)
+                        ); break;
                     case 4: 
                         OutputTracker.HasWritten = false; 
                         Utils.DisplaySuccessMessage("Saving any potential changes..."); 
@@ -344,7 +370,8 @@
         {
             Utils.Heading("Change name");
 
-            string newName = Utils.ValidateInput("Enter a new name: ");
+            string newName = Utils.ValidateInput("Enter a new name (or \"q\" to quit): ", 
+                allowCancel: true);
             bool success = productManager.UpdateName(product.Id, newName);
 
             if (success)
@@ -362,9 +389,10 @@
             Utils.Heading("Change price");
 
             decimal newPrice = Utils.ValidateInput(
-                "Enter new price (positive number e.g. 19,90): ",
+                "Enter new price (positive number e.g. 19,90 or \"q\" to quit): ",
                 Utils.ValidatePositiveDecimal(),
-                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.");
+                "Invalid price. Use a comma for decimals (e.g. 19,90) and keep it under 150 000 000.",
+                allowCancel: true);
 
             bool success = productManager.UpdatePrice(product.Id, newPrice);
 
@@ -407,7 +435,9 @@
                 Utils.DisplayWarningMessage("No products to delete.");
             }
 
-            Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}");
+            Product product = Utils.SelectFromList(products, p => $"{p.Name} - {Utils.FormatPrice(p.Price)}",
+                $"Select a product to delete (1 - {products.Count} or \"q\" to quit): ",
+                allowCancel: true);
 
             bool confirmed = Utils.Confirm(
                 $"Are you sure you want to delete \"{product.Name}\". This cannot be undone.");
@@ -475,6 +505,7 @@
             }
             Console.WriteLine($"\nFound {results.Count} " +
                 $"{Utils.Pluralize(results.Count, "product", "products")}");
+
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (var product in results)
             {

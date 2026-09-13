@@ -15,12 +15,17 @@ namespace Week37
 
         public const int MaxNameLength = 32;
 
-        public static string ValidateInput(string prompt)
+        public static string ValidateInput(string prompt, bool allowCancel = false)
         {
             while (true)
             {
                 Console.Write("\n" + prompt);
                 string? input = Console.ReadLine();
+
+                if (allowCancel && IsCancel(input))
+                {
+                    throw new UserCancelledException();
+                }
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
@@ -41,12 +46,18 @@ namespace Week37
         public static T ValidateInput<T>(
             string prompt,
             Func<string, (bool isValid, T result)> validator,
-            string errorMessage = "Invalid input, try again.")
+            string errorMessage = "Invalid input, try again.",
+            bool allowCancel = false)
         {
             while (true)
             {
                 Console.Write("\n" + prompt);
                 string? input = Console.ReadLine();
+
+                if (allowCancel && IsCancel(input))
+                {
+                    throw new UserCancelledException();
+                }
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
@@ -62,6 +73,11 @@ namespace Week37
 
                 DisplayErrorMessage(errorMessage);
             }
+        }
+
+        private static bool IsCancel(string? input)
+        {
+            return input is not null && input.Trim().Equals("q", StringComparison.OrdinalIgnoreCase);
         }
 
         public static Func<string, (bool isValid, int result)> ValidateIntegerRange(int min, int max)
@@ -113,10 +129,12 @@ namespace Week37
             Console.WriteLine(message);
             Console.ResetColor();
         }
+
         public static T SelectFromList<T>(
             List<T> items,
             Func<T, string> display,
-            string prompt = "Select an option: ")
+            string prompt = "Select an option: ",
+            bool allowCancel = false)
         {
             for (int i = 0; i < items.Count; i++)
             {
@@ -125,7 +143,8 @@ namespace Week37
 
             int choice = ValidateInput(prompt, 
                 ValidateIntegerRange(1, items.Count),
-                $"Invalid input, please enter a number between 1 and {items.Count}.");
+                $"Invalid input, please enter a number between 1 and {items.Count}.",
+                allowCancel);
 
             return items[choice - 1];
         }
@@ -168,6 +187,18 @@ namespace Week37
         {
             string title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.ToLower());
             Console.WriteLine($"\n===== {title} =====\n");
+        }
+
+        public static void TryRun(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (UserCancelledException)
+            {
+                DisplayWarningMessage("Cancelled - returning to previous menu.");
+            }
         }
     }
 }
