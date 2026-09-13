@@ -101,7 +101,7 @@ namespace Week37
                     NumberStyles.Number, // Allows optional thousand separators + decimal point/comma
                     SwedishNumberFormat,
                     out decimal value)
-                && value >= 0 && value <= MaxPrice)
+                && value > 0 && value <= MaxPrice)
                 {
                     return (true, value);
                 }
