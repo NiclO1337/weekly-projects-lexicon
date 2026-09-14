@@ -90,6 +90,10 @@ namespace Week37
             };
         }
 
+        /// <summary>
+        /// Prompts for a numeric price, accepting Swedish-style formatting (comma decimal,
+        /// space thousands separator) and rejecting negative or unreasonably large values.
+        /// </summary>
         internal static Func<string, (bool isValid, decimal result)> ValidatePositiveDecimal()
         {
             const decimal MaxPrice = 150_000_000m;
@@ -164,6 +168,11 @@ namespace Week37
             return count == 1 ? singular : plural;
         }
 
+        /// <summary>
+        /// Formats a price for display: whole kronor are shown without decimals,
+        /// amounts under 100 kr keep decimals if they aren't a whole number,
+        /// and amounts of 10 000 kr or more get thousand separators.
+        /// </summary>
         internal static string FormatPrice(decimal price)
         {
             bool showDecimals = price < 100 && price != Math.Floor(price);
@@ -199,6 +208,10 @@ namespace Week37
             Console.WriteLine($"\n===== {title} =====\n");
         }
 
+        /// <summary>
+        /// Runs an action and silently handles user-initiated cancellation
+        /// (thrown as UserCancelledException), returning to the calling menu instead of crashing.
+        /// </summary>
         internal static void TryRun(Action action)
         {
             try

@@ -10,6 +10,9 @@ namespace Week37
         private int nextId = 1;
         private readonly CategoryManager categoryManager = categoryManager;
 
+        /// <summary>
+        /// Creates a new product under the given category and adds it to the collection.
+        /// </summary>
         public Product AddProduct(string name, decimal price, int categoryId)
         {
             Product product = new(nextId, name, price, categoryId);
@@ -18,6 +21,7 @@ namespace Week37
             return product;
         }
 
+        /// <returns>True if a product with the given ID exists and was updated.</returns>
         public bool UpdateName(int id, string newName)
         {
             Product? product = GetById(id);
@@ -30,6 +34,7 @@ namespace Week37
             return true;
         }
 
+        /// <returns>True if a product with the given ID exists and was updated.</returns>
         public bool UpdatePrice(int id, decimal newPrice)
         {
             Product? product = GetById(id);
@@ -42,6 +47,7 @@ namespace Week37
             return true;
         }
 
+        /// <returns>True if a product with the given ID exists and was updated.</returns>
         public bool UpdateCategoryId(int id, int newCategoryId)
         {
             Product? product = GetById(id);
@@ -66,6 +72,10 @@ namespace Week37
             return true;
         }
 
+        /// <summary>
+        /// Displays all products in a formatted table, then lets the user re-sort
+        /// the view (by price ascending/descending or by category) without leaving the screen.
+        /// </summary>
         public void ShowProducts()
         {
             Utils.Heading("Show products");
@@ -152,6 +162,9 @@ namespace Week37
             return products;
         }
 
+        /// <summary>
+        /// Finds products whose name contains the given search term (case-insensitive, partial match).
+        /// </summary>
         public List<Product> SearchByName(string term)
         {
             return products
@@ -176,6 +189,9 @@ namespace Week37
             nextId = 1;
         }
 
+        /// <summary>
+        /// Computes the sum of all product prices currently in memory.
+        /// </summary>
         public decimal CalculateTotal()
         {
             return products.Sum(p => p.Price);

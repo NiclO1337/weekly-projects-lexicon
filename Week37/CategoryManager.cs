@@ -9,6 +9,10 @@ namespace Week37
         private List<Category> categories = [];
         private int nextId = 1;
 
+        /// <summary>
+        /// Adds a new category if the name isn't already taken (case-insensitive).
+        /// </summary>
+        /// <returns>The created category, or null if the name already exists.</returns>
         public Category? AddCategory(string name)
         {
             if (NameExists(name))
@@ -22,6 +26,10 @@ namespace Week37
             return category;
         }
 
+        /// <summary>
+        /// Renames a category, as long as the new name isn't already used elsewhere.
+        /// </summary>
+        /// <returns>True if the rename succeeded; false if the ID wasn't found or the name is taken.</returns>
         public bool EditCategory(int id, string newName)
         {
             Category? category = GetById(id);

@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace Week37
 {
+    /// <summary>Handles reading and writing the full application state to a JSON file.</summary>
     internal class DataStore
     {
         private static readonly JsonSerializerOptions options = new() { WriteIndented = true };

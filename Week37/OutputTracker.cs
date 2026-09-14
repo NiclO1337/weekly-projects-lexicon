@@ -4,6 +4,12 @@ using System.Text;
 
 namespace Week37
 {
+    /// <summary>
+    /// Wraps Console.Out to track whether anything has been printed since the flag
+    /// was last cleared. MainMenu uses this to decide whether to pause with
+    /// "press any key to continue" — only pausing when a handler actually produced
+    /// output, instead of after every single menu loop.
+    /// </summary>
     internal static class OutputTracker
     {
         private static bool hasWritten;

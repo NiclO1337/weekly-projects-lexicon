@@ -45,7 +45,7 @@ namespace Week37
             while (true)
             {
                 Console.WriteLine($"\nEditing: {product.Name}");
-                string[] menuItems = ["Change name", "Change price", "Change category", "Save product"];
+                string[] menuItems = ["Change name", "Change price", "Change category", "Back to Main Menu"];
 
                 Utils.DisplayNumberedList(menuItems);
 
@@ -69,12 +69,8 @@ namespace Week37
                         Utils.TryRun(
                         () => HandleChangeCategory(productManager, product, categoryManager)
                         ); break;
-                    case 4:
-                        OutputTracker.HasWritten = false;
-                        Utils.DisplaySuccessMessage("Saving any potential changes...");
-                        return;
+                    case 4: OutputTracker.HasWritten = false; return;
                 }
-
             }
         }
 
