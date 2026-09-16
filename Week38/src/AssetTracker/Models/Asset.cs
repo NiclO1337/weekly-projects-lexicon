@@ -25,6 +25,11 @@ internal abstract class Asset(int id, string brand, string model, DateTime purch
     {
         DateTime endOfLifeDate = GetEndOfLifeDate();
 
+        if (DateTime.Today >= endOfLifeDate)
+        {
+            return EndOfLifeStatus.DarkRed;
+        }
+
         if (DateTime.Today >= endOfLifeDate.AddMonths(-3))
         {
             return EndOfLifeStatus.Red;

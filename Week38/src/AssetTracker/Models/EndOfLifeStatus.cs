@@ -5,4 +5,5 @@ internal enum EndOfLifeStatus
     None,
     Yellow,
     Red,
+    DarkRed,
 }

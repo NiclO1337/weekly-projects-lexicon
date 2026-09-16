@@ -8,9 +8,12 @@ countries, with currency-aware pricing and end-of-life warnings.
 
 ## 2. Business Rules
 - All company assets have a lifespan of **3 years** from purchase date.
-- End-of-life highlighting:
-  - **YELLOW** → less than 6 months remaining
-  - **RED** → less than 3 months remaining
+- End-of-life highlighting (drives both the colored `PurchaseDate` cell and
+  the "EOL Status" column's text label in the View Assets table):
+  - **(none)** → more than 6 months remaining — no color, blank label
+  - **YELLOW** ("Monitor") → less than 6 months remaining
+  - **RED** ("Upgrade soon") → less than 3 months remaining
+  - **DARK RED** ("End of life") → already past the 3-year lifespan
 - Assets belong to an office; each office has its own currency.
 - Known offices: **Germany (EUR)**, **Sweden (SEK)**, **USA (USD)**, **Turkey (TRY)**.
 - Prices are always entered in EUR and converted to local currency.
@@ -23,7 +26,7 @@ countries, with currency-aware pricing and end-of-life warnings.
 | Computer subtypes (Laptop/Desktop) | Single `Computer` class with a `ComputerType` enum property (not separate classes) |
 | Tablet | Included as a full first-class asset type from the start |
 | Bonus features in scope | Search by brand/model, Edit asset, Export to CSV, Pagination, Exception handling |
-| Bonus features out of scope (for now) | Colorful console UI, Unit tests |
+| Bonus features out of scope (for now) | Full colorful console UI overhaul (theming/beautifying every screen), Unit tests |
 | Persistence | JSON file (`assets.json`) via `System.Text.Json`, loaded on startup, saved on every change |
 
 ## 4. Domain Model
@@ -134,6 +137,11 @@ Select option:
 ```
 
 ## 10. Future potential features
-- Colorful console UI (plain formatted tables only)
+- A full colorful console UI overhaul — theming/beautifying every screen.
+  **Not the same as small, targeted color use** (e.g. `ConsoleHelpers`'s
+  error/warning/success messages, or coloring just the `PurchaseDate` cell
+  red/yellow when an asset is near end-of-life) — that kind of helper
+  coloring is in scope any time and doesn't need to wait for this. Tables
+  otherwise stay plain formatted text.
 - Automated unit tests
 - Support for offices/currencies beyond Sweden/USA/Turkey (architecture should make adding one easy, but no UI for managing offices is required)

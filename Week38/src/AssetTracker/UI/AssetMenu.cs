@@ -60,4 +60,19 @@ internal static class AssetMenu
 
         ConsoleHelpers.DisplaySuccessMessage($"A {assetType.ToLower()} added to {office.Name} office ({brand} - {model}).");
     }
+
+    internal static void HandleViewAssets(AssetService assetService)
+    {
+        ConsoleHelpers.Heading("View Assets");
+
+        IReadOnlyList<Asset> assets = assetService.GetAllAssets();
+
+        if (assets.Count == 0)
+        {
+            ConsoleHelpers.DisplayWarningMessage("No assets found.");
+            return;
+        }
+
+        ConsoleTableRenderer.RenderAssets(assets);
+    }
 }

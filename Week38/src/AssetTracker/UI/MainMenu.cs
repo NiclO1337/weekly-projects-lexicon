@@ -53,8 +53,7 @@ internal static class MainMenu
                     ConsoleHelpers.TryRun(() => AssetMenu.HandleAddAsset(assetService));
                     break;
                 case 2:
-                    // AssetMenu.HandleViewAssets();
-                    ConsoleHelpers.DisplayWarningMessage("Not implemented yet.");
+                    AssetMenu.HandleViewAssets(assetService);
                     break;
                 case 3:
                     // AssetMenu.HandleSearchAssets();
