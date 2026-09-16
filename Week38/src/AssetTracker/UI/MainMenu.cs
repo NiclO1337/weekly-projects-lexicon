@@ -10,8 +10,8 @@ internal static class MainMenu
             Console.ReadKey();
         }
 
-        Console.WriteLine("\n================================================");
-        Console.WriteLine("   COMPANY ASSET TRACKING SYSTEM");
+        Console.WriteLine("\n\n================================================");
+        Console.WriteLine("   DRAGON'S HOARD - ASSET TRACKING SYSTEM");
         Console.WriteLine("================================================\n");
 
         string[] menuItems =
