@@ -7,7 +7,10 @@ Console.WriteLine("A treasure-keeper's ledger for tracking your wares:");
 Console.WriteLine("add new stock to the hoard, search the vault, edit or");
 Console.WriteLine("retire old items, and check your riches at a glance.\n");
 
-AssetTracker.UI.MainMenu.RunMainMenu();
+AssetTracker.Services.IAssetRepository assetRepository = new AssetTracker.Services.InMemoryAssetRepository();
+AssetTracker.Services.AssetService assetService = new(assetRepository);
+
+AssetTracker.UI.MainMenu.RunMainMenu(assetService);
 
 AssetTracker.UI.ConsoleHelpers.Heading("Closing application");
 

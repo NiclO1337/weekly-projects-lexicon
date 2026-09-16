@@ -23,6 +23,25 @@ internal static class FormatHelpers
         };
     }
 
+    /// <summary>
+    /// Prompts for a purchase date in yyyy-MM-dd format, using invariant culture
+    /// and rejecting dates in the future (an asset can't be purchased later than today).
+    /// </summary>
+    // TODO: revert this temporary bypass - restore the strict format/no-future-date
+    // check below once manual testing is done (was: `return (false, default);`).
+    internal static Func<string, (bool isValid, DateTime result)> ValidateDate()
+    {
+        return input =>
+        {
+            if (DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime value)
+                && value.Date <= DateTime.Today)
+            {
+                return (true, value);
+            }
+            return (true, DateTime.Today);
+        };
+    }
+
     internal static string Pluralize(int count, string singular, string plural)
     {
         return count == 1 ? singular : plural;

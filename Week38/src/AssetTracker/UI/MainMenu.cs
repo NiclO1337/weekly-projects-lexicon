@@ -1,3 +1,5 @@
+using AssetTracker.Services;
+
 namespace AssetTracker.UI;
 
 internal static class MainMenu
@@ -30,7 +32,7 @@ internal static class MainMenu
         return menuItems.Length;
     }
 
-    internal static void RunMainMenu()
+    internal static void RunMainMenu(AssetService assetService)
     {
         OutputTracker.HasWritten = true; // pause once, right after the intro text
 
@@ -48,8 +50,7 @@ internal static class MainMenu
             switch (choice)
             {
                 case 1:
-                    // AssetMenu.HandleAddAsset();
-                    ConsoleHelpers.DisplayWarningMessage("Not implemented yet.");
+                    ConsoleHelpers.TryRun(() => AssetMenu.HandleAddAsset(assetService));
                     break;
                 case 2:
                     // AssetMenu.HandleViewAssets();
