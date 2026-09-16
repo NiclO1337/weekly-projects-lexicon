@@ -2,8 +2,14 @@ namespace AssetTracker.UI;
 
 internal static class MainMenu
 {
-    private static int DisplayMainMenu()
+    private static int DisplayMainMenu(bool pauseFirst)
     {
+        if (pauseFirst)
+        {
+            Console.Write("\nPress any key to continue to main menu...");
+            Console.ReadKey();
+        }
+
         Console.WriteLine("\n================================================");
         Console.WriteLine("   COMPANY ASSET TRACKING SYSTEM");
         Console.WriteLine("================================================\n");
@@ -26,12 +32,18 @@ internal static class MainMenu
 
     internal static void RunMainMenu()
     {
+        OutputTracker.HasWritten = true; // pause once, right after the intro text
+
         while (true)
         {
-            int optionCount = DisplayMainMenu();
+            bool hasNewOutput = OutputTracker.HasWritten;
+            int optionCount = DisplayMainMenu(hasNewOutput);
 
             int choice = ConsoleHelpers.ValidateInput($"Select option (1 - {optionCount}): ",
                 ConsoleHelpers.ValidateIntegerRange(1, optionCount));
+
+            // clear the menu+prompt noise; only the handler's output counts now
+            OutputTracker.HasWritten = false;
 
             switch (choice)
             {
