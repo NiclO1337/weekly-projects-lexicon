@@ -13,14 +13,14 @@ persistence. Built incrementally through 5 levels; see PROJECT_CONTEXT.md
 ## Tech stack & commands
 - Language/runtime: C#, .NET 10 (LTS)
 - Build: `dotnet build`
-- Run: `dotnet run --project src/AssetTracking`
+- Run: `dotnet run --project src/AssetTracker`
 - Restore: `dotnet restore`
 - No test project currently exists (unit tests are out of scope for now —
   see PROJECT_CONTEXT.md §10). Do not scaffold one unless asked.
 
 ## File structure (authoritative — keep in sync with PROJECT_CONTEXT.md §4 folder tree)
 ```
-src/AssetTracking/
+src/AssetTracker/
 ├── Program.cs          # composition root only — no business logic here
 ├── Models/              # Asset hierarchy, enums, Office. No file I/O, no console I/O.
 ├── Exceptions/          # Custom exception types
