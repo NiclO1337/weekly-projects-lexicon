@@ -9,8 +9,8 @@ countries, with currency-aware pricing and end-of-life warnings.
 ## 2. Business Rules
 - All company assets have a lifespan of **3 years** from purchase date.
 - End-of-life highlighting:
-  - **YELLOW** → less than 3 months remaining
-  - **RED** → less than 6 months remaining
+  - **YELLOW** → less than 6 months remaining
+  - **RED** → less than 3 months remaining
 - Assets belong to an office; each office has its own currency.
 - Known offices: **Germany (EUR)**, **Sweden (SEK)**, **USA (USD)**, **Turkey (TRY)**.
 - Prices are always entered in EUR and converted to local currency.
@@ -41,13 +41,13 @@ Asset (abstract)
 - `Brand` (string)
 - `Model` (string)
 - `PurchaseDate` (DateTime)
-- `PriceUsd` (decimal)
+- `PriceEur` (decimal)
 - `Office` (Office)
 
 **`Asset` common behavior:**
 - `GetAgeInDays()` / age calculation via `DateTime`/`TimeSpan`
 - `GetEndOfLifeStatus()` → `EndOfLifeStatus` (None/Yellow/Red) based on the 3-year lifespan rule
-- `GetLocalPrice(ICurrencyProvider)` → converts `PriceUsd` into the office's currency
+- `GetLocalPrice(ICurrencyProvider)` → converts `PriceEur` into the office's currency
 - `abstract string GetCategoryLabel()` — overridden per subclass to return the display
   type shown in the "Type" column (e.g. `Computer` returns `ComputerType.ToString()`
   → "Laptop"/"Desktop"; `MobilePhone` returns "Phone"; `Tablet` returns "Tablet").
@@ -55,8 +55,8 @@ Asset (abstract)
 
 ### Supporting types
 - **`Office`** — `Name`, `Country`, `Currency` (CurrencyCode). Predefined static
-  instances for Sweden/USA/Turkey; designed so more offices can be added later
-  without touching Asset logic.
+  instances for Germany/Sweden/USA/Turkey; designed so more offices can be
+  added later without touching Asset logic.
 - **`ComputerType`** enum — `Laptop`, `Desktop`
 - **`CurrencyCode`** enum — `EUR`, `SEK`, `USD`, `TRY`
 - **`EndOfLifeStatus`** enum — `None`, `Yellow`, `Red`
@@ -104,7 +104,7 @@ Example `assets.json` entry:
   "brand": "Apple",
   "model": "MacBook Pro",
   "purchaseDate": "2024-03-15",
-  "priceUsd": 1500,
+  "priceEur": 1500,
   "office": "Sweden"
 }
 ```
