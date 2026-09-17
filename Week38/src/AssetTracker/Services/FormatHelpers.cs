@@ -27,8 +27,6 @@ internal static class FormatHelpers
     /// Prompts for a purchase date in yyyy-MM-dd format, using invariant culture
     /// and rejecting dates in the future (an asset can't be purchased later than today).
     /// </summary>
-    // TODO: revert this temporary bypass - restore the strict format/no-future-date
-    // check below once manual testing is done (was: `return (false, default);`).
     internal static Func<string, (bool isValid, DateTime result)> ValidateDate()
     {
         return input =>
@@ -38,7 +36,7 @@ internal static class FormatHelpers
             {
                 return (true, value);
             }
-            return (true, DateTime.Today);
+            return (false, default);
         };
     }
 
