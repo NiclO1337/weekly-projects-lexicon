@@ -16,7 +16,7 @@ internal static class ConsoleTableRenderer
         int dateWidth = Math.Max("Purchase Date".Length, assets.Max(a => a.PurchaseDate.ToString("yyyy-MM-dd").Length)) + extraPadding;
         int priceWidth = Math.Max("Price (EUR)".Length, assets.Max(a => FormatHelpers.FormatPrice(a.PriceEur).Length)) + extraPadding;
         int officeWidth = Math.Max("Office".Length, assets.Max(a => a.Office.Name.Length)) + extraPadding;
-        int statusWidth = Math.Max("EOL Status".Length, assets.Max(a => GetStatusLabel(a.GetEndOfLifeStatus()).Length));
+        int statusWidth = Math.Max("EOL Status".Length, assets.Max(a => a.GetEndOfLifeStatusLabel().Length));
 
         string header = $"{"Id".PadRight(idWidth)}{"Type".PadRight(typeWidth)}{"Brand".PadRight(brandWidth)}" +
             $"{"Model".PadRight(modelWidth)}{"Purchase Date".PadRight(dateWidth)}{"Price (EUR)".PadRight(priceWidth)}" +
@@ -52,20 +52,9 @@ internal static class ConsoleTableRenderer
             }
 
             Console.WriteLine($"{FormatHelpers.FormatPrice(asset.PriceEur).PadRight(priceWidth)}" +
-                $"{asset.Office.Name.PadRight(officeWidth)}{GetStatusLabel(status).PadRight(statusWidth)}");
+                $"{asset.Office.Name.PadRight(officeWidth)}{asset.GetEndOfLifeStatusLabel().PadRight(statusWidth)}");
         }
 
         Console.WriteLine(new string('-', header.Length));
-    }
-
-    private static string GetStatusLabel(EndOfLifeStatus status)
-    {
-        return status switch
-        {
-            EndOfLifeStatus.Yellow => "Monitor",
-            EndOfLifeStatus.Red => "Upgrade soon",
-            EndOfLifeStatus.DarkRed => "End of life",
-            _ => "",
-        };
     }
 }

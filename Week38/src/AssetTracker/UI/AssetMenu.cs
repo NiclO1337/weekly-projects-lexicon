@@ -280,11 +280,11 @@ internal static class AssetMenu
             "Invalid file name - avoid characters like \\ / : * ? \" < > |.",
             allowCancel: true);
 
-        string filePath = Path.Combine("Data", $"{fileName}.csv");
+        string filePath = Path.Combine(AppPaths.DataDirectory, $"{fileName}.csv");
 
         try
         {
-            Directory.CreateDirectory("Data");
+            Directory.CreateDirectory(AppPaths.DataDirectory);
             int count = AssetService.ExportToCsv(assets, filePath);
             ConsoleHelpers.DisplaySuccessMessage($"Exported {count} {FormatHelpers.Pluralize(count, "asset", "assets")} to {filePath}.");
         }

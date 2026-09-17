@@ -43,5 +43,16 @@ internal abstract class Asset(int id, string brand, string model, DateTime purch
         return EndOfLifeStatus.None;
     }
 
+    internal string GetEndOfLifeStatusLabel()
+    {
+        return GetEndOfLifeStatus() switch
+        {
+            EndOfLifeStatus.Yellow => "Monitor",
+            EndOfLifeStatus.Red => "Upgrade soon",
+            EndOfLifeStatus.DarkRed => "End of life",
+            _ => "",
+        };
+    }
+
     internal abstract string GetCategoryLabel();
 }

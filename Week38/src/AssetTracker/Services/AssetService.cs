@@ -92,7 +92,7 @@ internal sealed class AssetService(IAssetRepository repository)
                 asset.PurchaseDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 asset.PriceEur.ToString(CultureInfo.InvariantCulture),
                 EscapeCsvField(asset.Office.Name),
-                asset.GetEndOfLifeStatus().ToString()));
+                EscapeCsvField(asset.GetEndOfLifeStatusLabel())));
         }
 
         return assets.Count;
