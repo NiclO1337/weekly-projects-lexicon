@@ -26,7 +26,7 @@ foreach (string line in new[]
 {
     Console.WriteLine(line);
 }
-
+// TODO: Uncomment welcome message when manual testing is done.
 //Console.WriteLine();
 //AssetTracker.UI.SlowConsole.WriteLineSlow("Welcome to Dragon's hoard - guard your products well.");
 //Console.WriteLine();
@@ -49,7 +49,35 @@ catch (AssetTracker.Exceptions.InvalidAssetDataException ex)
     assetRepository = new AssetTracker.Services.JsonAssetRepository(dataFilePath, skipLoad: true);
 }
 
-AssetTracker.Services.AssetService assetService = new(assetRepository);
+Console.WriteLine();
+Console.WriteLine("Currency data source:");
+Console.WriteLine("1. Hardcoded rates (offline, default)");
+Console.WriteLine("2. Live exchange rate API (cached once per day)");
+
+int currencyChoice = AssetTracker.UI.ConsoleHelpers.ValidateInput(
+    "Select option (1 - 2, Enter for default): ",
+    AssetTracker.UI.ConsoleHelpers.ValidateIntegerRange(1, 2),
+    "Invalid input, select 1 or 2.",
+    hasCurrentValue: true,
+    currentValue: 1);
+
+AssetTracker.Services.ICurrencyProvider currencyProvider;
+if (currencyChoice == 2)
+{
+    string ratesFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "exchangeRates.json");
+    AssetTracker.Services.ApiCurrencyProvider apiCurrencyProvider = new(ratesFilePath);
+    if (apiCurrencyProvider.UsedFallback)
+    {
+        AssetTracker.UI.ConsoleHelpers.DisplayWarningMessage("Could not reach the exchange rate API - using hardcoded rates instead.");
+    }
+    currencyProvider = apiCurrencyProvider;
+}
+else
+{
+    currencyProvider = new AssetTracker.Services.HardcodedCurrencyProvider();
+}
+
+AssetTracker.Services.AssetService assetService = new(assetRepository, currencyProvider);
 
 AssetTracker.UI.MainMenu.RunMainMenu(assetService);
 

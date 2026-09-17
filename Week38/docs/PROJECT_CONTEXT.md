@@ -79,14 +79,34 @@ Asset (abstract)
 
 ## 6. Currency Conversion
 - `ICurrencyProvider.GetRate(CurrencyCode)` is the single abstraction used everywhere
-  prices are converted.
+  prices are converted. `AssetService.GetLocalPrice(Asset, ICurrencyProvider)` is the one
+  place the multiplication (`PriceEur * GetRate(Office.Currency)`) happens - it's a static
+  method on `AssetService`, not on `Asset` itself, so `Models` never has to reference
+  `Services` (`ICurrencyProvider` lives in `Services`, alongside `IAssetRepository`).
 - `HardcodedCurrencyProvider` — fixed dictionary of EUR→{SEK,USD,TRY} rates (EUR is base,
-  rate 1.0).
-- `ApiCurrencyProvider` — calls a live exchange-rate API; on failure (network error,
-  bad response, timeout) it **falls back to `HardcodedCurrencyProvider`** rather than
-  crashing or blocking the app. Incase of error, inform user about this in UI.
-- The menu should let the user pick which mode to use at startup, defaulting to
-  hardcoded.
+  rate 1.0). Approximate/offline only; not kept in sync with real rates over time.
+- `ApiCurrencyProvider` — calls [Frankfurter](https://frankfurter.dev/) (free, no API key,
+  ECB reference rates, `base=EUR` matches how `PriceEur` already works):
+  `GET https://api.frankfurter.dev/v1/latest?base=EUR&symbols=SEK,USD,TRY`.
+  - Caches the result in a single file, `Data/exchangeRates.json`, containing the fetched
+    `date` and `rates`. On construction, if the cached `date` equals today, the cache is
+    used and the API is never called; otherwise it fetches live and overwrites the cache.
+    This means at most one API call per calendar day, persisting across app restarts -
+    important for repeated manual testing.
+  - On any failure (network error, bad response, timeout, unreadable/corrupt cache) it
+    **falls back to `HardcodedCurrencyProvider`** rather than crashing or blocking the
+    app, per the "Do NOT let it throw" rule in `CLAUDE.md`. Since `Services` can't touch
+    the console, it exposes `UsedFallback` instead of printing anything itself - the
+    caller (`Program.cs`, the composition root) checks this once at startup and shows a
+    warning via `ConsoleHelpers` if it's true.
+  - `Data/exchangeRates.json` is gitignored (live-fetched cache, not seed data) - unlike
+    `Data/assets.json`, which is committed.
+- A startup prompt in `Program.cs` (before the main menu loop) lets the user pick
+  "Hardcoded" (default - pressing Enter selects it) or "Live API".
+- View Assets / Search Assets / the Edit-Remove asset-picker table all show two extra
+  columns after Office: **Local Value** (`GetLocalPrice`, formatted like the EUR price
+  column) and **Currency** (`Office.Currency`). CSV export adds the same two columns
+  (`LocalValue`, `Currency`) between `Office` and `EndOfLifeStatus`.
 
 ## 7. Persistence (Level 5)
 - File: `Data/assets.json`, resolved via `AppPaths.DataDirectory` (walks up from the build

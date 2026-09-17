@@ -78,7 +78,7 @@ internal static class AssetMenu
                 return;
             }
 
-            ConsoleTableRenderer.RenderAssets(page.Items);
+            ConsoleTableRenderer.RenderAssets(page.Items, assetService.CurrencyProvider);
             Console.WriteLine($"\nPage {page.PageNumber} of {page.TotalPages} (sorted by {GetSortModeLabel(sortMode).ToLower()})\n");
 
             List<string> menuItems = ["Previous Page", "Next Page\n", "Sort: Office", "Sort: Asset Type", "Sort: End of Life", "Back to Main Menu"];
@@ -157,7 +157,7 @@ internal static class AssetMenu
         }
 
         Console.WriteLine();
-        ConsoleTableRenderer.RenderAssets(results);
+        ConsoleTableRenderer.RenderAssets(results, assetService.CurrencyProvider);
     }
 
     internal static void HandleEditAssets(AssetService assetService)
@@ -289,7 +289,7 @@ internal static class AssetMenu
         try
         {
             Directory.CreateDirectory(AppPaths.DataDirectory);
-            int count = AssetService.ExportToCsv(assets, filePath);
+            int count = AssetService.ExportToCsv(assets, filePath, assetService.CurrencyProvider);
             ConsoleHelpers.DisplaySuccessMessage($"Exported {count} {FormatHelpers.Pluralize(count, "asset", "assets")} to {filePath}.");
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -345,7 +345,7 @@ internal static class AssetMenu
                 return null;
             }
 
-            ConsoleTableRenderer.RenderAssets(page.Items);
+            ConsoleTableRenderer.RenderAssets(page.Items, assetService.CurrencyProvider);
             Console.WriteLine($"\nPage {page.PageNumber} of {page.TotalPages}\n");
 
             List<string> menuItems = ["Previous Page", "Next Page\n", $"Enter Asset Id to {actionLabel}", "Back to Main Menu"];

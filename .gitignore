@@ -485,5 +485,8 @@ $RECYCLE.BIN/
 # Export to CSV feature). Persisted seed data like assets.json IS committed.
 **/Data/*.csv
 
+# AssetTracker's cached exchange rates (live-fetched, re-derived daily - not seed data)
+**/Data/exchangeRates.json
+
 # LibreOffice/OpenOffice lock files left behind when a file is open for editing
 .~lock.*#

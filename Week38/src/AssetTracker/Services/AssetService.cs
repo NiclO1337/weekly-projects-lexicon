@@ -4,9 +4,11 @@ using AssetTracker.Models;
 
 namespace AssetTracker.Services;
 
-internal sealed class AssetService(IAssetRepository repository)
+internal sealed class AssetService(IAssetRepository repository, ICurrencyProvider currencyProvider)
 {
     internal const int PageSize = 10;
+
+    internal ICurrencyProvider CurrencyProvider => currencyProvider;
 
     internal void AddAsset(Asset asset)
     {
@@ -77,10 +79,15 @@ internal sealed class AssetService(IAssetRepository repository)
         return new AssetsPage(pageItems, clampedPage, totalPages);
     }
 
-    internal static int ExportToCsv(IReadOnlyList<Asset> assets, string filePath)
+    internal static decimal GetLocalPrice(Asset asset, ICurrencyProvider currencyProvider)
+    {
+        return asset.PriceEur * currencyProvider.GetRate(asset.Office.Currency);
+    }
+
+    internal static int ExportToCsv(IReadOnlyList<Asset> assets, string filePath, ICurrencyProvider currencyProvider)
     {
         using StreamWriter writer = new(filePath);
-        writer.WriteLine("Id,Type,Brand,Model,PurchaseDate,PriceEur,Office,EndOfLifeStatus");
+        writer.WriteLine("Id,Type,Brand,Model,PurchaseDate,PriceEur,Office,LocalValue,Currency,EndOfLifeStatus");
 
         foreach (Asset asset in assets)
         {
@@ -92,6 +99,8 @@ internal sealed class AssetService(IAssetRepository repository)
                 asset.PurchaseDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 asset.PriceEur.ToString(CultureInfo.InvariantCulture),
                 EscapeCsvField(asset.Office.Name),
+                GetLocalPrice(asset, currencyProvider).ToString("F2", CultureInfo.InvariantCulture),
+                asset.Office.Currency.ToString(),
                 EscapeCsvField(asset.GetEndOfLifeStatusLabel())));
         }
 
