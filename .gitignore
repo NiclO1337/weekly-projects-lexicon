@@ -480,3 +480,10 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Project-specific: on-demand CSV exports (not seed data - e.g. AssetTracker's
+# Export to CSV feature). Persisted seed data like assets.json IS committed.
+**/Data/*.csv
+
+# LibreOffice/OpenOffice lock files left behind when a file is open for editing
+.~lock.*#
