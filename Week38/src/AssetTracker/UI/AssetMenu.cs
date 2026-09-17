@@ -139,8 +139,8 @@ internal static class AssetMenu
 
         string term = ConsoleHelpers.ValidateInput(
             searchOption == "Search by Brand" 
-            ? "Brand  (or \"q\" to quit): " 
-            : "Model  (or \"q\" to quit): ",
+            ? "Brand (or \"q\" to quit): " 
+            : "Model (or \"q\" to quit): ",
             allowCancel: true);
 
         IReadOnlyList<Asset> results = searchOption == "Search by Brand"
@@ -151,6 +151,11 @@ internal static class AssetMenu
         {
             ConsoleHelpers.DisplayWarningMessage("No assets found.");
             return;
+        }
+        else
+        {
+            ConsoleHelpers.DisplaySuccessMessage(
+                $"Found {results.Count} {FormatHelpers.Pluralize(results.Count, "asset", "assets")} that matched \"{term}\"");
         }
 
         Console.WriteLine();
@@ -241,6 +246,51 @@ internal static class AssetMenu
                 case "Back to Main Menu":
                     OutputTracker.HasWritten = false; return;
             }
+        }
+    }
+
+    internal static void HandleExportToCsv(AssetService assetService)
+    {
+        ConsoleHelpers.Heading("Export to CSV");
+
+        List<string> sortOptions = ["Office", "Asset Type", "End of Life"];
+        string sortChoice = ConsoleHelpers.SelectFromList(
+            sortOptions,
+            s => s,
+            $"Sort exported assets by (1 - {sortOptions.Count} or \"q\" to quit): ",
+            allowCancel: true);
+
+        AssetSortMode sortMode = sortChoice switch
+        {
+            "Asset Type" => AssetSortMode.AssetType,
+            "End of Life" => AssetSortMode.EndOfLife,
+            _ => AssetSortMode.Office,
+        };
+
+        IReadOnlyList<Asset> assets = assetService.GetSortedAssets(sortMode);
+        if (assets.Count == 0)
+        {
+            ConsoleHelpers.DisplayWarningMessage("No assets found.");
+            return;
+        }
+
+        string fileName = ConsoleHelpers.ValidateInput<string>(
+            "File name (without extension) (or \"q\" to quit): ",
+            FormatHelpers.ValidateFileName(),
+            "Invalid file name - avoid characters like \\ / : * ? \" < > |.",
+            allowCancel: true);
+
+        string filePath = Path.Combine("Data", $"{fileName}.csv");
+
+        try
+        {
+            Directory.CreateDirectory("Data");
+            int count = AssetService.ExportToCsv(assets, filePath);
+            ConsoleHelpers.DisplaySuccessMessage($"Exported {count} {FormatHelpers.Pluralize(count, "asset", "assets")} to {filePath}.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            ConsoleHelpers.DisplayErrorMessage($"Could not write file: {ex.Message}");
         }
     }
 

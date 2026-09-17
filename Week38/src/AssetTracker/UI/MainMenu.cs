@@ -65,8 +65,7 @@ internal static class MainMenu
                     ConsoleHelpers.TryRun(() => AssetMenu.HandleRemoveAsset(assetService));
                     break;
                 case 6:
-                    // AssetMenu.HandleExportToCsv();
-                    ConsoleHelpers.DisplayWarningMessage("Not implemented yet.");
+                    ConsoleHelpers.TryRun(() => AssetMenu.HandleExportToCsv(assetService));
                     break;
                 case 7:
                     return;

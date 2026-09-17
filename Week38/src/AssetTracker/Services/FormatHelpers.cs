@@ -42,6 +42,22 @@ internal static class FormatHelpers
         };
     }
 
+    /// <summary>
+    /// Rejects filenames containing characters the filesystem won't allow
+    /// (path separators, wildcards, etc.), since this is used for user-entered CSV export names.
+    /// </summary>
+    internal static Func<string, (bool isValid, string result)> ValidateFileName()
+    {
+        return input =>
+        {
+            if (input.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                return (false, string.Empty);
+            }
+            return (true, input);
+        };
+    }
+
     internal static string Pluralize(int count, string singular, string plural)
     {
         return count == 1 ? singular : plural;

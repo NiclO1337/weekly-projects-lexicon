@@ -1,3 +1,4 @@
+using System.Globalization;
 using AssetTracker.Exceptions;
 using AssetTracker.Models;
 
@@ -74,5 +75,36 @@ internal sealed class AssetService(IAssetRepository repository)
             .ToList();
 
         return new AssetsPage(pageItems, clampedPage, totalPages);
+    }
+
+    internal static int ExportToCsv(IReadOnlyList<Asset> assets, string filePath)
+    {
+        using StreamWriter writer = new(filePath);
+        writer.WriteLine("Id,Type,Brand,Model,PurchaseDate,PriceEur,Office,EndOfLifeStatus");
+
+        foreach (Asset asset in assets)
+        {
+            writer.WriteLine(string.Join(',',
+                asset.Id.ToString(CultureInfo.InvariantCulture),
+                EscapeCsvField(asset.GetCategoryLabel()),
+                EscapeCsvField(asset.Brand),
+                EscapeCsvField(asset.Model),
+                asset.PurchaseDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                asset.PriceEur.ToString(CultureInfo.InvariantCulture),
+                EscapeCsvField(asset.Office.Name),
+                asset.GetEndOfLifeStatus().ToString()));
+        }
+
+        return assets.Count;
+    }
+
+    private static string EscapeCsvField(string value)
+    {
+        if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
+        {
+            return $"\"{value.Replace("\"", "\"\"")}\"";
+        }
+
+        return value;
     }
 }
