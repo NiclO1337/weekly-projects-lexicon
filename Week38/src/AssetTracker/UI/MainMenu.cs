@@ -59,12 +59,10 @@ internal static class MainMenu
                     ConsoleHelpers.TryRun(() => AssetMenu.HandleSearchAssets(assetService));
                     break;
                 case 4:
-                    // AssetMenu.HandleEditAssets();
-                    ConsoleHelpers.DisplayWarningMessage("Not implemented yet.");
+                    ConsoleHelpers.TryRun(() => AssetMenu.HandleEditAssets(assetService));
                     break;
                 case 5:
-                    // AssetMenu.HandleRemoveAsset();
-                    ConsoleHelpers.DisplayWarningMessage("Not implemented yet.");
+                    ConsoleHelpers.TryRun(() => AssetMenu.HandleRemoveAsset(assetService));
                     break;
                 case 6:
                     // AssetMenu.HandleExportToCsv();

@@ -9,4 +9,8 @@ internal interface IAssetRepository
     int GetNextId();
 
     void Add(Asset asset);
+
+    void Replace(Asset asset);
+
+    void Remove(int id);
 }

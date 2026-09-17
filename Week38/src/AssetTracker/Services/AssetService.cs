@@ -1,3 +1,4 @@
+using AssetTracker.Exceptions;
 using AssetTracker.Models;
 
 namespace AssetTracker.Services;
@@ -10,6 +11,21 @@ internal sealed class AssetService(IAssetRepository repository)
     {
         asset.Id = repository.GetNextId();
         repository.Add(asset);
+    }
+
+    internal Asset GetById(int id)
+    {
+        return repository.GetAll().FirstOrDefault(a => a.Id == id) ?? throw new AssetNotFoundException(id);
+    }
+
+    internal void ReplaceAsset(Asset asset)
+    {
+        repository.Replace(asset);
+    }
+
+    internal void RemoveAsset(int id)
+    {
+        repository.Remove(id);
     }
 
     internal IReadOnlyList<Asset> GetSortedAssets(AssetSortMode sortMode)

@@ -26,4 +26,26 @@ internal sealed class InMemoryAssetRepository : IAssetRepository
 
         assets.Add(asset);
     }
+
+    public void Replace(Asset asset)
+    {
+        int index = assets.FindIndex(a => a.Id == asset.Id);
+        if (index < 0)
+        {
+            throw new AssetNotFoundException(asset.Id);
+        }
+
+        assets[index] = asset;
+    }
+
+    public void Remove(int id)
+    {
+        int index = assets.FindIndex(a => a.Id == id);
+        if (index < 0)
+        {
+            throw new AssetNotFoundException(id);
+        }
+
+        assets.RemoveAt(index);
+    }
 }

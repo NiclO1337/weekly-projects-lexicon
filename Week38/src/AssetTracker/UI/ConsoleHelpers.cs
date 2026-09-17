@@ -6,7 +6,7 @@ internal static class ConsoleHelpers
 {
     internal const int MaxNameLength = 32;
 
-    internal static string ValidateInput(string prompt, bool allowCancel = false)
+    internal static string ValidateInput(string prompt, bool allowCancel = false, string? currentValue = null)
     {
         while (true)
         {
@@ -20,6 +20,11 @@ internal static class ConsoleHelpers
 
             if (string.IsNullOrWhiteSpace(input))
             {
+                if (currentValue is not null)
+                {
+                    return currentValue;
+                }
+
                 DisplayErrorMessage("Input can not be empty.");
                 continue;
             }
@@ -38,7 +43,9 @@ internal static class ConsoleHelpers
         string prompt,
         Func<string, (bool isValid, T result)> validator,
         string errorMessage = "Invalid input, try again.",
-        bool allowCancel = false)
+        bool allowCancel = false,
+        bool hasCurrentValue = false,
+        T currentValue = default!)
     {
         while (true)
         {
@@ -52,6 +59,11 @@ internal static class ConsoleHelpers
 
             if (string.IsNullOrWhiteSpace(input))
             {
+                if (hasCurrentValue)
+                {
+                    return currentValue;
+                }
+
                 DisplayErrorMessage("Input can not be empty.");
                 continue;
             }
