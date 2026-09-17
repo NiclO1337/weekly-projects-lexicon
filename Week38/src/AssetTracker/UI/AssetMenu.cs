@@ -16,7 +16,7 @@ internal static class AssetMenu
         string assetType = ConsoleHelpers.SelectFromList(
             assetTypes,
             type => type,
-            $"Select asset type (1 - {assetTypes.Count}): ",
+            $"Select asset type (1 - {assetTypes.Count} or \"q\" to quit): ",
             allowCancel: true);
 
         List<ComputerType> computerTypes = Enum.GetValues<ComputerType>().ToList();
@@ -24,21 +24,21 @@ internal static class AssetMenu
             ? ConsoleHelpers.SelectFromList(
                 computerTypes,
                 t => t.ToString(),
-                $"Select computer type (1 - {computerTypes.Count}): ",
+                $"Select computer type (1 - {computerTypes.Count} or \"q\" to quit): ",
                 allowCancel: true)
             : null;
 
-        string brand = ConsoleHelpers.ValidateInput("Brand: ", allowCancel: true);
-        string model = ConsoleHelpers.ValidateInput("Model: ", allowCancel: true);
+        string brand = ConsoleHelpers.ValidateInput("Brand (or \"q\" to quit): ", allowCancel: true);
+        string model = ConsoleHelpers.ValidateInput("Model (or \"q\" to quit): ", allowCancel: true);
 
         DateTime purchaseDate = ConsoleHelpers.ValidateInput(
-            "Purchase date (yyyy-MM-dd): ",
+            "Purchase date (yyyy-MM-dd) (or \"q\" to quit): ",
             FormatHelpers.ValidateDate(),
             "Invalid date. Use format yyyy-MM-dd and don't pick a future date.",
             allowCancel: true);
 
         decimal priceEur = ConsoleHelpers.ValidateInput(
-            "Price in EUR: ",
+            "Price in EUR (or \"q\" to quit): ",
             FormatHelpers.ValidatePositiveDecimal(),
             "Invalid price.",
             allowCancel: true);
@@ -46,7 +46,7 @@ internal static class AssetMenu
         Office office = ConsoleHelpers.SelectFromList(
             Offices,
             o => $"{o.Name} ({o.Currency})",
-            $"Select office (1 - {Offices.Count}): ",
+            $"Select office (1 - {Offices.Count} or \"q\" to quit): ",
             allowCancel: true);
 
         Asset asset = assetType switch
@@ -134,11 +134,13 @@ internal static class AssetMenu
         string searchOption = ConsoleHelpers.SelectFromList(
             searchOptions,
             option => option,
-            $"Select option (1 - {searchOptions.Count}): ",
+            $"Select option (1 - {searchOptions.Count} or \"q\" to quit): ",
             allowCancel: true);
 
         string term = ConsoleHelpers.ValidateInput(
-            searchOption == "Search by Brand" ? "Brand: " : "Model: ",
+            searchOption == "Search by Brand" 
+            ? "Brand  (or \"q\" to quit): " 
+            : "Model  (or \"q\" to quit): ",
             allowCancel: true);
 
         IReadOnlyList<Asset> results = searchOption == "Search by Brand"
@@ -159,7 +161,7 @@ internal static class AssetMenu
     {
         ConsoleHelpers.Heading("Edit Assets");
 
-        int? id = SelectAssetIdFromList(assetService);
+        int? id = SelectAssetIdFromList(assetService, "edit");
         if (id is null)
         {
             return;
@@ -180,12 +182,12 @@ internal static class AssetMenu
         {
             Console.WriteLine($"\nEditing: {asset.Brand} {asset.Model} (Id {asset.Id})");
 
-            List<string> menuItems = ["Edit All Fields", "Change Asset Type"];
+            List<string> menuItems = ["Edit All Fields"];
             if (asset is Computer)
             {
                 menuItems.Add("Change Computer Type");
             }
-            menuItems.AddRange(["Change Brand", "Change Model", "Change Purchase Date", "Change Price", "Change Office", "Back to Main Menu"]);
+            menuItems.AddRange(["Change Asset Type", "Change Brand", "Change Model", "Change Purchase Date", "Change Price", "Change Office", "Back to Main Menu"]);
 
             string choice = ConsoleHelpers.SelectFromList(menuItems, item => item, $"Select option (1 - {menuItems.Count}): ");
 
@@ -237,7 +239,7 @@ internal static class AssetMenu
                     ConsoleHelpers.DisplaySuccessMessage("Computer type updated successfully.");
                     break;
                 case "Back to Main Menu":
-                    OutputTracker.HasWritten = false;  return;
+                    OutputTracker.HasWritten = false; return;
             }
         }
     }
@@ -246,7 +248,7 @@ internal static class AssetMenu
     {
         ConsoleHelpers.Heading("Remove Asset");
 
-        int? id = SelectAssetIdFromList(assetService);
+        int? id = SelectAssetIdFromList(assetService, "remove");
         if (id is null)
         {
             return;
@@ -271,10 +273,10 @@ internal static class AssetMenu
         }
 
         assetService.RemoveAsset(asset.Id);
-        ConsoleHelpers.DisplaySuccessMessage($"{asset.Brand} {asset.Model} (Id {asset.Id}) removed.");
+        ConsoleHelpers.DisplaySuccessMessage($"{asset.Brand} {asset.Model} (Id {asset.Id}) removed successfully.");
     }
 
-    private static int? SelectAssetIdFromList(AssetService assetService)
+    private static int? SelectAssetIdFromList(AssetService assetService, string actionLabel)
     {
         int currentPage = 1;
 
@@ -292,7 +294,7 @@ internal static class AssetMenu
             ConsoleTableRenderer.RenderAssets(page.Items);
             Console.WriteLine($"\nPage {page.PageNumber} of {page.TotalPages}\n");
 
-            List<string> menuItems = ["Previous Page", "Next Page\n", "Enter Asset Id", "Back to Main Menu"];
+            List<string> menuItems = ["Previous Page", "Next Page\n", $"Enter Asset Id to {actionLabel}", "Back to Main Menu"];
             string choice = ConsoleHelpers.SelectFromList(menuItems, item => item, $"Select option (1 - {menuItems.Count}): ");
 
             switch (choice)
@@ -317,9 +319,9 @@ internal static class AssetMenu
                         currentPage++;
                     }
                     break;
-                case "Enter Asset Id":
+                case string s when s.StartsWith("Enter Asset Id"):
                     return ConsoleHelpers.ValidateInput(
-                        "Asset Id: ",
+                        "Asset Id (or \"q\" to quit): ",
                         ConsoleHelpers.ValidateIntegerRange(1, int.MaxValue),
                         "Invalid input, please enter a valid Id.",
                         allowCancel: true);
