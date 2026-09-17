@@ -1,11 +1,39 @@
 ﻿AssetTracker.UI.OutputTracker.Install();
 
-Console.WriteLine("\r\n                                               _   __,----'~~~~~~~~~`-----.__\r\n                                        .  .    `//====-              ____,-'~`\r\n                        -.            \\_|// .   /||\\\\  `~~~~`---.___./\r\n                  ______-==.       _-~o  `\\/    |||  \\\\           _,'`\r\n            __,--'   ,=='||\\=_    ;_,_,/ _-'|-   |`\\   \\\\        ,'\r\n         _-'      ,='    | \\\\`.    '',/~7  /-   /  ||   `\\.     /\r\n       .'       ,'       |  \\\\  \\_  \"  /  /-   /   ||      \\   /\r\n      / _____  /         |     \\\\.`-_/  /|- _/   ,||       \\ /\r\n     ,-'     `-|--'~~`--_ \\     `==-/  `| \\'--===-'       _/`\r\n               '         `-|      /|    )-'\\~'      _,--\"'\r\n                           '-~^\\_/ |    |   `\\_   ,^             /\\\r\n                                /  \\     \\__   \\/~               `\\__\r\n                            _,-' _/'\\ ,-'~____-'`-/                 ``===\\\r\n                           ((->/'    \\|||' `.     `\\.  ,                _||\r\n             ./                       \\_     `\\      `~---|__i__i__\\--~'_/\r\n            <_n_                     __-^-_    `)  \\-.______________,-~'\r\n             `B'\\)                  ///,-'~`__--^-  |-------~~~~^'\r\n             /^>                           ///,--~`-\\\r\n            `  `                                       -Tua Xiong");
+foreach (string line in new[]
+{
+    "",
+    "                                               _   __,----'~~~~~~~~~`-----.__",
+    "                                        .  .    `//====-              ____,-'~`",
+    "                        -.            \\_|// .   /||\\\\  `~~~~`---.___./",
+    "                  ______-==.       _-~o  `\\/    |||  \\\\           _,'`",
+    "            __,--'   ,=='||\\=_    ;_,_,/ _-'|-   |`\\   \\\\        ,'",
+    "         _-'      ,='    | \\\\`.    '',/~7  /-   /  ||   `\\.     /",
+    "       .'       ,'       |  \\\\  \\_  \"  /  /-   /   ||      \\   /",
+    "      / _____  /         |     \\\\.`-_/  /|- _/   ,||       \\ /",
+    "     ,-'     `-|--'~~`--_ \\     `==-/  `| \\'--===-'       _/`",
+    "               '         `-|      /|    )-'\\~'      _,--\"'",
+    "                           '-~^\\_/ |    |   `\\_   ,^             /\\",
+    "                                /  \\     \\__   \\/~               `\\__",
+    "                            _,-' _/'\\ ,-'~____-'`-/                 ``===\\",
+    "                           ((->/'    \\|||' `.     `\\.  ,                _||",
+    "             ./                       \\_     `\\      `~---|__i__i__\\--~'_/",
+    "            <_n_                     __-^-_    `)  \\-.______________,-~'",
+    "             `B'\\)                  ///,-'~`__--^-  |-------~~~~^'",
+    "             /^>                           ///,--~`-\\",
+    "            `  `                                       -Tua Xiong",
+})
+{
+    Console.WriteLine(line);
+}
 
-Console.WriteLine("\nWelcome to Dragon's hoard - guard your products well.\n");
-Console.WriteLine("A treasure-keeper's ledger for tracking your wares:");
-Console.WriteLine("add new stock to the hoard, search the vault, edit or");
-Console.WriteLine("retire old items, and check your riches at a glance.\n");
+Console.WriteLine();
+AssetTracker.UI.SlowConsole.WriteLineSlow("Welcome to Dragon's hoard - guard your products well.");
+Console.WriteLine();
+AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracking your wares:");
+AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
+AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.");
+Console.WriteLine();
 
 string dataFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "assets.json");
 
@@ -27,6 +55,21 @@ AssetTracker.UI.MainMenu.RunMainMenu(assetService);
 
 AssetTracker.UI.ConsoleHelpers.Heading("Closing application");
 
-Console.WriteLine("The hoard is secure and the ledger is closed... for now.\n" +
-    "Farewell, treasure keeper!\n\n\n" +
-    "                        \\`-\\`-._\r\n                         \\` )`. `-.__      ,\r\n      '' , . _       _,-._;'_,-`__,-'    ,/\r\n     : `. ` , _' :- '--'._ ' `------._,-;'\r\n      `- ,`- '            `--..__,,---'   hh\n\n");
+AssetTracker.UI.SlowConsole.WriteLineSlow("The hoard is secure and the ledger is closed... for now.");
+Console.WriteLine();
+AssetTracker.UI.SlowConsole.WriteLineSlow("Farewell, treasure keeper!");
+Console.WriteLine();
+Console.WriteLine();
+
+foreach (string line in new[]
+{
+    "                        \\`-\\`-._",
+    "                         \\` )`. `-.__      ,",
+    "      '' , . _       _,-._;'_,-`__,-'    ,/",
+    "     : `. ` , _' :- '--'._ ' `------._,-;'",
+    "      `- ,`- '            `--..__,,---'   hh",
+})
+{
+    Console.WriteLine(line);
+}
+Console.WriteLine();

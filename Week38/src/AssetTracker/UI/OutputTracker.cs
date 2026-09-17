@@ -10,6 +10,11 @@ namespace AssetTracker.UI;
 /// </summary>
 internal static class OutputTracker
 {
+    // Applied per '\n'-delimited segment in every Write/WriteLine(string) call, so
+    // multi-line strings (e.g. "\nPage 1 of 3\n") pace the same as separate WriteLine
+    // calls - callers never need to remember to route output through a "slow" helper.
+    private const int RowDelayMs = 30;
+
     private static bool hasWritten;
 
     internal static bool HasWritten
@@ -29,23 +34,54 @@ internal static class OutputTracker
 
         public override void Write(string? value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
-                hasWritten = true;
+                return;
             }
+
+            hasWritten = true;
+
+            string[] segments = value.Split('\n');
+            for (int i = 0; i < segments.Length; i++)
+            {
+                inner.Write(segments[i]);
+                if (i < segments.Length - 1)
+                {
+                    inner.Write('\n');
+                    Thread.Sleep(RowDelayMs);
+                }
+            }
+        }
+
+        public override void Write(char value)
+        {
+            hasWritten = true;
             inner.Write(value);
         }
 
         public override void WriteLine(string? value)
         {
             hasWritten = true;
-            inner.WriteLine(value);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                inner.WriteLine();
+                Thread.Sleep(RowDelayMs);
+                return;
+            }
+
+            foreach (string line in value.Split('\n'))
+            {
+                inner.WriteLine(line);
+                Thread.Sleep(RowDelayMs);
+            }
         }
 
         public override void WriteLine()
         {
             hasWritten = true;
             inner.WriteLine();
+            Thread.Sleep(RowDelayMs);
         }
     }
 }
