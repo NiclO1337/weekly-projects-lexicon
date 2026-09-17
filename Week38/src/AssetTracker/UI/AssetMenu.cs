@@ -6,8 +6,6 @@ namespace AssetTracker.UI;
 
 internal static class AssetMenu
 {
-    private static readonly List<Office> Offices = [Office.Germany, Office.Sweden, Office.Usa, Office.Turkey];
-
     internal static void HandleAddAsset(AssetService assetService)
     {
         ConsoleHelpers.Heading("Add Asset");
@@ -44,9 +42,9 @@ internal static class AssetMenu
             allowCancel: true);
 
         Office office = ConsoleHelpers.SelectFromList(
-            Offices,
+            Office.All,
             o => $"{o.Name} ({o.Currency})",
-            $"Select office (1 - {Offices.Count} or \"q\" to quit): ",
+            $"Select office (1 - {Office.All.Count} or \"q\" to quit): ",
             allowCancel: true);
 
         Asset asset = assetType switch
@@ -459,9 +457,9 @@ internal static class AssetMenu
     private static void EditOffice(Asset asset)
     {
         asset.Office = ConsoleHelpers.SelectFromList(
-            Offices,
+            Office.All,
             o => $"{o.Name} ({o.Currency})",
-            $"Select office (1 - {Offices.Count}, current: {asset.Office.Name}): ");
+            $"Select office (1 - {Office.All.Count}, current: {asset.Office.Name}): ");
     }
 
     private static void EditComputerType(Computer computer)

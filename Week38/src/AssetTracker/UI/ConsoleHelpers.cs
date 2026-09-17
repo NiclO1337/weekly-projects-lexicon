@@ -128,7 +128,7 @@ internal static class ConsoleHelpers
     }
 
     internal static T SelectFromList<T>(
-        List<T> items,
+        IReadOnlyList<T> items,
         Func<T, string> display,
         string prompt = "Select an option: ",
         bool allowCancel = false)
