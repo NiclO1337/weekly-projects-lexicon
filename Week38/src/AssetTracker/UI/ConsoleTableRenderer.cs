@@ -18,7 +18,7 @@ internal static class ConsoleTableRenderer
         int officeWidth = Math.Max("Office".Length, assets.Max(a => a.Office.Name.Length)) + extraPadding;
         int statusWidth = Math.Max("EOL Status".Length, assets.Max(a => GetStatusLabel(a.GetEndOfLifeStatus()).Length));
 
-        string header = $"{"id".PadRight(idWidth)}{"Type".PadRight(typeWidth)}{"Brand".PadRight(brandWidth)}" +
+        string header = $"{"Id".PadRight(idWidth)}{"Type".PadRight(typeWidth)}{"Brand".PadRight(brandWidth)}" +
             $"{"Model".PadRight(modelWidth)}{"Purchase Date".PadRight(dateWidth)}{"Price (EUR)".PadRight(priceWidth)}" +
             $"{"Office".PadRight(officeWidth)}{"EOL Status".PadRight(statusWidth)}";
 

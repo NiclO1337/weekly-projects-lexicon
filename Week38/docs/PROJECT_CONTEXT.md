@@ -145,3 +145,8 @@ Select option:
   otherwise stay plain formatted text.
 - Automated unit tests
 - Support for offices/currencies beyond Sweden/USA/Turkey (architecture should make adding one easy, but no UI for managing offices is required)
+- Complex freetext search — a single search box that splits input into words and
+  matches each word against both Brand and Model (OR across fields/words), instead
+  of the current "pick Brand or Model, then enter one term" flow. Needs a relevance
+  ranking strategy (e.g. items matching more words should outrank single-word
+  matches) to stay usable once results start piling up.

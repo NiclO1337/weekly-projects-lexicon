@@ -125,6 +125,35 @@ internal static class AssetMenu
         }
     }
 
+    internal static void HandleSearchAssets(AssetService assetService)
+    {
+        ConsoleHelpers.Heading("Search Assets");
+
+        List<string> searchOptions = ["Search by Brand", "Search by Model"];
+        string searchOption = ConsoleHelpers.SelectFromList(
+            searchOptions,
+            option => option,
+            $"Select option (1 - {searchOptions.Count}): ",
+            allowCancel: true);
+
+        string term = ConsoleHelpers.ValidateInput(
+            searchOption == "Search by Brand" ? "Brand: " : "Model: ",
+            allowCancel: true);
+
+        IReadOnlyList<Asset> results = searchOption == "Search by Brand"
+            ? assetService.SearchByBrand(term)
+            : assetService.SearchByModel(term);
+
+        if (results.Count == 0)
+        {
+            ConsoleHelpers.DisplayWarningMessage("No assets found.");
+            return;
+        }
+
+        Console.WriteLine();
+        ConsoleTableRenderer.RenderAssets(results);
+    }
+
     private static string GetSortModeLabel(AssetSortMode mode)
     {
         return mode switch

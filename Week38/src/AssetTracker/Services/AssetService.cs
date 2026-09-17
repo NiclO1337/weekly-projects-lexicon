@@ -32,6 +32,20 @@ internal sealed class AssetService(IAssetRepository repository)
         };
     }
 
+    internal IReadOnlyList<Asset> SearchByBrand(string searchTerm)
+    {
+        return repository.GetAll()
+            .Where(a => a.Brand.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    internal IReadOnlyList<Asset> SearchByModel(string searchTerm)
+    {
+        return repository.GetAll()
+            .Where(a => a.Model.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
     internal AssetsPage GetAssetsPage(AssetSortMode sortMode, int pageNumber)
     {
         IReadOnlyList<Asset> sorted = GetSortedAssets(sortMode);
