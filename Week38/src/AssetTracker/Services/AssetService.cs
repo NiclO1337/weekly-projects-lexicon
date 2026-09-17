@@ -6,7 +6,7 @@ namespace AssetTracker.Services;
 
 internal sealed class AssetService(IAssetRepository repository)
 {
-    internal const int PageSize = 5;
+    internal const int PageSize = 10;
 
     internal void AddAsset(Asset asset)
     {

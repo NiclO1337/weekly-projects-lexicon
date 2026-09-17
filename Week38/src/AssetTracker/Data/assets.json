@@ -1,13 +1,13 @@
 [
   {
     "assetType": "Computer",
+    "computerType": "Laptop",
     "id": 1,
     "brand": "Apple",
     "model": "MacBook Pro",
     "purchaseDate": "2025-09-17",
     "priceEur": 1800,
-    "office": "Germany",
-    "computerType": "Laptop"
+    "office": "Germany"
   },
   {
     "assetType": "MobilePhone",
@@ -20,13 +20,13 @@
   },
   {
     "assetType": "Computer",
+    "computerType": "Desktop",
     "id": 3,
     "brand": "Dell",
     "model": "OptiPlex 7090",
     "purchaseDate": "2023-08-17",
     "priceEur": 900,
-    "office": "Sweden",
-    "computerType": "Desktop"
+    "office": "Sweden"
   },
   {
     "assetType": "Tablet",
@@ -39,13 +39,13 @@
   },
   {
     "assetType": "Computer",
+    "computerType": "Laptop",
     "id": 5,
     "brand": "Lenovo",
     "model": "ThinkPad X1",
     "purchaseDate": "2024-02-17",
     "priceEur": 1400,
-    "office": "USA",
-    "computerType": "Laptop"
+    "office": "USA"
   },
   {
     "assetType": "MobilePhone",
@@ -67,13 +67,13 @@
   },
   {
     "assetType": "Computer",
+    "computerType": "Desktop",
     "id": 8,
     "brand": "HP",
     "model": "EliteDesk 800",
     "purchaseDate": "2026-01-17",
     "priceEur": 850,
-    "office": "Turkey",
-    "computerType": "Desktop"
+    "office": "Turkey"
   },
   {
     "assetType": "Tablet",
@@ -92,5 +92,146 @@
     "purchaseDate": "2024-03-17",
     "priceEur": 600,
     "office": "Sweden"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Laptop",
+    "id": 11,
+    "brand": "Asus",
+    "model": "ZenBook 14",
+    "purchaseDate": "2026-06-17",
+    "priceEur": 1200,
+    "office": "Germany"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 12,
+    "brand": "Apple",
+    "model": "iPhone 13",
+    "purchaseDate": "2025-11-17",
+    "priceEur": 750,
+    "office": "Sweden"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 13,
+    "brand": "Samsung",
+    "model": "Galaxy Tab A8",
+    "purchaseDate": "2025-06-17",
+    "priceEur": 350,
+    "office": "USA"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Desktop",
+    "id": 14,
+    "brand": "Acer",
+    "model": "Aspire TC",
+    "purchaseDate": "2024-09-17",
+    "priceEur": 700,
+    "office": "Turkey"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 15,
+    "brand": "Sony",
+    "model": "Xperia 5",
+    "purchaseDate": "2024-02-17",
+    "priceEur": 800,
+    "office": "Germany"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Laptop",
+    "id": 16,
+    "brand": "Microsoft",
+    "model": "Surface Laptop 5",
+    "purchaseDate": "2024-01-17",
+    "priceEur": 1600,
+    "office": "Sweden"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 17,
+    "brand": "Lenovo",
+    "model": "Tab P11",
+    "purchaseDate": "2024-03-17",
+    "priceEur": 300,
+    "office": "USA"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 18,
+    "brand": "Xiaomi",
+    "model": "Redmi Note 12",
+    "purchaseDate": "2024-02-17",
+    "priceEur": 300,
+    "office": "Turkey"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Desktop",
+    "id": 19,
+    "brand": "Dell",
+    "model": "Inspiron 3910",
+    "purchaseDate": "2023-11-17",
+    "priceEur": 650,
+    "office": "Germany"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 20,
+    "brand": "Apple",
+    "model": "iPad Mini",
+    "purchaseDate": "2023-10-17",
+    "priceEur": 550,
+    "office": "Sweden"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 21,
+    "brand": "Samsung",
+    "model": "Galaxy A53",
+    "purchaseDate": "2023-12-17",
+    "priceEur": 400,
+    "office": "USA"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Laptop",
+    "id": 22,
+    "brand": "HP",
+    "model": "Pavilion 15",
+    "purchaseDate": "2023-07-17",
+    "priceEur": 900,
+    "office": "Turkey"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 23,
+    "brand": "Samsung",
+    "model": "Galaxy Tab S6",
+    "purchaseDate": "2023-03-17",
+    "priceEur": 500,
+    "office": "Germany"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 24,
+    "brand": "Google",
+    "model": "Pixel 5",
+    "purchaseDate": "2022-09-17",
+    "priceEur": 500,
+    "office": "Sweden"
+  },
+  {
+    "assetType": "Computer",
+    "computerType": "Desktop",
+    "id": 25,
+    "brand": "Lenovo",
+    "model": "ThinkCentre M75",
+    "purchaseDate": "2023-08-17",
+    "priceEur": 600,
+    "office": "USA"
   }
 ]
