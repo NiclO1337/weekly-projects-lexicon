@@ -89,20 +89,35 @@ Asset (abstract)
   hardcoded.
 
 ## 7. Persistence (Level 5)
-- File: `Data/assets.json`
+- File: `Data/assets.json`, resolved via `AppPaths.DataDirectory` (walks up from the build
+  output to the project folder) so it always lands at `src/AssetTracker/Data` regardless of
+  how the app is launched (`dotnet run`, IDE debug, or the built `.exe` directly).
 - Uses `System.Text.Json` with polymorphic serialization
-  (`[JsonPolymorphic]` / `[JsonDerivedType]` on `Asset`) so Computer/MobilePhone/Tablet
-  round-trip correctly.
-- On startup: load all assets, determine the next available `Id`.
+  (`[JsonPolymorphic(TypeDiscriminatorPropertyName = "assetType")]` / `[JsonDerivedType]` on
+  `Asset`) so Computer/MobilePhone/Tablet round-trip correctly. **The `assetType` discriminator
+  property must be the first key in each JSON object** - System.Text.Json's polymorphic reader
+  requires this and throws otherwise.
+- `Office` serializes as its plain `Name` string (via `OfficeJsonConverter`), not a nested
+  object - looked up against `Office.All` on read.
+- `PurchaseDate` serializes as a plain `yyyy-MM-dd` string (via `DateOnlyJsonConverter`),
+  matching the format used everywhere else in the app.
+- Enums (`ComputerType`) serialize as their string name (`JsonStringEnumConverter`), not a
+  numeric value.
+- On startup: load all assets, determine the next available `Id`. If the file is corrupted,
+  show a warning and start with an empty list rather than crashing (mirrors the planned
+  `ApiCurrencyProvider` fallback behavior in §6).
 - On every add/edit/remove: re-save the full file (auto-save, no explicit "save" step
   needed from the user).
 - Duplicate IDs must never be written to the file — checked before every write.
+- The committed `Data/assets.json` seed data is intentional (not test cruft) - the teacher
+  requires sample data to be present when the project starts. CSV exports from the
+  "Export to CSV" feature are gitignored instead, since those are on-demand/regenerable.
 
 Example `assets.json` entry:
 ```json
 {
-  "id": 1,
   "assetType": "Computer",
+  "id": 1,
   "computerType": "Laptop",
   "brand": "Apple",
   "model": "MacBook Pro",
