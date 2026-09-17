@@ -63,16 +63,75 @@ internal static class AssetMenu
 
     internal static void HandleViewAssets(AssetService assetService)
     {
-        ConsoleHelpers.Heading("View Assets");
+        AssetSortMode sortMode = AssetSortMode.Office;
+        int currentPage = 1;
 
-        IReadOnlyList<Asset> assets = assetService.GetAllAssets();
-
-        if (assets.Count == 0)
+        while (true)
         {
-            ConsoleHelpers.DisplayWarningMessage("No assets found.");
-            return;
-        }
+            ConsoleHelpers.Heading("View Assets");
 
-        ConsoleTableRenderer.RenderAssets(assets);
+            AssetsPage page = assetService.GetAssetsPage(sortMode, currentPage);
+            currentPage = page.PageNumber;
+
+            if (page.Items.Count == 0)
+            {
+                ConsoleHelpers.DisplayWarningMessage("No assets found.");
+                return;
+            }
+
+            ConsoleTableRenderer.RenderAssets(page.Items);
+            Console.WriteLine($"\nPage {page.PageNumber} of {page.TotalPages} (sorted by {GetSortModeLabel(sortMode).ToLower()})\n");
+
+            List<string> menuItems = ["Previous Page", "Next Page\n", "Sort: Office", "Sort: Asset Type", "Sort: End of Life", "Back to Main Menu"];
+            string choice = ConsoleHelpers.SelectFromList(menuItems, item => item, $"Select option (1 - {menuItems.Count}): ");
+
+            switch (choice)
+            {
+                case "Previous Page":
+                    if (currentPage <= 1)
+                    {
+                        ConsoleHelpers.DisplayWarningMessage("Already on the first page.");
+                    }
+                    else
+                    {
+                        currentPage--;
+                    }
+                    break;
+                case "Next Page\n":
+                    if (currentPage >= page.TotalPages)
+                    {
+                        ConsoleHelpers.DisplayWarningMessage("Already on the last page.");
+                    }
+                    else
+                    {
+                        currentPage++;
+                    }
+                    break;
+                case "Sort: Office (default)":
+                    sortMode = AssetSortMode.Office;
+                    currentPage = 1;
+                    break;
+                case "Sort: Asset Type":
+                    sortMode = AssetSortMode.AssetType;
+                    currentPage = 1;
+                    break;
+                case "Sort: End of Life":
+                    sortMode = AssetSortMode.EndOfLife;
+                    currentPage = 1;
+                    break;
+                case "Back to Main Menu":
+                    OutputTracker.HasWritten = false;  return;
+            }
+        }
+    }
+
+    private static string GetSortModeLabel(AssetSortMode mode)
+    {
+        return mode switch
+        {
+            AssetSortMode.AssetType => "Asset Type",
+            AssetSortMode.EndOfLife => "End of Life",
+            _ => "Office",
+        };
     }
 }
