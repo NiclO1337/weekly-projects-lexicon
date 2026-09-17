@@ -27,13 +27,13 @@ foreach (string line in new[]
     Console.WriteLine(line);
 }
 
-Console.WriteLine();
-AssetTracker.UI.SlowConsole.WriteLineSlow("Welcome to Dragon's hoard - guard your products well.");
-Console.WriteLine();
-AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracking your wares:");
-AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
-AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.");
-Console.WriteLine();
+//Console.WriteLine();
+//AssetTracker.UI.SlowConsole.WriteLineSlow("Welcome to Dragon's hoard - guard your products well.");
+//Console.WriteLine();
+//AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracking your wares:");
+//AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
+//AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.");
+//Console.WriteLine();
 
 string dataFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "assets.json");
 
