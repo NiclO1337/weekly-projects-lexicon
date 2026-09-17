@@ -107,7 +107,7 @@ internal static class AssetMenu
                         currentPage++;
                     }
                     break;
-                case "Sort: Office (default)":
+                case "Sort: Office":
                     sortMode = AssetSortMode.Office;
                     currentPage = 1;
                     break;
