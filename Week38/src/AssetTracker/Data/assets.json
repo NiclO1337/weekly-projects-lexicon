@@ -1,0 +1,96 @@
+[
+  {
+    "assetType": "Computer",
+    "id": 1,
+    "brand": "Apple",
+    "model": "MacBook Pro",
+    "purchaseDate": "2025-09-17",
+    "priceEur": 1800,
+    "office": "Germany",
+    "computerType": "Laptop"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 2,
+    "brand": "Samsung",
+    "model": "Galaxy S21",
+    "purchaseDate": "2024-01-17",
+    "priceEur": 650,
+    "office": "Germany"
+  },
+  {
+    "assetType": "Computer",
+    "id": 3,
+    "brand": "Dell",
+    "model": "OptiPlex 7090",
+    "purchaseDate": "2023-08-17",
+    "priceEur": 900,
+    "office": "Sweden",
+    "computerType": "Desktop"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 4,
+    "brand": "Apple",
+    "model": "iPad Air",
+    "purchaseDate": "2026-03-17",
+    "priceEur": 700,
+    "office": "Sweden"
+  },
+  {
+    "assetType": "Computer",
+    "id": 5,
+    "brand": "Lenovo",
+    "model": "ThinkPad X1",
+    "purchaseDate": "2024-02-17",
+    "priceEur": 1400,
+    "office": "USA",
+    "computerType": "Laptop"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 6,
+    "brand": "Google",
+    "model": "Pixel 6",
+    "purchaseDate": "2023-07-17",
+    "priceEur": 550,
+    "office": "USA"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 7,
+    "brand": "Samsung",
+    "model": "Galaxy Tab S8",
+    "purchaseDate": "2025-03-17",
+    "priceEur": 600,
+    "office": "Turkey"
+  },
+  {
+    "assetType": "Computer",
+    "id": 8,
+    "brand": "HP",
+    "model": "EliteDesk 800",
+    "purchaseDate": "2026-01-17",
+    "priceEur": 850,
+    "office": "Turkey",
+    "computerType": "Desktop"
+  },
+  {
+    "assetType": "Tablet",
+    "id": 9,
+    "brand": "Microsoft",
+    "model": "Surface Pro 8",
+    "purchaseDate": "2023-11-17",
+    "priceEur": 1100,
+    "office": "Germany"
+  },
+  {
+    "assetType": "MobilePhone",
+    "id": 10,
+    "brand": "OnePlus",
+    "model": "9 Pro",
+    "purchaseDate": "2024-03-17",
+    "priceEur": 600,
+    "office": "Sweden"
+  }
+]
