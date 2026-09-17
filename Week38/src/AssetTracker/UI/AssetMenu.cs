@@ -280,6 +280,12 @@ internal static class AssetMenu
 
         string filePath = Path.Combine(AppPaths.DataDirectory, $"{fileName}.csv");
 
+        if (File.Exists(filePath) && !ConsoleHelpers.Confirm("A file with this name already exists. Are you sure you want to overwrite it?"))
+        {
+            ConsoleHelpers.DisplayWarningMessage("Cancelled - export was not saved.");
+            return;
+        }
+
         try
         {
             Directory.CreateDirectory(AppPaths.DataDirectory);
