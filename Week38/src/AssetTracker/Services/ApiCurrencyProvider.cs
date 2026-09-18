@@ -7,9 +7,11 @@ namespace AssetTracker.Services;
 /// <summary>
 /// Fetches EUR-based rates from the free, no-key Frankfurter API (ECB reference rates),
 /// caching the result in a single file keyed by date so repeated runs on the same day
-/// never re-call the API. On any failure (network, parsing, cache read/write) it falls
-/// back to HardcodedCurrencyProvider rather than throwing - callers check UsedFallback
-/// to decide whether to inform the user, since this layer can't touch the console.
+/// never re-call the API. On failure it falls back first to whatever was last cached
+/// (even if stale), and only to HardcodedCurrencyProvider if no cache exists at all -
+/// this keeps offline behavior from drifting years out of date as long as the API has
+/// been reachable at least once. Never throws; callers check Source to decide what to
+/// tell the user, since this layer can't touch the console.
 /// </summary>
 internal sealed class ApiCurrencyProvider : ICurrencyProvider
 {
@@ -21,29 +23,42 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
     private readonly HardcodedCurrencyProvider fallback = new();
     private readonly Dictionary<string, decimal> rates;
 
-    internal bool UsedFallback { get; }
+    internal CurrencyRateSource Source { get; }
+
+    internal string? CachedDate { get; }
 
     internal ApiCurrencyProvider(string cacheFilePath)
     {
         string today = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-        ExchangeRateData? cached = TryReadCache(cacheFilePath);
-        if (cached is not null && cached.Date == today)
+        ExchangeRateCache? cached = TryReadCache(cacheFilePath);
+        if (cached is not null && cached.FetchedOn == today)
         {
             rates = cached.Rates;
+            Source = CurrencyRateSource.TodayCache;
+            CachedDate = cached.FetchedOn;
             return;
         }
 
-        ExchangeRateData? fetched = TryFetchLive();
+        ApiResponse? fetched = TryFetchLive();
         if (fetched is not null)
         {
-            WriteCache(cacheFilePath, fetched);
+            WriteCache(cacheFilePath, new ExchangeRateCache(today, fetched.Rates));
             rates = fetched.Rates;
+            Source = CurrencyRateSource.LiveApi;
             return;
         }
 
-        UsedFallback = true;
+        if (cached is not null)
+        {
+            rates = cached.Rates;
+            Source = CurrencyRateSource.StaleCache;
+            CachedDate = cached.FetchedOn;
+            return;
+        }
+
         rates = [];
+        Source = CurrencyRateSource.Hardcoded;
     }
 
     public decimal GetRate(CurrencyCode currency)
@@ -61,7 +76,7 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
         return fallback.GetRate(currency);
     }
 
-    private static ExchangeRateData? TryReadCache(string cacheFilePath)
+    private static ExchangeRateCache? TryReadCache(string cacheFilePath)
     {
         try
         {
@@ -71,7 +86,7 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
             }
 
             string json = File.ReadAllText(cacheFilePath);
-            return JsonSerializer.Deserialize<ExchangeRateData>(json, SerializerOptions);
+            return JsonSerializer.Deserialize<ExchangeRateCache>(json, SerializerOptions);
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
@@ -79,12 +94,12 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
         }
     }
 
-    private static ExchangeRateData? TryFetchLive()
+    private static ApiResponse? TryFetchLive()
     {
         try
         {
             string json = HttpClient.GetStringAsync(ApiUrl).GetAwaiter().GetResult();
-            return JsonSerializer.Deserialize<ExchangeRateData>(json, SerializerOptions);
+            return JsonSerializer.Deserialize<ApiResponse>(json, SerializerOptions);
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
@@ -92,7 +107,7 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
         }
     }
 
-    private static void WriteCache(string cacheFilePath, ExchangeRateData data)
+    private static void WriteCache(string cacheFilePath, ExchangeRateCache data)
     {
         try
         {
@@ -111,5 +126,11 @@ internal sealed class ApiCurrencyProvider : ICurrencyProvider
         }
     }
 
-    private sealed record ExchangeRateData(string Date, Dictionary<string, decimal> Rates);
+    // The API's own "date" is the ECB rate-effective date (only updates on ECB business
+    // days), not "when we fetched it" - comparing that against DateTime.Today would mean
+    // never matching over a weekend and re-calling the API on every run. FetchedOn is our
+    // own calendar-day stamp, recorded separately, used purely for cache-freshness.
+    private sealed record ApiResponse(string Date, Dictionary<string, decimal> Rates);
+
+    private sealed record ExchangeRateCache(string FetchedOn, Dictionary<string, decimal> Rates);
 }
