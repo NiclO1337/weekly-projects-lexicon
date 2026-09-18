@@ -34,7 +34,7 @@ internal static class MainMenu
 
     internal static void RunMainMenu(AssetService assetService)
     {
-        OutputTracker.HasWritten = true; // pause once, right after the intro text
+        OutputTracker.HasWritten = false; // do not pause after API information about exchange rates
 
         while (true)
         {

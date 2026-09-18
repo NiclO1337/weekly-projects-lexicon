@@ -26,21 +26,28 @@ foreach (string line in new[]
 {
     Console.WriteLine(line);
 }
-// TODO: Uncomment welcome message when manual testing is done.
-//Console.WriteLine();
-//AssetTracker.UI.SlowConsole.WriteLineSlow("Welcome to Dragon's hoard - guard your products well.");
-//Console.WriteLine();
-//AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracking your wares:");
-//AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
-//AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.");
-//Console.WriteLine();
 
+AssetTracker.UI.SlowConsole.WriteLineSlow("\nWelcome to Dragon's hoard - guard your products well.");
+Console.WriteLine();
+AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracking your wares:");
+AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
+AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.\n");
+
+Console.WriteLine("\nPress any key to continue to main menu...\n");
+Console.ReadKey();
+const int FetchDelayMs = 800;
+
+AssetTracker.UI.SlowConsole.WriteLineSlow("Fetching data...");
+Thread.Sleep(FetchDelayMs);
 string dataFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "assets.json");
 
 AssetTracker.Services.IAssetRepository assetRepository;
 try
 {
     assetRepository = new AssetTracker.Services.JsonAssetRepository(dataFilePath);
+    int assetCount = assetRepository.GetAll().Count;
+    AssetTracker.UI.ConsoleHelpers.DisplaySuccessMessage(
+        $"Loaded {assetCount} {AssetTracker.Services.FormatHelpers.Pluralize(assetCount, "asset", "assets")} from {dataFilePath}.");
 }
 catch (AssetTracker.Exceptions.InvalidAssetDataException ex)
 {
@@ -49,32 +56,27 @@ catch (AssetTracker.Exceptions.InvalidAssetDataException ex)
     assetRepository = new AssetTracker.Services.JsonAssetRepository(dataFilePath, skipLoad: true);
 }
 
-Console.WriteLine();
-Console.WriteLine("Currency data source:");
-Console.WriteLine("1. Hardcoded rates (offline, default)");
-Console.WriteLine("2. Live exchange rate API (cached once per day)");
+AssetTracker.UI.SlowConsole.WriteLineSlow("\nFetching exchange rates...");
+Thread.Sleep(FetchDelayMs);
+string ratesFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "exchangeRates.json");
+AssetTracker.Services.ApiCurrencyProvider currencyProvider = new(ratesFilePath);
 
-int currencyChoice = AssetTracker.UI.ConsoleHelpers.ValidateInput(
-    "Select option (1 - 2, Enter for default): ",
-    AssetTracker.UI.ConsoleHelpers.ValidateIntegerRange(1, 2),
-    "Invalid input, select 1 or 2.",
-    hasCurrentValue: true,
-    currentValue: 1);
-
-AssetTracker.Services.ICurrencyProvider currencyProvider;
-if (currencyChoice == 2)
+switch (currencyProvider.Source)
 {
-    string ratesFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "exchangeRates.json");
-    AssetTracker.Services.ApiCurrencyProvider apiCurrencyProvider = new(ratesFilePath);
-    if (apiCurrencyProvider.UsedFallback)
-    {
-        AssetTracker.UI.ConsoleHelpers.DisplayWarningMessage("Could not reach the exchange rate API - using hardcoded rates instead.");
-    }
-    currencyProvider = apiCurrencyProvider;
-}
-else
-{
-    currencyProvider = new AssetTracker.Services.HardcodedCurrencyProvider();
+    case AssetTracker.Services.CurrencyRateSource.TodayCache:
+        AssetTracker.UI.ConsoleHelpers.DisplaySuccessMessage($"Using today's cached exchange rates ({currencyProvider.CachedDate}).");
+        break;
+    case AssetTracker.Services.CurrencyRateSource.LiveApi:
+        AssetTracker.UI.ConsoleHelpers.DisplaySuccessMessage("Fetched the latest exchange rates from the API.");
+        break;
+    case AssetTracker.Services.CurrencyRateSource.StaleCache:
+        AssetTracker.UI.ConsoleHelpers.DisplayWarningMessage(
+            $"Could not reach the exchange rate API - using cached rates from {currencyProvider.CachedDate} instead.");
+        break;
+    case AssetTracker.Services.CurrencyRateSource.Hardcoded:
+        AssetTracker.UI.ConsoleHelpers.DisplayWarningMessage(
+            "Could not reach the exchange rate API and no cached rates were found - using built-in hardcoded rates instead.");
+        break;
 }
 
 AssetTracker.Services.AssetService assetService = new(assetRepository, currencyProvider);

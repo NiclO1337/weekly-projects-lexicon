@@ -81,7 +81,7 @@ internal static class AssetMenu
             ConsoleTableRenderer.RenderAssets(page.Items, assetService.CurrencyProvider);
             Console.WriteLine($"\nPage {page.PageNumber} of {page.TotalPages} (sorted by {GetSortModeLabel(sortMode).ToLower()})\n");
 
-            List<string> menuItems = ["Previous Page", "Next Page\n", "Sort: Office", "Sort: Asset Type", "Sort: End of Life", "Back to Main Menu"];
+            List<string> menuItems = ["Previous Page", "Next Page\n", "Sort: Office", "Sort: Asset Type", "Sort: End of Life\n", "Back to Main Menu"];
             string choice = ConsoleHelpers.SelectFromList(menuItems, item => item, $"Select option (1 - {menuItems.Count}): ");
 
             switch (choice)
@@ -114,7 +114,7 @@ internal static class AssetMenu
                     sortMode = AssetSortMode.AssetType;
                     currentPage = 1;
                     break;
-                case "Sort: End of Life":
+                case "Sort: End of Life\n":
                     sortMode = AssetSortMode.EndOfLife;
                     currentPage = 1;
                     break;
