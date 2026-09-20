@@ -9,7 +9,9 @@ internal static class MainMenu
         if (pauseFirst)
         {
             Console.Write("\nPress any key to continue to main menu...");
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.ReadKey();
+            Console.ResetColor();
         }
 
         Console.WriteLine("\n\n================================================");

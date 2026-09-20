@@ -114,6 +114,7 @@ internal static class ConsoleHelpers
         Console.ResetColor();
     }
 
+
     internal static void DisplayNumberedList<T>(IReadOnlyList<T> items, Func<T, string> display)
     {
         for (int i = 0; i < items.Count; i++)

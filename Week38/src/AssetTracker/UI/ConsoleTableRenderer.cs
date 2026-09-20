@@ -15,7 +15,7 @@ internal static class ConsoleTableRenderer
         int typeWidth = Math.Max("Type".Length, assets.Max(a => a.GetCategoryLabel().Length)) + bigPadding;
         int brandWidth = Math.Max("Brand".Length, assets.Max(a => a.Brand.Length)) + bigPadding;
         int modelWidth = Math.Max("Model".Length, assets.Max(a => a.Model.Length)) + bigPadding;
-        int dateWidth = Math.Max("Purchased".Length, assets.Max(a => a.PurchaseDate.ToString("yyyy-MM-dd").Length)) + mediumPadding;
+        int dateWidth = Math.Max("Purchased".Length, assets.Max(a => a.PurchaseDate.ToString("yyyy-MM-dd").Length)) + bigPadding;
         int priceWidth = Math.Max("Price".Length, assets.Max(a => FormatHelpers.FormatPrice(a.PriceEur).Length)) + mediumPadding;
         int officeWidth = Math.Max("Office".Length, assets.Max(a => a.Office.Name.Length)) + mediumPadding;
         int localValueWidth = Math.Max("Local".Length, assets.Max(a => FormatHelpers.FormatPrice(AssetService.GetLocalPrice(a, currencyProvider)).Length)) + smallPadding;

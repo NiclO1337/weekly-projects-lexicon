@@ -33,11 +33,14 @@ AssetTracker.UI.SlowConsole.WriteLineSlow("A treasure-keeper's ledger for tracki
 AssetTracker.UI.SlowConsole.WriteLineSlow("add new stock to the hoard, search the vault, edit or");
 AssetTracker.UI.SlowConsole.WriteLineSlow("retire old items, and check your riches at a glance.\n");
 
-Console.WriteLine("\nPress any key to continue to main menu...\n");
+Console.WriteLine("\nPress any key to continue to main menu...");
+Console.ForegroundColor = ConsoleColor.Black;
 Console.ReadKey();
+Console.ResetColor();
+
 const int FetchDelayMs = 800;
 
-AssetTracker.UI.SlowConsole.WriteLineSlow("Fetching data...");
+AssetTracker.UI.SlowConsole.WriteLineSlow("\nFetching data...");
 Thread.Sleep(FetchDelayMs);
 string dataFilePath = System.IO.Path.Combine(AssetTracker.Services.AppPaths.DataDirectory, "assets.json");
 
