@@ -490,3 +490,6 @@ $RECYCLE.BIN/
 
 # LibreOffice/OpenOffice lock files left behind when a file is open for editing
 .~lock.*#
+
+# AssetTracker (Week46) exports to TXT/CSV/JSON (generated on demand)
+**/Data/exports/

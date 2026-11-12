@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Core references no project and no package: domain, business logic and interfaces only. -->
+
+</Project>

@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="Week46.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/AssetTracker.ConsoleApp/AssetTracker.ConsoleApp.csproj" />
+    <Project Path="src/AssetTracker.Core/AssetTracker.Core.csproj" />
+    <Project Path="src/AssetTracker.Infrastructure/AssetTracker.Infrastructure.csproj" />
+  </Folder>
 </Solution>
