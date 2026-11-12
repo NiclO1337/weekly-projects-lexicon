@@ -1,3 +1,5 @@
+using AssetTracker.Core.Exceptions;
+
 namespace AssetTracker.ConsoleApp.UI;
 
 /// <summary>
@@ -197,26 +199,22 @@ internal static class ConsoleInput
     }
 
     /// <summary>
-    /// Runs a menu action and silently handles user-initiated cancellation
-    /// (<see cref="UserCancelledException"/>), returning to the calling menu instead of crashing.
+    /// Runs a menu action that handles its own pausing (e.g. a screen with its own loop). Only a
+    /// cancel or a database failure pauses here, so its message can be read before the calling
+    /// menu clears the screen.
     /// </summary>
-    internal static void TryRun(Action action)
+    internal static void TryRun(Action action) => TryRun(() =>
     {
-        try
-        {
-            action();
-        }
-        catch (UserCancelledException)
-        {
-            ConsoleMessage.DisplayWarningMessage("Cancelled - returning to previous menu.");
-        }
-    }
+        action();
+        return false;
+    });
 
     /// <summary>
     /// Runs a menu action that reports whether it actually did anything, then pauses before
     /// returning — unless it quietly backed out early (returned <see langword="false"/>) without
-    /// ever reaching a step a user could cancel out of with "q". A later "q" cancel still throws
-    /// <see cref="UserCancelledException"/> and still pauses, same as <see cref="TryRun(Action)"/>.
+    /// ever reaching a step a user could cancel out of with "q". A "q" cancel
+    /// (<see cref="UserCancelledException"/>) or a database failure (<see cref="DataStoreException"/>)
+    /// shows a message and always pauses, returning to the calling menu instead of crashing.
     /// </summary>
     internal static void TryRun(Func<bool> action)
     {
@@ -228,6 +226,10 @@ internal static class ConsoleInput
         catch (UserCancelledException)
         {
             ConsoleMessage.DisplayWarningMessage("Cancelled - returning to previous menu.");
+        }
+        catch (DataStoreException ex)
+        {
+            ConsoleMessage.DisplayErrorMessage(ex.Message);
         }
 
         if (shouldPause)

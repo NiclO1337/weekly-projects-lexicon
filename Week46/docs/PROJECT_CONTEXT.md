@@ -257,7 +257,7 @@ The first six are the versions in `EntityFrameworkCore/ConsoleAppEF1.csproj`. Sp
 | `TypeLabel` | `string` | **abstract** — "Laptop", "Desktop", "Phone", "Tablet" (the "Type" column) |
 | `GetEndOfLifeStatus(today)` | `EndOfLifeStatus` | Delegates to `AssetLifecycle` |
 | `GetEndOfLifeStatusLabel(today)` | `string` | "", "Monitor", "Upgrade soon", "End of life" |
-| `Update(AssetDetails)` | `void` | Re-validates and replaces the editable fields |
+| `Update(AssetDetails, Office)` | `void` | Re-validates everything first, then replaces the editable fields — a failed update changes nothing. Takes the `Office` so the navigation is set along with `OfficeId` |
 
 `ComputerAsset` adds `ComputerType Type`; `MobileAsset` adds `MobileType Type`. Both are
 `sealed`. `Category` and `TypeLabel` are the polymorphic hooks: no screen, service or exporter
@@ -267,8 +267,12 @@ Max lengths and the price limit are public constants on `Asset` (`MaxBrandLength
 domain validates against them and the Fluent API configuration uses the same constants, so the
 column sizes and the validation can't drift apart.
 
-Each entity has a private parameterless constructor for EF Core and a public constructor that
-validates. Setters are private; `Update` is the only way to change an asset.
+Each entity has a parameterless constructor for EF Core (protected on the abstract `Asset`,
+private elsewhere). `ComputerAsset` and `MobileAsset` have a public constructor
+`(type, AssetDetails, Office)` that validates and takes `Currency` from the office;
+`AssetDetails.OfficeId` must match the office. `Office` has no public constructor: offices are
+only ever created by the migration's seed. Setters are private; `Update` is the only way to
+change an asset.
 
 ### `Office`
 
@@ -690,7 +694,7 @@ re-prompted instead of losing a half-filled form. Nothing catches `Exception` br
 |---|---|---|
 | `UI/SlowConsole.cs` | `UI/SlowConsole.cs` | Namespace; `TypeTextSlow` takes a per-character writer, so `ConsoleMessage` can colour each character through Spectre |
 | `UI/UserCancelledException.cs` | same | Namespace only |
-| `UI/ConsoleInput.cs` | same | Namespace; `TryRun` also catches `DataStoreException`; `allowCancel` removed — typed prompts (`ValidateInput`) always cancel on `q`, menus (`SelectMenuOption`, `Confirm`) read through the private `ReadUntilValid` where `q` is just invalid input; the string overload delegates to the generic one |
+| `UI/ConsoleInput.cs` | same | Namespace; `TryRun` also catches `DataStoreException`, and both overloads share one implementation (`TryRun(Action)` is the `Func<bool>` one with no pause on success, so a cancel or error message always pauses); `allowCancel` removed — typed prompts (`ValidateInput`) always cancel on `q`, menus (`SelectMenuOption`, `Confirm`) read through the private `ReadUntilValid` where `q` is just invalid input; the string overload delegates to the generic one |
 | `UI/ConsoleMessage.cs` | same | Same method names, bodies rewritten on Spectre (colours are Spectre `Color`s from `Theme`); drop `sv-SE`; `ClearScreen` skipped when output is redirected |
 | `UI/TransactionMenu.cs` | `UI/AssetBrowser.cs` | The pagination loop, `disabledChoices`, `ApplyChange`, `PromptIdAndRunAction` patterns |
 | `UI/MainMenu.cs` | `UI/MainMenu.cs` | Structure; menu items and status line change |

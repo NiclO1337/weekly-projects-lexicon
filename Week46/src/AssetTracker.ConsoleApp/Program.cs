@@ -30,18 +30,18 @@ foreach (string line in new[]
     ConsoleMessage.WriteColoredLine(line, Theme.Accent);
 }
 
-ConsoleMessage.WriteColoredSlow("\nWelcome to Dragon's hoard - guard your products well.\n", Theme.Accent);
-ConsoleMessage.WriteColoredSlow("\nA treasure-keeper's ledger for tracking your wares:\n", Theme.Accent);
-ConsoleMessage.WriteColoredSlow("add new stock to the hoard, search the vault, edit or\n", Theme.Accent);
-ConsoleMessage.WriteColoredSlow("retire old items, and check your riches at a glance.\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("\nWelcome to Dragon's hoard - guard your products well.\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("\nA treasure-keeper's ledger for tracking your wares:\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("add new stock to the hoard, search the vault, edit or\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("retire old items, and check your riches at a glance.\n", Theme.Accent);
 ConsoleInput.Pause();
 
 new MainMenu().Run();
 
 ConsoleMessage.Heading("Closing application");
 
-ConsoleMessage.WriteColoredSlow("The hoard is secure and the ledger is closed... for now.\n\n", Theme.Accent);
-ConsoleMessage.WriteColoredSlow("Farewell, treasure keeper!\n\n\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("The hoard is secure and the ledger is closed... for now.\n\n", Theme.Accent);
+//ConsoleMessage.WriteColoredSlow("Farewell, treasure keeper!\n\n\n", Theme.Accent);
 
 foreach (string line in new[]
 {
