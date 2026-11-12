@@ -621,9 +621,12 @@ Spectre draws, `ConsoleInput` asks.
 - **No Spectre prompts and no live displays** (`Status`, `Progress`, `Live`). Prompts would
   replace the numbered menus; live displays redraw in place and don't work with paced output.
 - `ConsoleMessage` keeps the Milestone's method names (`DisplayErrorMessage`, `Heading`,
-  `MainHeading`, `WriteColoredSlow`, …) so `ConsoleInput` and the menu code copy over with only
-  a namespace change; only the bodies become Spectre calls.
+  `MainHeading`, `WriteColoredSlow`, …) so `ConsoleInput` and the menu code copy over without
+  rewriting their calls; only the bodies become Spectre calls, and the colour parameters take a
+  Spectre `Color` from `Theme` instead of a `ConsoleColor`.
 - `ClearScreen` stays as in the Milestone: clear the viewport, then `\x1b[3J` for the scrollback.
+  It does nothing when output is redirected (piped or scripted runs), where `Console.Clear()`
+  would throw `IOException`.
 
 **To verify in build step 2:** that Spectre output is paced by `SlowConsole` and still coloured.
 `SlowConsole.Install()` replaces `Console.Out`; Spectre picks up its output writer the first
@@ -647,6 +650,7 @@ status label only.
 ### UI rules
 
 - `ConsoleInput` never returns invalid data; it re-prompts until the input parses and is in range.
+- `q` cancels every typed prompt; in a numbered menu it is just invalid input, and `0` goes back.
 - `UserCancelledException` unwinds a flow when the user types `q` or input ends; it is caught
   close to where it happened so the user stays on the list they were browsing.
 - Prices: input accepts `,` and `.`; display is whole numbers with thousand separators and the
@@ -684,10 +688,10 @@ re-prompted instead of losing a half-filled form. Nothing catches `Exception` br
 
 | File | Becomes | Change |
 |---|---|---|
-| `UI/SlowConsole.cs` | `UI/SlowConsole.cs` | Namespace only |
+| `UI/SlowConsole.cs` | `UI/SlowConsole.cs` | Namespace; `TypeTextSlow` takes a per-character writer, so `ConsoleMessage` can colour each character through Spectre |
 | `UI/UserCancelledException.cs` | same | Namespace only |
-| `UI/ConsoleInput.cs` | same | Namespace; `TryRun` also catches `DataStoreException` |
-| `UI/ConsoleMessage.cs` | same | Same method names, bodies rewritten on Spectre; drop `sv-SE` |
+| `UI/ConsoleInput.cs` | same | Namespace; `TryRun` also catches `DataStoreException`; `allowCancel` removed — typed prompts (`ValidateInput`) always cancel on `q`, menus (`SelectMenuOption`, `Confirm`) read through the private `ReadUntilValid` where `q` is just invalid input; the string overload delegates to the generic one |
+| `UI/ConsoleMessage.cs` | same | Same method names, bodies rewritten on Spectre (colours are Spectre `Color`s from `Theme`); drop `sv-SE`; `ClearScreen` skipped when output is redirected |
 | `UI/TransactionMenu.cs` | `UI/AssetBrowser.cs` | The pagination loop, `disabledChoices`, `ApplyChange`, `PromptIdAndRunAction` patterns |
 | `UI/MainMenu.cs` | `UI/MainMenu.cs` | Structure; menu items and status line change |
 | `UI/TransactionTable.cs` | — | Not copied; Spectre `Table` replaces hand-padded columns |
