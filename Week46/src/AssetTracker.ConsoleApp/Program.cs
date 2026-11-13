@@ -1,4 +1,6 @@
 using AssetTracker.ConsoleApp.UI;
+using AssetTracker.Core.Exceptions;
+using AssetTracker.Infrastructure.Persistence;
 
 // Must run before the first Spectre call: Spectre binds to Console.Out the first time it is used.
 SlowConsole.Install();
@@ -34,6 +36,24 @@ foreach (string line in new[]
 //ConsoleMessage.WriteColoredSlow("\nA treasure-keeper's ledger for tracking your wares:\n", Theme.Accent);
 //ConsoleMessage.WriteColoredSlow("add new stock to the hoard, search the vault, edit or\n", Theme.Accent);
 //ConsoleMessage.WriteColoredSlow("retire old items, and check your riches at a glance.\n", Theme.Accent);
+
+using var context = new AppDbContext();
+
+ConsoleMessage.NewLine();
+ConsoleMessage.WriteColoredLine("Connecting to database...", Theme.Accent);
+try
+{
+    DatabaseInitializer.Initialize(context);
+}
+catch (DataStoreException ex)
+{
+    ConsoleMessage.DisplayErrorMessage(ex.Message);
+    ConsoleMessage.DisplayErrorMessage("Is SQL Server Express running, and is APP_DB_CONNECTION correct if you have set it?");
+    ConsoleInput.Pause();
+    return 1;
+}
+
+ConsoleMessage.DisplaySuccessMessage("Database ready.");
 ConsoleInput.Pause();
 
 new MainMenu().Run();
@@ -56,3 +76,4 @@ foreach (string line in new[]
 }
 
 ConsoleMessage.NewLine();
+return 0;
