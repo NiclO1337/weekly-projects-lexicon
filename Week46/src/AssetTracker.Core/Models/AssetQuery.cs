@@ -11,8 +11,8 @@ public sealed record AssetQuery
     /// <summary>The number of assets per page unless another size is given.</summary>
     public const int DefaultPageSize = 10;
 
-    /// <summary>The order of the list. Defaults to <see cref="AssetSortMode.Category"/>.</summary>
-    public AssetSortMode SortBy { get; init; } = AssetSortMode.Category;
+    /// <summary>The order of the list. Defaults to <see cref="AssetSortMode.Office"/>.</summary>
+    public AssetSortMode SortBy { get; init; } = AssetSortMode.Office;
 
     /// <summary>The 1-based page to return. A page past the end returns the last page.</summary>
     public int Page { get; init; } = 1;

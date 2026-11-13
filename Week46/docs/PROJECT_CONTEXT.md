@@ -97,7 +97,8 @@ goes in as "Proposed" until he confirms it.
 | Database name | `asset_tracker_ef` on `localhost\SQLEXPRESS` | Agreed |
 | Offices | A table seeded with the four offices. No UI for managing offices | Agreed |
 | Search and filter | Built into the asset list screen (one screen, criteria combine), not a separate "Search" menu entry | Agreed |
-| Table columns | List shows ID, type, brand, model, serial number, purchase date, office, price, currency code, value in EUR and lifetime status; warranty and assigned user show in the details view and in exports | Agreed |
+| Table columns | List shows ID, type, brand, model, purchase date, office, price, currency code, value in EUR and lifetime status; serial number, warranty and assigned user show in the details view and in exports | Agreed |
+| Default sort | Office, then purchase date. Category (the brief's Level 2 order) is one of the sort choices, and groups by type within each category | Agreed |
 | Sample data | Week38's 25 assets, re-dated relative to today and re-priced in local currency, inserted when the table is empty | Agreed |
 | Tests | Manual only, no test project | Agreed |
 | Project names | `AssetTracker.Core`, `.Infrastructure`, `.ConsoleApp`; solution `Week46.slnx` | Agreed |
@@ -424,8 +425,8 @@ Built with LINQ and executed in SQL Server — the brief grades LINQ and EF.
 
 | Need | How |
 |---|---|
-| Sort: Category | Discriminator, then `PurchaseDate` |
-| Sort: Office | `Office.Name`, then `PurchaseDate` |
+| Sort: Category | Discriminator, then `Type` (one shared column for both subclasses), then `PurchaseDate` |
+| Sort: Office (default) | `Office.Name`, then `PurchaseDate` |
 | Sort: End of life | `PurchaseDate` ascending (oldest expires first) |
 | Brand / model search | `Contains` (SQL `LIKE`, case-insensitive under the default collation) |
 | Purchase year | `PurchaseDate.Year == year` |
@@ -569,15 +570,15 @@ Select option (0 - 5):
 ```
 === View Assets ===
 
- Id  Type     Brand    Model          Serial      Purchased    Office    Price  Code  Value (EUR)  EOL status
+ Id  Type     Brand    Model          Purchased    Office    Price  Code  Value (EUR)  EOL status
  ...
-Page 1 of 3 · 25 assets · sorted by category
+Page 1 of 3 · 25 assets · sorted by office
 Filters: brand "dell", office Sweden, expired only
 
 1. Previous page
 2. Next page
 
-3. Change sorting (current: Category)
+3. Change sorting (current: Office)
 4. Search and filter
 5. Clear search and filters
 6. Show asset details

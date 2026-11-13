@@ -68,15 +68,19 @@ public sealed class EfAssetRepository(AppDbContext context) : IAssetRepository
     /// </summary>
     private static IQueryable<Asset> Sort(IQueryable<Asset> assets, AssetSortMode sortBy) => sortBy switch
     {
-        AssetSortMode.Office => assets
-            .OrderBy(a => a.Office.Name)
+        AssetSortMode.Category => assets
+            .OrderBy(a => EF.Property<AssetCategory>(a, AppDbContext.DiscriminatorColumn))
+
+            // ComputerAsset.Type and MobileAsset.Type share the one "Type" column, so this single
+            // cast orders the types of both categories (Desktop, Laptop; Phone, Tablet).
+            .ThenBy(a => ((ComputerAsset)a).Type)
             .ThenBy(a => a.PurchaseDate)
             .ThenBy(a => a.Id),
         AssetSortMode.EndOfLife => assets
             .OrderBy(a => a.PurchaseDate)
             .ThenBy(a => a.Id),
         _ => assets
-            .OrderBy(a => EF.Property<AssetCategory>(a, AppDbContext.DiscriminatorColumn))
+            .OrderBy(a => a.Office.Name)
             .ThenBy(a => a.PurchaseDate)
             .ThenBy(a => a.Id),
     };

@@ -146,7 +146,8 @@ its value in EUR.
   The thresholds live in one place in `Core` (`AssetLifecycle`); the status on an asset and the
   "expired" / "expiring soon" query filters both use it. The colour mapping lives in one place
   in `UI/`.
-- Default sort: category first, then purchase date (Level 2). Also by office and by end of life.
+- Default sort: office, then purchase date. Also by category (the brief's Level 2 order: category,
+  then type, then purchase date) and by end of life.
 
 ## Persistence
 
