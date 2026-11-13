@@ -50,7 +50,7 @@ interface, and the console output is drawn with Spectre.Console.
 |-------|-------|--------|
 | 1 | Register assets, save to database, list them | Done |
 | 2 | Edit, remove, sort, lifetime highlighting | Done |
-| 3 | Offices, currency conversion, reports | Not started |
+| 3 | Offices, currency conversion, reports | Done |
 | 4 | Search, filters, export to TXT / CSV / JSON | Not started |
 | 5 | Roles, login, employees, maintenance, dashboard | Only if there is time |
 

@@ -18,6 +18,20 @@ public interface IAssetRepository
     /// </summary>
     Asset? FindById(int id);
 
+    /// <summary>
+    /// Every asset bought after <paramref name="purchasedAfter"/> and on or before
+    /// <paramref name="purchasedOnOrBefore"/> (either bound may be left out), sorted as
+    /// <paramref name="query"/> asks. Not paged.
+    /// </summary>
+    IReadOnlyList<Asset> GetAll(AssetQuery query, DateOnly? purchasedAfter = null, DateOnly? purchasedOnOrBefore = null);
+
+    /// <summary>
+    /// The <paramref name="count"/> highest-priced assets within each currency, at most
+    /// <paramref name="count"/> per currency. Prices in different currencies can't be compared
+    /// directly, so ranking them against each other is left to the caller, after conversion.
+    /// </summary>
+    IReadOnlyList<Asset> GetMostExpensivePerCurrency(int count);
+
     /// <summary>Asset count and summed purchase price per office and currency, grouped in the store.</summary>
     IReadOnlyList<OfficeCurrencyTotal> GetOfficeTotals();
 

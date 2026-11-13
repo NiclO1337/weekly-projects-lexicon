@@ -27,6 +27,9 @@ public static class AssetLifecycle
     /// <summary>Assets bought on or before this date have less than 6 months left (<see cref="EndOfLifeStatus.Yellow"/> or worse).</summary>
     public static DateOnly YellowCutoff(DateOnly today) => ExpiredCutoff(today).AddMonths(YellowWarningMonths);
 
+    /// <summary>The day an asset bought on <paramref name="purchaseDate"/> reaches the end of its lifetime.</summary>
+    public static DateOnly EndOfLifeDate(DateOnly purchaseDate) => purchaseDate.AddYears(LifespanYears);
+
     /// <summary>The status of an asset bought on <paramref name="purchaseDate"/>, as of <paramref name="today"/>.</summary>
     public static EndOfLifeStatus GetStatus(DateOnly purchaseDate, DateOnly today) => purchaseDate switch
     {

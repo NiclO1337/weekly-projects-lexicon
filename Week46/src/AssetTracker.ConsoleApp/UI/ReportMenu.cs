@@ -12,6 +12,8 @@ internal sealed class ReportMenu(ReportService reportService)
         (string Label, Func<Report> Build)[] reports =
         [
             ("Value and count per office", reportService.OfficeSummary),
+            ("Assets close to expiration", reportService.CloseToExpiration),
+            ("Most expensive assets", () => reportService.MostExpensive()),
         ];
 
         while (true)
@@ -31,7 +33,15 @@ internal sealed class ReportMenu(ReportService reportService)
     private static void Show(Report report)
     {
         ConsoleMessage.Heading(report.Title);
-        ReportTable.Render(report);
+        if (report.Rows.Count == 0)
+        {
+            ConsoleMessage.DisplayWarningMessage("No assets to show in this report.");
+        }
+        else
+        {
+            ReportTable.Render(report);
+        }
+
         ConsoleInput.Pause();
     }
 }

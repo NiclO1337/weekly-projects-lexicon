@@ -34,6 +34,40 @@ public sealed class EfAssetRepository(AppDbContext context) : IAssetRepository
             .Include(a => a.Office)
             .FirstOrDefault(a => a.Id == id));
 
+    public IReadOnlyList<Asset> GetAll(AssetQuery query, DateOnly? purchasedAfter = null, DateOnly? purchasedOnOrBefore = null) =>
+        DatabaseGuard.Run(() =>
+        {
+            var assets = context.Assets.AsNoTracking();
+            if (purchasedAfter is not null)
+            {
+                assets = assets.Where(a => a.PurchaseDate > purchasedAfter);
+            }
+
+            if (purchasedOnOrBefore is not null)
+            {
+                assets = assets.Where(a => a.PurchaseDate <= purchasedOnOrBefore);
+            }
+
+            return Sort(assets, query.SortBy).Include(a => a.Office).ToList();
+        });
+
+    // Top n within each currency in one query: EF turns the per-currency Take into
+    // ROW_NUMBER() OVER (PARTITION BY Currency ORDER BY PurchasePrice DESC).
+    public IReadOnlyList<Asset> GetMostExpensivePerCurrency(int count) => DatabaseGuard.Run(() =>
+    {
+        var assets = context.Assets.AsNoTracking();
+        return assets
+            .Select(a => a.Currency)
+            .Distinct()
+            .SelectMany(currency => assets
+                .Where(a => a.Currency == currency)
+                .OrderByDescending(a => a.PurchasePrice)
+                .ThenBy(a => a.Id)
+                .Take(count))
+            .Include(a => a.Office)
+            .ToList();
+    });
+
     public IReadOnlyList<OfficeCurrencyTotal> GetOfficeTotals() => DatabaseGuard.Run(() =>
         context.Assets
             .GroupBy(a => new { a.OfficeId, a.Currency })
