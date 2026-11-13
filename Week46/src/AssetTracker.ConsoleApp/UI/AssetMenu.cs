@@ -53,7 +53,7 @@ internal sealed class AssetMenu(AssetService assetService)
     internal bool ShowDetails(Asset asset)
     {
         ConsoleMessage.Heading("Asset details");
-        AssetDetailsPanel.Render(asset, Today());
+        RenderDetails(asset);
         return true;
     }
 
@@ -65,7 +65,7 @@ internal sealed class AssetMenu(AssetService assetService)
     internal bool EditAsset(Asset asset)
     {
         ConsoleMessage.Heading("Edit asset");
-        AssetDetailsPanel.Render(asset, Today());
+        RenderDetails(asset);
         ConsoleMessage.WriteColoredLine("Press Enter at a prompt to keep the current value. " + CancelHint, Theme.Accent);
 
         (string Label, Func<AssetDetails, AssetDetails> Edit)[] fields =
@@ -105,7 +105,7 @@ internal sealed class AssetMenu(AssetService assetService)
     internal bool RemoveAsset(Asset asset)
     {
         ConsoleMessage.Heading("Remove asset");
-        AssetDetailsPanel.Render(asset, Today());
+        RenderDetails(asset);
         ConsoleMessage.NewLine();
 
         if (!ConsoleInput.Confirm($"Remove this {asset.TypeLabel.ToLowerInvariant()} for good? This cannot be undone."))
@@ -134,6 +134,8 @@ internal sealed class AssetMenu(AssetService assetService)
         ConsoleMessage.DisplayWarningMessage("The warranty would now expire before the purchase date. Enter a new warranty date.");
         return updated with { WarrantyExpirationDate = ReadWarrantyDate(updated.PurchaseDate) };
     }
+
+    private void RenderDetails(Asset asset) => AssetDetailsPanel.Render(asset, Today(), assetService.GetValueInEur(asset));
 
     private static AssetDetails ToDetails(Asset asset) => new(
         asset.Brand,

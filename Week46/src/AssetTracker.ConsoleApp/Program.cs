@@ -1,6 +1,7 @@
 using AssetTracker.ConsoleApp.UI;
 using AssetTracker.Core.Exceptions;
 using AssetTracker.Core.Services;
+using AssetTracker.Infrastructure.Currency;
 using AssetTracker.Infrastructure.Persistence;
 
 // Must run before the first Spectre call: Spectre binds to Console.Out the first time it is used.
@@ -55,9 +56,29 @@ catch (DataStoreException ex)
 }
 
 ConsoleMessage.DisplaySuccessMessage("Database ready.");
+
+ConsoleMessage.NewLine();
+ConsoleMessage.WriteColoredLine("Fetching exchange rates...", Theme.Accent);
+var currencyProvider = new ApiCurrencyProvider();
+switch (currencyProvider.Source)
+{
+    case CurrencyRateSource.TodayCache:
+        ConsoleMessage.DisplaySuccessMessage($"Using today's cached exchange rates ({currencyProvider.CachedDate}).");
+        break;
+    case CurrencyRateSource.LiveApi:
+        ConsoleMessage.DisplaySuccessMessage("Fetched the latest exchange rates.");
+        break;
+    case CurrencyRateSource.StaleCache:
+        ConsoleMessage.DisplayWarningMessage($"Could not reach the exchange rate service - using cached rates from {currencyProvider.CachedDate}.");
+        break;
+    case CurrencyRateSource.Hardcoded:
+        ConsoleMessage.DisplayWarningMessage("Could not reach the exchange rate service and no cached rates were found - using built-in rates.");
+        break;
+}
+
 ConsoleInput.Pause();
 
-var assetService = new AssetService(new EfAssetRepository(context), new EfOfficeRepository(context));
+var assetService = new AssetService(new EfAssetRepository(context), new EfOfficeRepository(context), currencyProvider);
 new MainMenu(new AssetBrowser(assetService), new AssetMenu(assetService)).Run();
 
 ConsoleMessage.Heading("Closing application");

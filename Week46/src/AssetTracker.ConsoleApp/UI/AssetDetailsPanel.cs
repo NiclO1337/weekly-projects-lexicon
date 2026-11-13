@@ -10,7 +10,10 @@ namespace AssetTracker.ConsoleApp.UI;
 /// </summary>
 internal static class AssetDetailsPanel
 {
-    internal static void Render(Asset asset, DateOnly today)
+    /// <param name="asset">The asset to show.</param>
+    /// <param name="today">The date lifetime status is measured against.</param>
+    /// <param name="valueInEur">The asset's value in EUR, from the service.</param>
+    internal static void Render(Asset asset, DateOnly today, decimal valueInEur)
     {
         var labelStyle = new Style(Theme.Accent);
         var lifetimeStyle = Theme.EndOfLife(asset.GetEndOfLifeStatus(today));
@@ -27,6 +30,7 @@ internal static class AssetDetailsPanel
             ("Purchase date", Format.Date(asset.PurchaseDate), lifetimeStyle),
             ("Warranty expires", Format.Date(asset.WarrantyExpirationDate), Style.Plain),
             ("Price", $"{Format.Amount(asset.PurchasePrice)} {asset.Currency}", Style.Plain),
+            ("Value today", $"{Format.Amount(valueInEur)} EUR", Style.Plain),
             ("Office", asset.Office.Name, Style.Plain),
             ("Assigned to", asset.AssignedTo ?? "(nobody)", Style.Plain),
             ("Lifetime", statusLabel.Length == 0 ? "Within lifetime" : statusLabel, lifetimeStyle),

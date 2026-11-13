@@ -11,7 +11,10 @@ namespace AssetTracker.ConsoleApp.UI;
 /// </summary>
 internal static class AssetTable
 {
-    internal static void Render(IReadOnlyList<Asset> assets, DateOnly today)
+    /// <param name="assets">The rows to draw.</param>
+    /// <param name="today">The date lifetime status is measured against.</param>
+    /// <param name="valueInEur">Each asset's value in EUR, from the service; the UI does no currency math.</param>
+    internal static void Render(IReadOnlyList<Asset> assets, DateOnly today, Func<Asset, decimal> valueInEur)
     {
         var headerStyle = new Style(Theme.Accent, decoration: Decoration.Bold);
         var table = new Table()
@@ -26,11 +29,12 @@ internal static class AssetTable
                 Column("Office", headerStyle),
                 Column("Price", headerStyle).RightAligned(),
                 Column("Code", headerStyle),
+                Column("Value (EUR)", headerStyle).RightAligned(),
                 Column("EOL status", headerStyle));
 
         foreach (var asset in assets)
         {
-            table.AddRow(Cells(asset, today));
+            table.AddRow(Cells(asset, today, valueInEur(asset)));
         }
 
         AnsiConsole.Write(table);
@@ -38,7 +42,7 @@ internal static class AssetTable
 
     private static TableColumn Column(string header, Style style) => new(new Text(header, style));
 
-    private static IRenderable[] Cells(Asset asset, DateOnly today)
+    private static IRenderable[] Cells(Asset asset, DateOnly today, decimal valueInEur)
     {
         // Lifetime status colours the purchase date and the label only.
         var lifetimeStyle = Theme.EndOfLife(asset.GetEndOfLifeStatus(today));
@@ -52,6 +56,7 @@ internal static class AssetTable
             new Text(asset.Office.Name),
             new Text(Format.Amount(asset.PurchasePrice)),
             new Text(asset.Currency.ToString()),
+            new Text(Format.Amount(valueInEur)),
             new Text(asset.GetEndOfLifeStatusLabel(today), lifetimeStyle),
         ];
     }

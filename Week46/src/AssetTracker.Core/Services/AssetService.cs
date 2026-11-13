@@ -12,8 +12,15 @@ namespace AssetTracker.Core.Services;
 /// </summary>
 /// <param name="assets">Where assets are stored.</param>
 /// <param name="offices">Where offices are loaded from.</param>
-public sealed class AssetService(IAssetRepository assets, IOfficeRepository offices)
+/// <param name="currency">Exchange rates against the euro.</param>
+public sealed class AssetService(IAssetRepository assets, IOfficeRepository offices, ICurrencyProvider currency)
 {
+    /// <summary>
+    /// What <paramref name="asset"/> is worth in euros at today's rate: its price, in its own
+    /// currency, divided by that currency's rate. Calculated each time, never stored.
+    /// </summary>
+    public decimal GetValueInEur(Asset asset) => asset.PurchasePrice / currency.GetRate(asset.Currency);
+
     /// <summary>One page of assets, sorted as <paramref name="query"/> asks.</summary>
     /// <exception cref="DataStoreException">The store could not be read.</exception>
     public PagedResult<Asset> GetPage(AssetQuery query) => assets.GetPage(query);

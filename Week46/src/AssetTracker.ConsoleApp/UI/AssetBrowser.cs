@@ -64,7 +64,7 @@ internal sealed class AssetBrowser(AssetService assetService)
         }
     }
 
-    private static void RenderPage(PagedResult<Asset> page, AssetQuery query)
+    private void RenderPage(PagedResult<Asset> page, AssetQuery query)
     {
         if (page.TotalCount == 0)
         {
@@ -72,7 +72,7 @@ internal sealed class AssetBrowser(AssetService assetService)
         }
         else
         {
-            AssetTable.Render(page.Items, DateOnly.FromDateTime(DateTime.Today));
+            AssetTable.Render(page.Items, DateOnly.FromDateTime(DateTime.Today), assetService.GetValueInEur);
         }
 
         var assetWord = page.TotalCount == 1 ? "asset" : "assets";
