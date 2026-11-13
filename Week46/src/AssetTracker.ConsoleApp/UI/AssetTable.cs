@@ -39,17 +39,22 @@ internal static class AssetTable
 
     private static TableColumn Column(string header, Style style) => new(new Text(header, style));
 
-    private static IRenderable[] Cells(Asset asset, DateOnly today) =>
-    [
-        new Text(asset.Id.ToString(CultureInfo.InvariantCulture)),
-        new Text(asset.TypeLabel),
-        new Text(asset.Brand),
-        new Text(asset.Model),
-        new Text(asset.SerialNumber),
-        new Text(Format.Date(asset.PurchaseDate)),
-        new Text(asset.Office.Name),
-        new Text(Format.Amount(asset.PurchasePrice)),
-        new Text(asset.Currency.ToString()),
-        new Text(asset.GetEndOfLifeStatusLabel(today)),
-    ];
+    private static IRenderable[] Cells(Asset asset, DateOnly today)
+    {
+        // Lifetime status colours the purchase date and the label only.
+        var lifetimeStyle = Theme.EndOfLife(asset.GetEndOfLifeStatus(today));
+        return
+        [
+            new Text(asset.Id.ToString(CultureInfo.InvariantCulture)),
+            new Text(asset.TypeLabel),
+            new Text(asset.Brand),
+            new Text(asset.Model),
+            new Text(asset.SerialNumber),
+            new Text(Format.Date(asset.PurchaseDate), lifetimeStyle),
+            new Text(asset.Office.Name),
+            new Text(Format.Amount(asset.PurchasePrice)),
+            new Text(asset.Currency.ToString()),
+            new Text(asset.GetEndOfLifeStatusLabel(today), lifetimeStyle),
+        ];
+    }
 }

@@ -1,3 +1,4 @@
+using AssetTracker.Core.Enums;
 using Spectre.Console;
 
 namespace AssetTracker.ConsoleApp.UI;
@@ -21,4 +22,16 @@ internal static class Theme
     internal static Color Warning { get; } = Color.FromConsoleColor(ConsoleColor.Yellow);
 
     internal static Color Error { get; } = Color.FromConsoleColor(ConsoleColor.DarkRed);
+
+    /// <summary>
+    /// The style for an asset's purchase date and lifetime label: none for
+    /// <see cref="EndOfLifeStatus.None"/>, then dark yellow, red and dark red.
+    /// </summary>
+    internal static Style EndOfLife(EndOfLifeStatus status) => status switch
+    {
+        EndOfLifeStatus.Yellow => new Style(Color.FromConsoleColor(ConsoleColor.DarkYellow)),
+        EndOfLifeStatus.Red => new Style(Color.FromConsoleColor(ConsoleColor.Red)),
+        EndOfLifeStatus.DarkRed => new Style(Color.FromConsoleColor(ConsoleColor.DarkRed)),
+        _ => Style.Plain,
+    };
 }

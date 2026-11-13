@@ -4,25 +4,9 @@ using AssetTracker.Core.Services;
 
 namespace AssetTracker.ConsoleApp.UI;
 
-/// <summary>The asset screens: listing and adding. Collects input and shows results; the rules live in <see cref="AssetService"/>.</summary>
+/// <summary>The asset forms: adding. Collects input and shows results; the rules live in <see cref="AssetService"/>.</summary>
 internal sealed class AssetMenu(AssetService assetService)
 {
-    /// <summary>Shows every asset. Returns <see langword="true"/> so <see cref="ConsoleInput.TryRun(Func{bool})"/> pauses on the list.</summary>
-    internal bool ViewAssets()
-    {
-        ConsoleMessage.Heading("View assets");
-
-        var assets = assetService.GetAll();
-        if (assets.Count == 0)
-        {
-            ConsoleMessage.DisplayWarningMessage("No assets registered yet.");
-            return true;
-        }
-
-        AssetTable.Render(assets, Today());
-        return true;
-    }
-
     /// <summary>
     /// Asks for every field of a new asset and saves it. "q" at a typed prompt or "0" in a menu
     /// cancels (<see cref="UserCancelledException"/>, handled by <see cref="ConsoleInput.TryRun(Func{bool})"/>).

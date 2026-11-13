@@ -9,8 +9,8 @@ namespace AssetTracker.Core.Abstractions;
 /// </summary>
 public interface IAssetRepository
 {
-    /// <summary>Every asset, ordered by ID.</summary>
-    IReadOnlyList<Asset> GetAll();
+    /// <summary>One page of assets, sorted as <paramref name="query"/> asks.</summary>
+    PagedResult<Asset> GetPage(AssetQuery query);
 
     /// <summary>Whether any asset already has <paramref name="serialNumber"/>.</summary>
     bool SerialNumberExists(string serialNumber);

@@ -16,7 +16,8 @@ public sealed class AppDbContext : DbContext
     private const string FallbackConnectionString =
         "Server=localhost\\SQLEXPRESS;Database=asset_tracker_ef;Integrated Security=true;Encrypt=false;";
 
-    private const string DiscriminatorColumn = "AssetCategory";
+    /// <summary>The TPH discriminator: a shadow property (no C# property on <see cref="Asset"/>) holding the <see cref="AssetCategory"/>.</summary>
+    internal const string DiscriminatorColumn = "AssetCategory";
     private const int EnumColumnLength = 20;
     private const int CurrencyCodeLength = 3;
 

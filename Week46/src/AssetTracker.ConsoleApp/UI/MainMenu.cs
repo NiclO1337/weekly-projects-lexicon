@@ -4,7 +4,7 @@ namespace AssetTracker.ConsoleApp.UI;
 /// The console UI's root shell: the top-level menu loop and its "Quit" condition. Owns
 /// navigation only; each action is delegated to the screen that handles it.
 /// </summary>
-internal sealed class MainMenu(AssetMenu assetMenu)
+internal sealed class MainMenu(AssetBrowser assetBrowser, AssetMenu assetMenu)
 {
     internal void Run()
     {
@@ -35,7 +35,7 @@ internal sealed class MainMenu(AssetMenu assetMenu)
                 case 0:
                     return;
                 case 1:
-                    ConsoleInput.TryRun(assetMenu.ViewAssets);
+                    ConsoleInput.TryRun(assetBrowser.Show);
                     break;
                 case 2:
                     ConsoleInput.TryRun(assetMenu.AddAsset);

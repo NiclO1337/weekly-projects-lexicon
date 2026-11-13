@@ -58,7 +58,7 @@ ConsoleMessage.DisplaySuccessMessage("Database ready.");
 ConsoleInput.Pause();
 
 var assetService = new AssetService(new EfAssetRepository(context), new EfOfficeRepository(context));
-new MainMenu(new AssetMenu(assetService)).Run();
+new MainMenu(new AssetBrowser(assetService), new AssetMenu(assetService)).Run();
 
 ConsoleMessage.Heading("Closing application");
 

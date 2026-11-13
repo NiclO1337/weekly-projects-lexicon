@@ -14,9 +14,9 @@ namespace AssetTracker.Core.Services;
 /// <param name="offices">Where offices are loaded from.</param>
 public sealed class AssetService(IAssetRepository assets, IOfficeRepository offices)
 {
-    /// <summary>Every asset, ordered by ID.</summary>
+    /// <summary>One page of assets, sorted as <paramref name="query"/> asks.</summary>
     /// <exception cref="DataStoreException">The store could not be read.</exception>
-    public IReadOnlyList<Asset> GetAll() => assets.GetAll();
+    public PagedResult<Asset> GetPage(AssetQuery query) => assets.GetPage(query);
 
     /// <summary>Every office, ordered by name.</summary>
     /// <exception cref="DataStoreException">The store could not be read.</exception>
