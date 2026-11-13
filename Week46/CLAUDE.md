@@ -9,6 +9,8 @@ This is Week38's AssetTracker rebuilt on a database, with the UI upgrades and th
 Core / Infrastructure / ConsoleApp split from the Milestone project (MoneyTracker).
 
 Full design and build plan: `docs/PROJECT_CONTEXT.md` — read it before making design decisions.
+It is the source of truth: if it and this file disagree, the context doc wins — and say so, so
+one of them gets fixed.
 **Work follows the build plan in §12: one step = one commit, in order. Don't jump ahead.**
 
 ## Where things come from
@@ -31,8 +33,9 @@ Run from `Week46/`.
 
 ```bash
 dotnet build                                   # build all
-dotnet run --project src/AssetTracker.ConsoleApp
+dotnet run --project src/AssetTracker.ConsoleApp   # the user runs this, never Claude
 dotnet format                                  # fix style before committing
+dotnet list package --vulnerable               # after adding or updating a package
 
 # Migrations (Infrastructure owns them, ConsoleApp is the startup project)
 dotnet ef migrations add <Name> --project src/AssetTracker.Infrastructure --startup-project src/AssetTracker.ConsoleApp
@@ -43,6 +46,36 @@ Visual Studio Package Manager Console equivalent:
 `Add-Migration <Name> -Project AssetTracker.Infrastructure -StartupProject AssetTracker.ConsoleApp`.
 
 Warnings are errors. A build with warnings is a failed build.
+
+Run the checks a change can affect (`dotnet build`, `dotnet format`) before suggesting a
+commit, and report the result honestly, failures included. **Never run `dotnet run`** — the
+app waits in interactive menus and never exits. Say what to check and the user runs it.
+
+## How we work together
+
+- **One build-plan step at a time.** Say which step you are on. When it is done, say what
+  changed, why, and what to check by hand — then **stop and wait** before the next step.
+  Don't mix unrelated changes (a refactor and a feature, a fix and a formatting pass).
+- **Look at the whole picture first.** Before changing something, find where else it is used
+  and what depends on it.
+- **Fix root causes.** If a fix feels complicated, or needs a second fix on top of the first,
+  stop, explain the cause and suggest a different approach. Ask before a larger refactor.
+- **Explain new concepts.** The first time a technique shows up in this project, explain it in
+  one or two plain sentences. The user wants to understand every line.
+- **Ask before anything destructive**: `dotnet ef database drop`, `dotnet ef migrations remove`,
+  deleting files, the rate cache or exports.
+- No debug output, commented-out code, unused files or unused packages left behind.
+- Don't invent data, results or content. Ask, or leave a `TODO`.
+
+## Git and commits
+
+- **The user makes every commit.** Never run `git add`, `commit`, `push`, `merge`, `rebase`,
+  `reset`, `stash`, or create/switch/delete branches. Read-only git (`status`, `diff`, `log`) is fine.
+- **Always suggest a commit message** when a step is done: short (under ~50 characters),
+  imperative, lowercase, prefixed `week-46:` — e.g. `week-46: add ef repositories`.
+  §12 lists the suggested message for each step.
+- All work is on `main`.
+- If a request doesn't fit in one commit, say so and suggest how to split it.
 
 ## Architecture
 
@@ -239,7 +272,31 @@ Exactly these, at these versions. Ask before adding anything else.
 
 The EF and configuration versions are the ones in the EF example project. Spectre.Console is
 pre-1.0 and its API still moves between versions — check https://spectreconsole.net before
-relying on a remembered method signature.
+relying on a remembered method signature. The same goes for .NET 10, C# 14 and EF Core 10:
+they may be newer than what you remember. Check the official docs before writing
+version-specific code, trust the compiler over memory, and don't copy patterns from older
+major versions.
+
+## Security
+
+Security is part of every step, not a clean-up at the end. When a step touches it, say so in
+the summary and say what to test. If you notice a problem in existing code, say so even when it
+is outside the current step.
+
+- **CSV export neutralises formulas.** A cell starting with `=`, `+`, `-` or `@` becomes a
+  formula when the file is opened in Excel. Prefix such values so they stay text.
+- **Exports stay in `Data/exports/`.** If the user names the file, strip path separators and `..`.
+- **No SQL built from strings.** LINQ, or `FromSql` with interpolation — never `FromSqlRaw`
+  with values concatenated in.
+- **Errors shown to the user are plain.** No stack traces, connection strings, server names or
+  SQL in a message. `DataStoreException` carries a friendly message; the inner exception keeps
+  the details.
+- **Seed data uses placeholder names** (`jdoe`, `asmith`), never real people.
+- **Packages:** after adding or updating one, run `dotnet list package --vulnerable` and report
+  findings instead of ignoring or force-fixing them.
+- **Never weaken security to make something work.** `Encrypt=false` is acceptable only in the
+  localhost fallback. If there seems to be no other way, stop and ask.
+- If a secret ends up in the repo or the chat, say so right away so it can be rotated.
 
 ## Scope
 
@@ -250,5 +307,17 @@ Do **not** add unless asked: async database calls, a DI container, a logging fra
 AutoMapper, `appsettings.json`, a test project, a web API. (The brief lists async, logging and
 configuration files as optional suggestions — they are candidates for later, not defaults.)
 
-Before calling a level done, run it end to end by hand: add, list, sort, search, filter, edit,
-remove, export, quit, restart, and confirm the data is still there.
+## Testing
+
+There is no test project; testing is manual. Before calling a level done, the user runs it end
+to end by hand: add, list, sort, search, filter, edit, remove, export, quit, restart, and
+confirm the data is still there. The full checklist is the definition of done in
+`PROJECT_CONTEXT.md` §13.
+
+## README and docs
+
+- Keep `README.md` accurate when setup or behaviour changes.
+- When a section needs a screenshot that doesn't exist yet, write the image markdown anyway with
+  alt text and a suggested path, plus `<!-- TODO: take screenshot -->`.
+- Leave `TODO` markers for things that can only be filled in later. Don't invent them.
+- A decision made during the work that isn't in `PROJECT_CONTEXT.md` goes there, not only in the chat.
