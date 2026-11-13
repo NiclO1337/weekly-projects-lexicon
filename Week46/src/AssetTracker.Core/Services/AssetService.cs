@@ -72,6 +72,11 @@ public sealed class AssetService(IAssetRepository assets, IOfficeRepository offi
         return asset;
     }
 
+    /// <summary>Deletes the asset with <paramref name="id"/>.</summary>
+    /// <exception cref="AssetNotFoundException">No asset has <paramref name="id"/>.</exception>
+    /// <exception cref="DataStoreException">The store could not be read or written.</exception>
+    public void Remove(int id) => assets.Remove(GetById(id));
+
     private T Add<T>(AssetDetails details, Func<Office, T> create)
         where T : Asset
     {

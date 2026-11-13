@@ -45,6 +45,12 @@ public sealed class EfAssetRepository(AppDbContext context) : IAssetRepository
 
     public void Update(Asset asset) => SaveOrForget(asset);
 
+    public void Remove(Asset asset)
+    {
+        context.Assets.Remove(asset);
+        SaveOrForget(asset);
+    }
+
     /// <summary>
     /// Saves pending changes. If saving fails, the context forgets <paramref name="asset"/>, so the
     /// next save doesn't retry the failed change and the next read loads it fresh from the database.

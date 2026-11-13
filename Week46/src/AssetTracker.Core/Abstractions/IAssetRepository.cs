@@ -26,4 +26,7 @@ public interface IAssetRepository
 
     /// <summary>Saves the changes made to an asset loaded with <see cref="FindById"/>.</summary>
     void Update(Asset asset);
+
+    /// <summary>Deletes an asset loaded with <see cref="FindById"/>.</summary>
+    void Remove(Asset asset);
 }

@@ -22,7 +22,7 @@ internal sealed class MainMenu(AssetBrowser assetBrowser, AssetMenu assetMenu)
 
     private void RunMenuLoop()
     {
-        string[] menuItems = ["View assets", "Add asset", "Edit asset"];
+        string[] menuItems = ["View assets", "Add asset", "Edit asset", "Remove asset"];
 
         while (true)
         {
@@ -42,6 +42,9 @@ internal sealed class MainMenu(AssetBrowser assetBrowser, AssetMenu assetMenu)
                     break;
                 case 3:
                     ConsoleInput.TryRun(() => assetBrowser.Browse("Edit asset", "Edit an asset", assetMenu.EditAsset));
+                    break;
+                case 4:
+                    ConsoleInput.TryRun(() => assetBrowser.Browse("Remove asset", "Remove an asset", assetMenu.RemoveAsset));
                     break;
             }
         }

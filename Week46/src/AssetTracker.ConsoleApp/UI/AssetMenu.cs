@@ -101,6 +101,24 @@ internal sealed class AssetMenu(AssetService assetService)
         return true;
     }
 
+    /// <summary>Shows <paramref name="asset"/> and deletes it once the user confirms.</summary>
+    internal bool RemoveAsset(Asset asset)
+    {
+        ConsoleMessage.Heading("Remove asset");
+        AssetDetailsPanel.Render(asset, Today());
+        ConsoleMessage.NewLine();
+
+        if (!ConsoleInput.Confirm($"Remove this {asset.TypeLabel.ToLowerInvariant()} for good? This cannot be undone."))
+        {
+            ConsoleMessage.DisplayWarningMessage("Nothing was removed.");
+            return true;
+        }
+
+        assetService.Remove(asset.Id);
+        ConsoleMessage.DisplaySuccessMessage($"Removed {asset.TypeLabel.ToLowerInvariant()} {asset.Brand} {asset.Model} (ID {asset.Id}).");
+        return true;
+    }
+
     /// <summary>
     /// Asks for a new purchase date. If the current warranty would now end before it, asks for a
     /// new warranty date too, since keeping it isn't allowed.

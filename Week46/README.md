@@ -48,8 +48,8 @@ interface, and the console output is drawn with Spectre.Console.
 
 | Level | Scope | Status |
 |-------|-------|--------|
-| 1 | Register assets, save to database, list them | Not started |
-| 2 | Edit, remove, sort, lifetime highlighting | Not started |
+| 1 | Register assets, save to database, list them | Done |
+| 2 | Edit, remove, sort, lifetime highlighting | Done |
 | 3 | Offices, currency conversion, reports | Not started |
 | 4 | Search, filters, export to TXT / CSV / JSON | Not started |
 | 5 | Roles, login, employees, maintenance, dashboard | Only if there is time |
@@ -76,7 +76,7 @@ interface, and the console output is drawn with Spectre.Console.
 - **Live conversion to EUR** with the [Frankfurter API](https://frankfurter.dev/), so assets
   can be compared and totalled across offices. Rates are cached once a day, falling back to the
   last cached rates or built-in rates when offline
-- **Sort** by category, office or end of life
+- **Sort** by office (the default), category (grouped by type) or end of life
 - **Search** by brand, model, office and purchase year
 - **Filter** to expired assets, computers only or mobile devices only
 - **Paginated lists**, with sorting, search and filters changeable in place
@@ -150,7 +150,10 @@ leaving the screen, and the current list can be exported from there. Edit and re
 same list, so an asset can be searched for before picking its ID.
 
 Dates are entered as `YYYY-MM-DD`, for example `2026-03-17`. Prices are entered in the
-office's own currency and accept both `14990,50` and `14990.50`. Type `q` at a text prompt to cancel.
+office's own currency and accept a decimal comma or point, with or without thousand separators:
+`14990`, `14 990`, `14990,50` and `15.000,50` all work. Press Enter at the purchase date for today,
+and at the warranty date for the standard warranty (3 years for computers, 2 for mobile devices).
+When editing, Enter keeps the current value. Type `q` at a text prompt to cancel.
 
 Screenshots are added when the user interface is finished.
 
