@@ -177,7 +177,7 @@ its value in EUR.
 
 - `ICurrencyProvider.GetRate(CurrencyCode)` is EUR-based (EUR = 1.0), unchanged from Week38.
   Week38 multiplied EUR by the rate to get the local price; here the local price is divided by
-  the rate to get EUR, in one place (`AssetService.GetValueInEur`).
+  the rate to get EUR, in one place (the `ToEur` extension in `Core/Services/CurrencyConversion.cs`).
 - `ApiCurrencyProvider` (Frankfurter, `base=EUR`) → today's cache → stale cache →
   `HardcodedCurrencyProvider`. **It never throws**; it exposes `Source` so `Program.cs` can
   report which rates are in use.

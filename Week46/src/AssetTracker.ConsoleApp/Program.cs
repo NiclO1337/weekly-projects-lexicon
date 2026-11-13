@@ -78,8 +78,12 @@ switch (currencyProvider.Source)
 
 ConsoleInput.Pause();
 
-var assetService = new AssetService(new EfAssetRepository(context), new EfOfficeRepository(context), currencyProvider);
-new MainMenu(new AssetBrowser(assetService), new AssetMenu(assetService)).Run();
+var assetRepository = new EfAssetRepository(context);
+var officeRepository = new EfOfficeRepository(context);
+var assetService = new AssetService(assetRepository, officeRepository, currencyProvider);
+var reportService = new ReportService(assetRepository, officeRepository, currencyProvider);
+
+new MainMenu(new AssetBrowser(assetService), new AssetMenu(assetService), new ReportMenu(reportService)).Run();
 
 ConsoleMessage.Heading("Closing application");
 

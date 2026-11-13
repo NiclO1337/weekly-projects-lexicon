@@ -18,6 +18,9 @@ public interface IAssetRepository
     /// </summary>
     Asset? FindById(int id);
 
+    /// <summary>Asset count and summed purchase price per office and currency, grouped in the store.</summary>
+    IReadOnlyList<OfficeCurrencyTotal> GetOfficeTotals();
+
     /// <summary>Whether any asset other than <paramref name="exceptAssetId"/> already has <paramref name="serialNumber"/>.</summary>
     bool SerialNumberExists(string serialNumber, int? exceptAssetId = null);
 

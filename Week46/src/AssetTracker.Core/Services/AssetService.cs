@@ -19,7 +19,7 @@ public sealed class AssetService(IAssetRepository assets, IOfficeRepository offi
     /// What <paramref name="asset"/> is worth in euros at today's rate: its price, in its own
     /// currency, divided by that currency's rate. Calculated each time, never stored.
     /// </summary>
-    public decimal GetValueInEur(Asset asset) => asset.PurchasePrice / currency.GetRate(asset.Currency);
+    public decimal GetValueInEur(Asset asset) => currency.ToEur(asset.PurchasePrice, asset.Currency);
 
     /// <summary>One page of assets, sorted as <paramref name="query"/> asks.</summary>
     /// <exception cref="DataStoreException">The store could not be read.</exception>

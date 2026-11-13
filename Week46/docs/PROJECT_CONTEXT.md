@@ -135,7 +135,6 @@ Week46/
     │   │   ├── AssetQuery.cs             # search + filter + sort + page
     │   │   ├── PagedResult.cs
     │   │   ├── OfficeCurrencyTotal.cs    # count + sum per office and currency, from SQL
-    │   │   ├── OfficeSummary.cs          # per office, in EUR
     │   │   └── Report.cs                 # title + columns + rows, for screen and export
     │   ├── Enums/
     │   │   ├── AssetCategory.cs          # Computer, Mobile
@@ -154,6 +153,7 @@ Week46/
     │   ├── Services/
     │   │   ├── AssetLifecycle.cs         # the 3-year rule and its cutoffs, in one place
     │   │   ├── AssetService.cs
+    │   │   ├── CurrencyConversion.cs     # ToEur: the one currency division
     │   │   ├── ReportService.cs
     │   │   └── ExportService.cs
     │   └── Exceptions/
@@ -316,9 +316,11 @@ expiration") are computed from the same three dates and can never disagree.
   `Lifecycle` (`LifecycleFilter`), `SortBy` (`AssetSortMode`), `Page`, `PageSize`. Criteria
   combine with AND. Text criteria are case-insensitive "contains".
 - `PagedResult<T>` — `Items`, `PageNumber`, `TotalPages`, `TotalCount` (replaces Week38's `AssetsPage`).
-- `OfficeCurrencyTotal` — `Office`, `Currency`, `AssetCount`, `TotalPrice`. One row per office
+- `OfficeCurrencyTotal` — `OfficeId`, `Currency`, `AssetCount`, `TotalPrice`. One row per office
   and currency, straight from a SQL `GROUP BY`.
-- `OfficeSummary` — `Office`, `AssetCount`, `TotalEur`. Built by `ReportService` from the rows above.
+- `ReportService.OfficeSummary` starts from the office list (so offices with no assets show 0),
+  converts each office's rows above to EUR and adds them up. No separate summary type: the
+  rows go straight into the `Report`.
 - `Report` — `Title`, `Columns`, `Rows` (cell values, not pre-formatted strings). One shape for
   every report and for the asset list, so one screen renderer and three exporters cover all of them.
 
@@ -343,7 +345,7 @@ public sealed class AssetService(IAssetRepository assets, IOfficeRepository offi
     public decimal GetValueInEur(Asset asset);                      // PurchasePrice ÷ rate for the asset's currency
 }
 
-public sealed class ReportService(IAssetRepository assets, ICurrencyProvider currency)
+public sealed class ReportService(IAssetRepository assets, IOfficeRepository offices, ICurrencyProvider currency)
 {
     public Report OfficeSummary();                  // count + total value in EUR, per office
     public Report CloseToExpiration();              // Yellow and Red, soonest first
@@ -474,9 +476,9 @@ The providers are copied from Week38 with only the namespace changed: rates are 
 and multiplied to get the local price; here the local price is stored and the value in EUR is
 `PurchasePrice ÷ rate`.
 
-- `ICurrencyProvider.GetRate(CurrencyCode)` in `Core`; `AssetService.GetValueInEur` is the one
-  place an asset's price is divided, rounded to 2 decimals. `ReportService` converts its
-  per-currency totals the same way.
+- `ICurrencyProvider.GetRate(CurrencyCode)` in `Core`; the `ToEur` extension in `Core/Services/CurrencyConversion.cs` is the one
+  place an amount is divided, rounded to 2 decimals. `AssetService.GetValueInEur` and `ReportService`
+  (its per-currency totals) both call it.
 - EUR values are "at today's rate": they move with the exchange rate. The stored price never does.
 - `ApiCurrencyProvider` calls Frankfurter
   (`https://api.frankfurter.dev/v1/latest?base=EUR&symbols=SEK,USD,TRY`), at most once per

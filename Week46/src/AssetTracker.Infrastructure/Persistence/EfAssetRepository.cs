@@ -34,6 +34,12 @@ public sealed class EfAssetRepository(AppDbContext context) : IAssetRepository
             .Include(a => a.Office)
             .FirstOrDefault(a => a.Id == id));
 
+    public IReadOnlyList<OfficeCurrencyTotal> GetOfficeTotals() => DatabaseGuard.Run(() =>
+        context.Assets
+            .GroupBy(a => new { a.OfficeId, a.Currency })
+            .Select(g => new OfficeCurrencyTotal(g.Key.OfficeId, g.Key.Currency, g.Count(), g.Sum(a => a.PurchasePrice)))
+            .ToList());
+
     public bool SerialNumberExists(string serialNumber, int? exceptAssetId = null) => DatabaseGuard.Run(() =>
         context.Assets.Any(a => a.SerialNumber == serialNumber && (exceptAssetId == null || a.Id != exceptAssetId)));
 
