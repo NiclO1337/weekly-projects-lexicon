@@ -1,5 +1,4 @@
 using AssetTracker.Core.Exceptions;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace AssetTracker.Infrastructure.Persistence;
@@ -8,18 +7,29 @@ namespace AssetTracker.Infrastructure.Persistence;
 public static class DatabaseInitializer
 {
     /// <summary>
-    /// Creates the database on first run and applies any pending migrations.
+    /// Creates the database on first run, applies any pending migrations, and inserts the sample
+    /// assets if there are no assets yet.
     /// </summary>
-    /// <exception cref="DataStoreException">The database server could not be reached or the migration failed.</exception>
-    public static void Initialize(AppDbContext context)
+    /// <exception cref="DataStoreException">The database server could not be reached or the database could not be prepared.</exception>
+    public static void Initialize(AppDbContext context) => DatabaseGuard.Run(() =>
     {
-        try
+        context.Database.Migrate();
+        SeedSampleAssets(context);
+    }, "Could not connect to or prepare the database.");
+
+    private static void SeedSampleAssets(AppDbContext context)
+    {
+        if (context.Assets.Any())
         {
-            context.Database.Migrate();
+            return;
         }
-        catch (SqlException ex)
-        {
-            throw new DataStoreException("Could not connect to or prepare the database.", ex);
-        }
+
+        // Tracked offices, so EF links the new assets to the existing rows instead of inserting them.
+        var offices = context.Offices.ToList();
+        context.Assets.AddRange(SampleData.Create(offices, DateOnly.FromDateTime(DateTime.Today)));
+        context.SaveChanges();
+
+        // The context lives for the whole session; don't keep the seeded entities tracked in it.
+        context.ChangeTracker.Clear();
     }
 }
