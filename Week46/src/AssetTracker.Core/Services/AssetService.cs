@@ -22,6 +22,13 @@ public sealed class AssetService(IAssetRepository assets, IOfficeRepository offi
     /// <exception cref="DataStoreException">The store could not be read.</exception>
     public IReadOnlyList<Office> GetOffices() => offices.GetAll();
 
+    /// <summary>
+    /// Whether an asset already has <paramref name="serialNumber"/> (compared trimmed, as stored).
+    /// Lets the UI re-prompt instead of losing a half-filled form.
+    /// </summary>
+    /// <exception cref="DataStoreException">The store could not be read.</exception>
+    public bool SerialNumberExists(string serialNumber) => assets.SerialNumberExists(serialNumber.Trim());
+
     /// <summary>Creates and saves a computer, priced in its office's currency.</summary>
     /// <exception cref="OfficeNotFoundException">No office has <see cref="AssetDetails.OfficeId"/>.</exception>
     /// <exception cref="DuplicateSerialNumberException">Another asset already has the serial number.</exception>

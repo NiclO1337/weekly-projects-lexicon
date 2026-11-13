@@ -1,5 +1,6 @@
 using AssetTracker.ConsoleApp.UI;
 using AssetTracker.Core.Exceptions;
+using AssetTracker.Core.Services;
 using AssetTracker.Infrastructure.Persistence;
 
 // Must run before the first Spectre call: Spectre binds to Console.Out the first time it is used.
@@ -56,7 +57,8 @@ catch (DataStoreException ex)
 ConsoleMessage.DisplaySuccessMessage("Database ready.");
 ConsoleInput.Pause();
 
-new MainMenu().Run();
+var assetService = new AssetService(new EfAssetRepository(context), new EfOfficeRepository(context));
+new MainMenu(new AssetMenu(assetService)).Run();
 
 ConsoleMessage.Heading("Closing application");
 

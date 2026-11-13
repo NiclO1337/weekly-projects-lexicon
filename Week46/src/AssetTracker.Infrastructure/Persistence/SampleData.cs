@@ -6,13 +6,10 @@ namespace AssetTracker.Infrastructure.Persistence;
 /// <summary>
 /// Week38's 25 sample assets, priced in each office's own currency. Purchase dates are given as
 /// "months ago" so every lifetime status (normal, monitor, upgrade soon, end of life) is visible
-/// whatever day the app is first run. Serial numbers, warranty dates and users are invented.
+/// whatever day the app is first run. Serial numbers and users are invented; warranties are the standard length.
 /// </summary>
 internal static class SampleData
 {
-    private const int ComputerWarrantyYears = 3;
-    private const int MobileWarrantyYears = 2;
-
     /// <param name="offices">The seeded offices, tracked by the context so they are not inserted again.</param>
     /// <param name="today">The date the purchase dates are counted back from.</param>
     internal static IReadOnlyList<Asset> Create(IReadOnlyList<Office> offices, DateOnly today)
@@ -26,10 +23,10 @@ internal static class SampleData
         }
 
         Asset Computer(ComputerType type, string brand, string model, string serialNumber, int monthsAgo, decimal price, string officeName, string? assignedTo = null) =>
-            new ComputerAsset(type, Details(brand, model, serialNumber, monthsAgo, ComputerWarrantyYears, price, officeName, assignedTo), officesByName[officeName]);
+            new ComputerAsset(type, Details(brand, model, serialNumber, monthsAgo, ComputerAsset.StandardWarrantyYears, price, officeName, assignedTo), officesByName[officeName]);
 
         Asset Mobile(MobileType type, string brand, string model, string serialNumber, int monthsAgo, decimal price, string officeName, string? assignedTo = null) =>
-            new MobileAsset(type, Details(brand, model, serialNumber, monthsAgo, MobileWarrantyYears, price, officeName, assignedTo), officesByName[officeName]);
+            new MobileAsset(type, Details(brand, model, serialNumber, monthsAgo, MobileAsset.StandardWarrantyYears, price, officeName, assignedTo), officesByName[officeName]);
 
         return
         [

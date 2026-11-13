@@ -260,7 +260,8 @@ The first six are the versions in `EntityFrameworkCore/ConsoleAppEF1.csproj`. Sp
 | `Update(AssetDetails, Office)` | `void` | Re-validates everything first, then replaces the editable fields — a failed update changes nothing. Takes the `Office` so the navigation is set along with `OfficeId` |
 
 `ComputerAsset` adds `ComputerType Type`; `MobileAsset` adds `MobileType Type`. Both are
-`sealed`. `Category` and `TypeLabel` are the polymorphic hooks: no screen, service or exporter
+`sealed`. Each has a `StandardWarrantyYears` constant (computer 3, mobile 2), used for the
+sample data and offered as the default warranty when an asset is added. `Category` and `TypeLabel` are the polymorphic hooks: no screen, service or exporter
 ever asks "is this a computer?".
 
 Max lengths and the price limit are public constants on `Asset` (`MaxBrandLength`, …). The
@@ -603,7 +604,8 @@ both. Search and filter are available there too.
 **Add asset**: category → type → brand → model → serial number → purchase date → warranty
 expiration → office → price in that office's currency ("Price in SEK: ") → assigned to (Enter
 to skip). `0` cancels at the menu steps,
-`q` at the text steps.
+`q` at the text steps. Enter accepts a default shown in the prompt: today for the purchase
+date, and purchase date + the type's standard warranty (3 or 2 years) for the warranty date.
 
 **Reports**: `1. Value and count per office`, `2. Assets close to expiration`,
 `3. Most expensive assets`, `0. Back`. Each report screen offers `1. Export this report`, `0. Back`.
@@ -657,8 +659,12 @@ status label only.
 - `q` cancels every typed prompt; in a numbered menu it is just invalid input, and `0` goes back.
 - `UserCancelledException` unwinds a flow when the user types `q` or input ends; it is caught
   close to where it happened so the user stays on the list they were browsing.
-- Prices: input accepts `,` and `.`; display is whole numbers with thousand separators and the
-  currency code in its own column. Dates: `yyyy-MM-dd`.
+- Prices: input accepts `,` or `.` before 1–2 decimals, and thousands grouped by a space, `.` or
+  `,` (`15.000,37` and `15,000.37` both work; a separator followed by exactly 3 digits is a
+  thousands separator, since prices have at most 2 decimals). Ambiguous input such as
+  `15.000.37` re-prompts with examples. Display is whole
+  numbers with a **space** as thousand separator (`14 990`, so it can't be read as a decimal
+  comma) and the currency code in its own column. Dates: `yyyy-MM-dd`.
 - No business logic in `UI/`.
 
 ---

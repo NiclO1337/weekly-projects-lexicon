@@ -5,6 +5,9 @@ namespace AssetTracker.Core.Models;
 /// <summary>A laptop or desktop computer.</summary>
 public sealed class ComputerAsset : Asset
 {
+    /// <summary>The usual warranty length for a computer, offered as the default when one is added.</summary>
+    public const int StandardWarrantyYears = 3;
+
     /// <summary>Laptop or desktop. Fixed once the asset is created.</summary>
     public ComputerType Type { get; private set; }
 

@@ -5,6 +5,9 @@ namespace AssetTracker.Core.Models;
 /// <summary>A phone or tablet.</summary>
 public sealed class MobileAsset : Asset
 {
+    /// <summary>The usual warranty length for a phone or tablet, offered as the default when one is added.</summary>
+    public const int StandardWarrantyYears = 2;
+
     /// <summary>Phone or tablet. Fixed once the asset is created.</summary>
     public MobileType Type { get; private set; }
 
