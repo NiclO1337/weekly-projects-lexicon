@@ -12,9 +12,18 @@ public interface IAssetRepository
     /// <summary>One page of assets, sorted as <paramref name="query"/> asks.</summary>
     PagedResult<Asset> GetPage(AssetQuery query);
 
-    /// <summary>Whether any asset already has <paramref name="serialNumber"/>.</summary>
-    bool SerialNumberExists(string serialNumber);
+    /// <summary>
+    /// The asset with <paramref name="id"/>, or <see langword="null"/> if there is none. Changes
+    /// made to it through <see cref="Asset.Update"/> are saved by <see cref="Update"/>.
+    /// </summary>
+    Asset? FindById(int id);
+
+    /// <summary>Whether any asset other than <paramref name="exceptAssetId"/> already has <paramref name="serialNumber"/>.</summary>
+    bool SerialNumberExists(string serialNumber, int? exceptAssetId = null);
 
     /// <summary>Saves a new asset. The store assigns its <see cref="Asset.Id"/>.</summary>
     void Add(Asset asset);
+
+    /// <summary>Saves the changes made to an asset loaded with <see cref="FindById"/>.</summary>
+    void Update(Asset asset);
 }

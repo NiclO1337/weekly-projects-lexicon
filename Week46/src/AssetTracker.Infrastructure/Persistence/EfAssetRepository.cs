@@ -28,19 +28,35 @@ public sealed class EfAssetRepository(AppDbContext context) : IAssetRepository
         return new PagedResult<Asset>(items, pageNumber, totalPages, totalCount);
     });
 
-    public bool SerialNumberExists(string serialNumber) => DatabaseGuard.Run(() =>
-        context.Assets.Any(a => a.SerialNumber == serialNumber));
+    // Tracked (no AsNoTracking), so the changes Asset.Update makes are what SaveChanges writes.
+    public Asset? FindById(int id) => DatabaseGuard.Run(() =>
+        context.Assets
+            .Include(a => a.Office)
+            .FirstOrDefault(a => a.Id == id));
+
+    public bool SerialNumberExists(string serialNumber, int? exceptAssetId = null) => DatabaseGuard.Run(() =>
+        context.Assets.Any(a => a.SerialNumber == serialNumber && (exceptAssetId == null || a.Id != exceptAssetId)));
 
     public void Add(Asset asset)
     {
         context.Assets.Add(asset);
+        SaveOrForget(asset);
+    }
+
+    public void Update(Asset asset) => SaveOrForget(asset);
+
+    /// <summary>
+    /// Saves pending changes. If saving fails, the context forgets <paramref name="asset"/>, so the
+    /// next save doesn't retry the failed change and the next read loads it fresh from the database.
+    /// </summary>
+    private void SaveOrForget(Asset asset)
+    {
         try
         {
             DatabaseGuard.Run(() => context.SaveChanges());
         }
         catch (DataStoreException)
         {
-            // Forget the failed insert, or the next SaveChanges would try it again.
             context.Entry(asset).State = EntityState.Detached;
             throw;
         }
